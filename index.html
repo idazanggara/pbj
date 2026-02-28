@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<!-- Deklarasi tipe dokumen HTML5 — standar modern untuk semua web browser -->
+
+<html lang="id">
+<!-- Tag pembuka HTML, lang="id" memberitahu browser bahwa konten dalam Bahasa Indonesia -->
+
+<head>
+  <!-- HEAD berisi metadata (info tentang halaman), tidak ditampilkan langsung ke pengguna -->
+
+  <meta charset="UTF-8" />
+  <!-- UTF-8 = encoding karakter universal, penting agar huruf seperti "é", "ā", dll. tampil benar -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Viewport meta tag: membuat halaman responsive di HP.
+       width=device-width = lebar halaman = lebar layar perangkat
+       initial-scale=1.0 = tidak ada zoom awal saat halaman dibuka -->
+
+  <meta name="description"
+    content="Jadwal dan lokasi latihan Pushbike Jakarta (PBJ) — komunitas balance bike anak Jakarta sejak 2018." />
+  <!-- SEO: Deskripsi yang muncul di hasil pencarian Google (biasanya 150-160 karakter) -->
+
+  <meta name="author" content="IT PBJ — Idaz" />
+  <!-- Informasi pembuat halaman untuk metadata -->
+
+  <title>PBJ — Jadwal &amp; Lokasi Latihan</title>
+  <!-- Judul tab browser. &amp; adalah HTML entity untuk karakter "&" -->
+
+  <!-- ===== FAVICON ===== -->
+  <link rel="icon" type="image/x-icon" href="assets/favicon_io/favicon.ico" />
+  <!-- favicon.ico = ikon kecil yang muncul di tab browser (multi-size, kompatibel semua browser) -->
+
+  <link rel="apple-touch-icon" href="assets/favicon_io/apple-touch-icon.png" />
+  <!-- apple-touch-icon = ikon yang muncul saat website di-add ke homescreen iPhone/iPad -->
+
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon_io/android-chrome-192x192.png" />
+  <!-- 192x192 = ikon resolusi tinggi untuk Android/PWA (Progressive Web App) -->
+
+  <link rel="manifest" href="assets/favicon_io/site.webmanifest" />
+  <!-- site.webmanifest = file konfigurasi PWA (nama app, warna, ikon, dll.) -->
+
+  <!-- ===== GOOGLE FONTS ===== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <!-- Buka koneksi awal ke server Google Fonts sebelum font diunduh (mempercepat loading) -->
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Buka koneksi ke CDN aset font Google, crossorigin diperlukan untuk keamanan CORS -->
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <!-- Mengimpor font Inter (untuk teks umum) dan Space Grotesk (untuk heading/judul)
+       wght@300..900 = semua ketebalan dari thin sampai black
+       display=swap = gunakan font fallback dulu, ganti setelah font dimuat (menghindari FOBT/flash of invisible text) -->
+
+  <!-- ===== STYLESHEET UTAMA ===== -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Menghubungkan file CSS eksternal yang mengatur tampilan/design halaman ini -->
+
+  <!-- ===== LEAFLET.JS (Library Peta Interaktif Open Source) ===== -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- CSS dari Leaflet.js — mengatur tampilan peta, marker, popup, dll.
+       Leaflet adalah library peta open-source (tidak butuh API key seperti Google Maps) -->
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+  <!-- JavaScript utama Leaflet.js untuk render peta interaktif.
+       defer = script diunduh paralel tetapi dijalankan setelah HTML selesai di-parse (lebih cepat) -->
+
+  <!-- ===== FONT AWESOME (Icon Library) ===== -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Font Awesome 6.5 — menyediakan ribuan ikon vektor siap pakai (fa-map-marker-alt, fa-calendar, dll.) -->
+</head>
+
+<body>
+  <!-- BODY berisi semua konten yang terlihat oleh pengguna di browser -->
+
+  <!-- ============================================================
+       HEADER / NAVBAR — Navigasi utama di bagian atas halaman
+       ============================================================ -->
+  <header class="navbar" id="navbar">
+    <!-- <header> = tag semantik HTML5 untuk area navigasi/kepala halaman
+         class="navbar" = styling dari CSS
+         id="navbar" = digunakan JavaScript untuk deteksi scroll -->
+
+    <div class="navbar__container">
+      <!-- Div pembungkus untuk membatasi lebar konten navbar di tengah layar -->
+
+      <!-- Logo / Brand -->
+      <a href="#" class="navbar__logo">
+        <!-- <a href="#"> = link yang tidak kemana-mana (kembali ke atas halaman) -->
+        <img src="assets/logo_PBJ.jpg" alt="Logo Pushbike Jakarta" class="logo-img" width="40" height="40" />
+        <!-- <img> = menampilkan gambar logo asli PBJ
+             alt = teks alternatif untuk screen reader & SEO
+             width/height = ukuran awal (dikontrol lebih lanjut oleh CSS)
+             src = path relatif dari index.html ke file logo -->
+        <span class="logo-text">PBJ</span>
+        <!-- Teks nama komunitas -->
+        <span class="logo-sub">Pushbike Jakarta</span>
+        <!-- Sub-teks deskripsi singkat -->
+      </a>
+
+      <!-- Menu Navigasi Desktop -->
+      <nav class="navbar__nav" aria-label="Navigasi utama">
+        <!-- <nav> = tag semantik untuk area navigasi
+             aria-label = aksesibilitas, dibaca screen reader untuk pengguna difabel -->
+        <a href="#schedule" class="nav-link">Jadwal</a>
+        <!-- Link ke section #schedule (pakai anchor/hash link, smooth scroll diaktifkan via CSS) -->
+        <a href="#map" class="nav-link">Lokasi</a>
+        <a href="#info" class="nav-link">Info</a>
+        <a href="#pengurus" class="nav-link">Pengurus</a>
+        <a href="#register" class="nav-link nav-link--cta">Daftar Sekarang</a>
+        <!-- nav-link--cta = CTA (Call-To-Action) tombol khusus warna accent -->
+      </nav>
+
+      <!-- Tombol Hamburger untuk Mobile -->
+      <button class="navbar__hamburger" id="hamburgerBtn" aria-label="Buka menu" aria-expanded="false">
+        <!-- <button> = elemen interaktif, lebih accessible daripada <div> yang diklik
+             aria-expanded="false" = memberi tahu screen reader apakah menu terbuka atau tidak -->
+        <span></span>
+        <span></span>
+        <span></span>
+        <!-- Tiga garis horizontal = ikon hamburger menu (dibuat dengan CSS) -->
+      </button>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true">
+      <!-- role="dialog" = memberi tahu screen reader ini adalah dialog/overlay
+           aria-modal="true" = konten di belakang tidak dapat diakses saat menu terbuka -->
+      <a href="#schedule" class="mobile-nav-link">Jadwal</a>
+      <a href="#map" class="mobile-nav-link">Lokasi</a>
+      <a href="#info" class="mobile-nav-link">Info</a>
+      <a href="#pengurus" class="mobile-nav-link">Pengurus</a>
+      <a href="#register" class="mobile-nav-link mobile-nav-link--cta">Daftar Sekarang</a>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       HERO SECTION — Bagian pertama yang dilihat pengguna
+       ============================================================ -->
+  <section class="hero" id="hero">
+    <!-- <section> = tag semantik HTML5 untuk area/bagian konten yang berdiri sendiri -->
+
+    <!-- Elemen dekoratif latar belakang (orbs / glowing circles) -->
+    <div class="hero__orb hero__orb--1" aria-hidden="true"></div>
+    <div class="hero__orb hero__orb--2" aria-hidden="true"></div>
+    <div class="hero__orb hero__orb--3" aria-hidden="true"></div>
+    <!-- aria-hidden="true" = elemen dekoratif, disembunyikan dari screen reader -->
+
+    <div class="hero__content">
+      <!-- Pembungkus konten teks hero yang berada di tengah -->
+
+      <div class="hero__badge">
+        <i class="fa-solid fa-location-dot"></i>
+        Jakarta, Indonesia — Since 2018
+      </div>
+      <!-- Badge kecil di atas judul, memberikan konteks lokasi & tahun berdiri -->
+
+      <h1 class="hero__title">
+        <!-- <h1> = heading terpenting di halaman, hanya boleh ada SATU per halaman (SEO) -->
+        Jadwal &amp; Lokasi<br />
+        <span class="hero__title--accent">Latihan Pushbike</span>
+        <!-- <br /> = line break, pindah baris -->
+        <!-- span dengan class accent untuk warna highlight merah/oranye logo PBJ -->
+      </h1>
+
+      <p class="hero__subtitle">
+        <!-- <p> = paragraf teks biasa -->
+        Temukan sesi latihan <em>balance bike</em> terdekat untuk buah hati Anda.
+        <!-- <em> = emphasis/penekanan, secara visual biasanya miring (italic) -->
+        Komunitas non-profit untuk anak usia <strong>2–7 tahun</strong> di Jakarta.
+        <!-- <strong> = teks penting/tebal (bold) -->
+      </p>
+
+      <div class="hero__cta-group">
+        <!-- Grup tombol CTA (Call-to-Action) -->
+        <a href="#schedule" class="btn btn--primary">
+          <i class="fa-solid fa-calendar-days"></i>
+          Lihat Jadwal
+        </a>
+        <!-- btn--primary = tombol utama dengan warna accent penuh -->
+        <a href="#map" class="btn btn--ghost">
+          <i class="fa-solid fa-map-location-dot"></i>
+          Cek Lokasi
+        </a>
+        <!-- btn--ghost = tombol outline transparan -->
+      </div>
+
+      <!-- Statistik singkat komunitas -->
+      <div class="hero__stats">
+        <div class="stat-item">
+          <span class="stat-number">6+</span>
+          <span class="stat-label">Lokasi Latihan</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item">
+          <span class="stat-number">200+</span>
+          <span class="stat-label">Member Aktif</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item">
+          <span class="stat-number">2018</span>
+          <span class="stat-label">Tahun Berdiri</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gambar dekoratif kanan (hanya tampil di desktop) -->
+    <div class="hero__visual" aria-hidden="true">
+      <div class="floating-card fc--1">
+        <i class="fa-solid fa-trophy"></i>
+        <span>Prestasi Nasional</span>
+      </div>
+      <div class="floating-card fc--2">
+        <i class="fa-solid fa-child-reaching"></i>
+        <span>Anak Mandiri</span>
+      </div>
+      <div class="floating-card fc--3">
+        <i class="fa-solid fa-heart"></i>
+        <span>Komunitas Solid</span>
+      </div>
+      <!-- Kartu-kartu mengambang yang beranimasi naik-turun (efek 3D dikontrol CSS) -->
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCHEDULE SECTION — Kartu jadwal latihan per lokasi
+       ============================================================ -->
+  <section class="schedule" id="schedule">
+    <div class="container">
+      <!-- .container = class CSS untuk membatasi lebar konten dan posisi tengah -->
+
+      <!-- Header Section -->
+      <div class="section-header">
+        <div class="section-badge">
+          <i class="fa-solid fa-calendar-days"></i> Jadwal Rutin
+        </div>
+        <h2 class="section-title">Pushbike Training Locations</h2>
+        <!-- <h2> = heading level 2, digunakan untuk judul section (di bawah h1) -->
+        <p class="section-subtitle">
+          Pilih lokasi terdekat dari rumah Anda. Semua jadwal sudah dikonfirmasi tim pengurus PBJ.
+        </p>
+      </div>
+
+      <!-- Filter Hari (Tombol Filter) -->
+      <div class="filter-bar" role="group" aria-label="Filter jadwal berdasarkan hari">
+        <!-- data-filter harus sama persis dengan nilai 'hari' di jadwalData di schedule.js -->
+        <button class="filter-btn filter-btn--active" data-filter="all">Semua</button>
+        <button class="filter-btn" data-filter="Selasa">
+          <i class="fa-solid fa-moon"></i> Selasa Malam
+        </button>
+        <button class="filter-btn" data-filter="Jumat">
+          <i class="fa-solid fa-star-and-crescent"></i> Jumat Malam
+        </button>
+        <button class="filter-btn" data-filter="Minggu">
+          <i class="fa-solid fa-sun"></i> Minggu Pagi
+        </button>
+        <button class="filter-btn" data-filter="Event">
+          <i class="fa-solid fa-trophy"></i> Event / JIS
+        </button>
+      </div>
+
+      <!-- Grid Kartu Jadwal -->
+      <div class="schedule-grid" id="scheduleGrid">
+        <!-- Kartu akan di-render oleh JavaScript (scheduleData dari schedule.js) -->
+        <!-- Struktur kartu dihasilkan dinamis agar mudah diubah data tanpa edit HTML -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       MAP SECTION — Peta interaktif lokasi latihan
+       ============================================================ -->
+  <section class="map-section" id="map">
+    <div class="container">
+
+      <div class="section-header">
+        <div class="section-badge">
+          <i class="fa-solid fa-map-location-dot"></i> Peta Lokasi
+        </div>
+        <h2 class="section-title">Temukan Kami di Jakarta</h2>
+        <p class="section-subtitle">
+          Klik marker di peta untuk melihat detail lokasi dan jadwal latihan.
+        </p>
+      </div>
+
+      <!-- Layout dua kolom: Peta (kiri) + Sidebar daftar lokasi (kanan) -->
+      <div class="map-layout">
+
+        <!-- Kontainer Peta Leaflet -->
+        <div class="map-wrapper">
+          <div id="leafletMap" class="leaflet-map" aria-label="Peta lokasi latihan Pushbike Jakarta">
+            <!-- id="leafletMap" = digunakan JavaScript (Leaflet) untuk menginisialisasi peta di sini -->
+            <!-- Isi div ini akan digantikan oleh peta interaktif saat JavaScript berjalan -->
+          </div>
+        </div>
+
+        <!-- Sidebar Daftar Lokasi (Glassmorphism effect) -->
+        <aside class="location-sidebar" aria-label="Daftar lokasi latihan">
+          <!-- <aside> = konten pendukung/samping yang berkaitan dengan konten utama (peta) -->
+          <h3 class="sidebar-title">
+            <i class="fa-solid fa-list-check"></i> Lokasi Latihan
+          </h3>
+          <div class="location-list" id="locationList">
+            <!-- Daftar lokasi di-render oleh JavaScript dari data schedule.js -->
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       INFO SECTION — Visi, Misi, dan informasi umum PBJ
+       ============================================================ -->
+  <section class="info-section" id="info">
+    <div class="container">
+
+      <div class="section-header">
+        <div class="section-badge">
+          <i class="fa-solid fa-circle-info"></i> Tentang PBJ
+        </div>
+        <h2 class="section-title">Kenapa PBJ?</h2>
+        <p class="section-subtitle">
+          Lebih dari sekadar komunitas, kami adalah keluarga yang mendorong potensi anak.
+        </p>
+      </div>
+
+      <!-- Grid 3 kolom info card -->
+      <div class="info-grid">
+
+        <div class="info-card">
+          <div class="info-card__icon">
+            <i class="fa-solid fa-eye"></i>
+          </div>
+          <h3 class="info-card__title">Visi</h3>
+          <p class="info-card__text">
+            Kita bisa bersatu, kita jadi satu, kita menjadi besar dan dikenal semua kalangan pecinta Pushbike.
+          </p>
+        </div>
+        <!-- Setiap info-card adalah satu kartu dengan ikon, judul, dan teks deskripsi -->
+
+        <div class="info-card info-card--featured">
+          <!-- info-card--featured = kartu tengah dengan accent warna lebih kuat (modifier BEM) -->
+          <div class="info-card__icon">
+            <i class="fa-solid fa-bullseye"></i>
+          </div>
+          <h3 class="info-card__title">Misi</h3>
+          <p class="info-card__text">
+            Menjadikan anak-anak lebih mandiri, percaya diri, dan terlahir menjadi anak yang berprestasi sejak usia
+            dini.
+          </p>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card__icon">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <h3 class="info-card__title">Target</h3>
+          <p class="info-card__text">
+            Anak usia <strong>2 – 7 tahun</strong>. Komunitas terbuka untuk seluruh keluarga Mama dan Papa Racing di
+            Jakarta.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Info tentang balance bike / pushbike -->
+      <div class="about-pushbike">
+        <div class="about-pushbike__text">
+          <h3>Apa itu Pushbike / Balance Bike?</h3>
+          <p>
+            Pushbike atau <em>balance bike</em> adalah sepeda roda dua <strong>tanpa pedal, rantai, atau rem</strong>,
+            yang dirancang khusus untuk anak usia 18 bulan hingga 7 tahun. Anak belajar keseimbangan secara alami
+            dengan mengayuh menggunakan kaki langsung ke tanah.
+          </p>
+          <p>
+            Komunitas PBJ aktif membina dan meningkatkan prestasi anak-anak dalam beraktivitas maupun
+            berkompetisi di level lokal hingga nasional.
+          </p>
+        </div>
+        <div class="about-pushbike__badges">
+          <!-- Badge/tag fitur utama komunitas -->
+          <div class="feature-badge">
+            <i class="fa-solid fa-shield-halved"></i> Non-Profit
+          </div>
+          <div class="feature-badge">
+            <i class="fa-solid fa-child"></i> Usia 2–7 Tahun
+          </div>
+          <div class="feature-badge">
+            <i class="fa-solid fa-medal"></i> Kompetisi Nasional
+          </div>
+          <div class="feature-badge">
+            <i class="fa-solid fa-map-pin"></i> Area Jakarta
+          </div>
+          <div class="feature-badge">
+            <i class="fa-solid fa-calendar-check"></i> Latihan Rutin
+          </div>
+          <div class="feature-badge">
+            <i class="fa-solid fa-people-group"></i> Komunitas Solid
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PENGURUS SECTION — Susunan pengurus PBJ
+       ============================================================ -->
+  <section class="pengurus-section" id="pengurus">
+    <div class="container">
+
+      <div class="section-header">
+        <div class="section-badge">
+          <i class="fa-solid fa-id-badge"></i> Tim Kami
+        </div>
+        <h2 class="section-title">Susunan Pengurus PBJ</h2>
+        <p class="section-subtitle">
+          Digerakkan oleh para orang tua yang berdedikasi untuk masa depan anak-anak Indonesia.
+        </p>
+      </div>
+
+      <!-- Grid kartu pengurus -->
+      <div class="pengurus-grid" id="pengurusGrid">
+        <!-- Diisi oleh JavaScript dari data di schedule.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       REGISTER SECTION — Form pendaftaran member baru
+       ============================================================ -->
+  <section class="register-section" id="register">
+    <div class="container">
+
+      <!-- Latar dekoratif -->
+      <div class="register-orb register-orb--1" aria-hidden="true"></div>
+      <div class="register-orb register-orb--2" aria-hidden="true"></div>
+
+      <div class="register-wrapper">
+        <!-- Penjelasan di kiri -->
+        <div class="register-info">
+          <div class="section-badge">
+            <i class="fa-solid fa-user-plus"></i> Bergabung
+          </div>
+          <h2 class="register-title">Daftarkan Buah Hati Anda</h2>
+          <p class="register-desc">
+            Bergabunglah dengan lebih dari 200 keluarga PBJ. Gratis, tanpa syarat khusus —
+            cukup semangat dan cinta terhadap si kecil.
+          </p>
+          <ul class="register-perks">
+            <!-- <ul> = unordered list (daftar tidak berurutan) -->
+            <li><i class="fa-solid fa-check"></i> Akses semua lokasi latihan</li>
+            <li><i class="fa-solid fa-check"></i> Info jadwal & event eksklusif</li>
+            <li><i class="fa-solid fa-check"></i> Komunitas orang tua yang suportif</li>
+            <li><i class="fa-solid fa-check"></i> Update kompetisi balap pushbike</li>
+          </ul>
+        </div>
+
+        <!-- Form di kanan -->
+        <form class="register-form" id="registerForm" novalidate>
+          <!-- <form> = elemen formulir HTML
+               novalidate = matikan validasi bawaan browser, kita pakai custom validasi JS -->
+
+          <h3 class="form-title">Formulir Pendaftaran</h3>
+
+          <div class="form-group">
+            <!-- .form-group = pembungkus label + input untuk layout yang rapi -->
+            <label for="parentName" class="form-label">Nama Orang Tua</label>
+            <!-- <label for="parentName"> = label yang terhubung ke input id="parentName"
+                 Klik label = fokus ke input (aksesibilitas & UX lebih baik) -->
+            <div class="input-wrapper">
+              <i class="fa-solid fa-user input-icon" aria-hidden="true"></i>
+              <input type="text" id="parentName" name="parentName" class="form-input"
+                placeholder="Nama lengkap Mama / Papa" required autocomplete="name" />
+              <!-- type="text" = input teks biasa
+                   required = wajib diisi (divalidasi oleh JS)
+                   autocomplete="name" = browser bisa auto-isi dari data tersimpan -->
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="childName" class="form-label">Nama Anak</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-child input-icon" aria-hidden="true"></i>
+              <input type="text" id="childName" name="childName" class="form-input"
+                placeholder="Nama panggilan si kecil" required autocomplete="off" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="childAge" class="form-label">Usia Anak</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-cake-candles input-icon" aria-hidden="true"></i>
+              <select id="childAge" name="childAge" class="form-input form-select" required>
+                <!-- <select> = dropdown pilihan -->
+                <option value="" disabled selected>Pilih usia anak</option>
+                <!-- disabled selected = placeholder default yang tidak bisa dipilih ulang -->
+                <option value="1">1 tahun</option>
+                <option value="2">2 tahun</option>
+                <option value="3">3 tahun</option>
+                <option value="4">4 tahun</option>
+                <option value="5">5 tahun</option>
+                <option value="6">6 tahun</option>
+                <option value="7">7 tahun</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone" class="form-label">Nomor WhatsApp</label>
+            <div class="input-wrapper">
+              <i class="fa-brands fa-whatsapp input-icon" aria-hidden="true"></i>
+              <input type="tel" id="phone" name="phone" class="form-input" placeholder="08xxxxxxxxxx" required
+                autocomplete="tel" inputmode="numeric" />
+              <!-- type="tel" = input nomor telepon (tampilkan numpad di HP)
+                   inputmode="numeric" = keyboard angka di perangkat mobile -->
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="preferredLocation" class="form-label">Lokasi Latihan Pilihan</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-location-dot input-icon" aria-hidden="true"></i>
+              <select id="preferredLocation" name="preferredLocation" class="form-input form-select" required>
+                <option value="" disabled selected>Pilih lokasi</option>
+                <!-- Opsi lokasi akan ditambahkan dinamis oleh JavaScript -->
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--full" id="submitBtn">
+            <!-- type="submit" = saat diklik, form akan di-submit (trigger event submit)
+                 btn--full = lebar penuh (100%) -->
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>Kirim Pendaftaran</span>
+          </button>
+
+          <p class="form-note">
+            <i class="fa-solid fa-lock"></i>
+            Data Anda aman dan hanya digunakan untuk keperluan komunitas PBJ.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER — Bagian bawah halaman
+       ============================================================ -->
+  <footer class="footer">
+    <div class="container">
+
+      <div class="footer-grid">
+
+        <!-- Kolom 1: Branding -->
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="assets/logo_PBJ.jpg" alt="Logo PBJ" class="logo-img logo-img--sm" width="36" height="36" />
+            <div>
+              <span class="footer-logo-text">PBJ</span>
+              <span class="footer-logo-sub">Pushbike Jakarta</span>
+            </div>
+          </div>
+          <p class="footer-tagline">
+            Komunitas balance bike non-profit untuk anak-anak Jakarta sejak 2018.
+            Dibuat dengan ❤️ oleh tim IT PBJ.
+          </p>
+          <!-- Ikon media sosial -->
+          <div class="footer-social">
+            <a href="#" class="social-link" aria-label="Instagram PBJ">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="#" class="social-link" aria-label="WhatsApp Grup PBJ">
+              <i class="fa-brands fa-whatsapp"></i>
+            </a>
+            <a href="#" class="social-link" aria-label="YouTube PBJ">
+              <i class="fa-brands fa-youtube"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Kolom 2: Link cepat -->
+        <div class="footer-links">
+          <h4 class="footer-links__title">Navigasi</h4>
+          <ul>
+            <li><a href="#schedule">Jadwal Latihan</a></li>
+            <li><a href="#map">Peta Lokasi</a></li>
+            <li><a href="#info">Tentang PBJ</a></li>
+            <li><a href="#pengurus">Pengurus</a></li>
+            <li><a href="#register">Daftar Member</a></li>
+          </ul>
+        </div>
+
+        <!-- Kolom 3: Kontak -->
+        <div class="footer-contact">
+          <h4 class="footer-links__title">Kontak</h4>
+          <ul>
+            <li>
+              <i class="fa-brands fa-whatsapp"></i>
+              <a href="https://wa.me/6281234567890">WhatsApp Sekretaris</a>
+              <!-- wa.me = link langsung buka WhatsApp dengan nomor yang ditentukan -->
+            </li>
+            <li>
+              <i class="fa-brands fa-instagram"></i>
+              <a href="https://instagram.com/pushbikejakarta">@pushbikejakarta</a>
+            </li>
+            <li>
+              <i class="fa-solid fa-location-dot"></i>
+              <span>Jabodetabek, Indonesia</span>
+            </li>
+          </ul>
+          <div class="footer-tech-badge">
+            <!-- Informasi tech stack yang digunakan, sesuai README.md -->
+            <span>Powered by</span>
+            <strong>Python Django</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Garis pemisah dan copyright -->
+      <div class="footer-bottom">
+        <hr class="footer-divider" />
+        <!-- <hr> = horizontal rule (garis pemisah) -->
+        <p class="footer-copy">
+          &copy; 2024 Pushbike Jakarta (PBJ). All rights reserved.
+          <!-- &copy; = HTML entity untuk simbol © (copyright) -->
+          Dibuat oleh <strong>Idaz</strong> — Divisi IT PBJ.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       MODAL SUKSES — Popup konfirmasi setelah form dikirim
+       ============================================================ -->
+  <div class="modal-overlay" id="successModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+    <!-- hidden = tersembunyi secara default, ditampilkan JS setelah form sukses
+         role="dialog" + aria-modal = aksesibilitas modal -->
+    <div class="modal-box">
+      <div class="modal-icon">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <h3 class="modal-title" id="modalTitle">WhatsApp Sudah Terbuka! 🚲</h3>
+      <p class="modal-text">
+        Pesan pendaftaran sudah otomatis terisi di WhatsApp Admin PBJ.
+        Cukup tekan <strong>Kirim</strong> — pengurus akan segera menghubungi Anda!
+      </p>
+      <button class="btn btn--primary" id="modalCloseBtn">Tutup</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       TOMBOL SCROLL TO TOP — Muncul saat scroll ke bawah
+       ============================================================ -->
+  <button class="scroll-top" id="scrollTopBtn" aria-label="Kembali ke atas" hidden>
+    <i class="fa-solid fa-chevron-up"></i>
+  </button>
+
+  <!-- ============================================================
+       DATA & LOGIKA JAVASCRIPT
+       ============================================================ -->
+  <script src="schedule.js"></script>
+  <!-- schedule.js = data jadwal, lokasi, pengurus + fungsi render kartu -->
+  <!-- Letakkan SEBELUM main.js agar data tersedia saat main.js dijalankan -->
+
+  <script src="main.js"></script>
+  <!-- main.js = logika utama: navbar, peta Leaflet, filter, form, modal, scroll -->
+  <!-- Letakkan di AKHIR body agar semua elemen HTML sudah ada saat script berjalan -->
+
+</body>
+
+</html>
