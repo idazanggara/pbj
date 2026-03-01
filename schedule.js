@@ -135,7 +135,7 @@ const pengurusData = [
     // 4 orang — semua ditampilkan dalam satu kartu jabatan
   },
   {
-    jabatan: "Divisi IT",
+    jabatan: "Tech",
     icon: "fa-solid fa-laptop-code",
     anggota: ["Idaz"]
   }
