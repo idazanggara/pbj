@@ -74,10 +74,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Membuat instance peta di elemen #leafletMap
   const map = L.map('leafletMap', {
-    center: [-6.2088, 106.8180], // Koordinat tengah Jakarta
-    zoom: 12,                  // Level zoom: 12 = view kota
-    zoomControl: true,                // Tampilkan tombol +/- zoom
-    scrollWheelZoom: true,                // Izinkan scroll wheel untuk zoom
+    center: lokasiData[0].koordinat, // Otomatis ikut koordinat venue utama (JIEP)
+    zoom: 16,                        // Zoom lebih dekat agar marker langsung terlihat
+    zoomControl: true,
+    scrollWheelZoom: true,
   })
 
   // Tile layer (gambar peta dasar) dari OpenStreetMap
@@ -193,6 +193,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Format: kode negara + nomor tanpa 0 di depan (contoh: 628123456789)
   const ADMIN_WA_NUMBER = '6285691530710'
 
+  // Auto-update semua link WA di halaman agar cukup ganti variabel di atas
+  const waAdminLink = document.getElementById('waAdminLink')
+  if (waAdminLink) waAdminLink.href = `https://wa.me/${ADMIN_WA_NUMBER}`
+
   const form = document.getElementById('registerForm')
   const submitBtn = document.getElementById('submitBtn')
   const successModal = document.getElementById('successModal')
@@ -275,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // toLocaleDateString('id-ID') = format tanggal Bahasa Indonesia
       // Contoh output: "Jumat, 28 Februari 2026"
       ``,
-      `_Pesan ini dikirim otomatis dari website PBJ._`,
+      `_Pesan ini dikirim otomatis dari website PUSHBIKE JAKARTA._`,
       `_Balas pesan ini untuk menghubungi calon member._`
     ].join('\n')
     // Array.join('\n') = gabungkan semua baris dengan newline

@@ -24,8 +24,8 @@ const lokasiData = [
     nama_tempat: "Jakarta International Equestrian Park",
     // Venue utama latihan rutin PBJ (Selasa, Jumat, Minggu)
     alamat: "Area Parkir Tengah, Jl. Pulomas, Pulo Gadung, Jakarta Timur",
-    koordinat: [-6.1855, 106.8698],
-    // Koordinat: Jakarta International Equestrian Park, Pulomas, Jakarta Timur
+    koordinat: [-6.1783360361615145, 106.88764015581783],
+    // Koordinat: Jakarta International Equestrian Park (verified), Jakarta Timur
     googleMapsUrl: "https://maps.app.goo.gl/8NE4wRdLytoG9gbN7"
     // Link resmi dari pengumuman grup WA PBJ
   },
@@ -34,7 +34,7 @@ const lokasiData = [
     nama_tempat: "Jakarta International Stadium (JIS)",
     // Venue event & kompetisi sesional PBJ
     alamat: "Jl. Sunter Jaya No.1, Tanjung Priok, Jakarta Utara",
-    koordinat: [-6.1282, 106.8572],
+    koordinat: [-6.125395980152184, 106.86048685340594],
     // Koordinat: JIS (Jakarta International Stadium), Tanjung Priok
     googleMapsUrl: "https://maps.google.com/?q=Jakarta+International+Stadium+JIS"
   }
@@ -56,8 +56,8 @@ const jadwalData = [
     // Latber malam rutin hari Selasa
     jam: "20:00 – 22:00 WIB",
     lokasi_id: 1,                           // JIEP Pulomas
-    keterangan: "Latber rutin malam | Dibuka untuk umum",
-    terbuka: true,                           // Boleh diikuti non-member
+    keterangan: "Latber rutin malam | Khusus member",
+    terbuka: false,                           // Boleh diikuti non-member
     icon: "fa-solid fa-moon"                 // Ikon bulan = sesi malam
   },
   {
@@ -76,7 +76,7 @@ const jadwalData = [
     // Latber pagi hari Minggu
     jam: "09:00 – 11:00 WIB",
     lokasi_id: 1,                           // JIEP Pulomas (sama)
-    keterangan: "Latber pagi | Dibuka untuk umum",
+    keterangan: "Latber rutin pagi | Dibuka untuk umum",
     terbuka: true,
     icon: "fa-solid fa-sun"                 // Ikon matahari = sesi pagi
   },
@@ -86,7 +86,7 @@ const jadwalData = [
     // Venue event & kompetisi sesional — jadwal menyesuaikan
     jam: "Menyesuaikan jadwal event",
     lokasi_id: 2,                           // Jakarta International Stadium (JIS)
-    keterangan: "Venue kompetisi & event sesional PBJ — pantau pengumuman grup WA",
+    keterangan: "Venue kompetisi & event sesional PBJ — pantau pengumuman grup WA atau bisa chat admin",
     terbuka: false,                          // Event tertentu membutuhkan pendaftaran
     icon: "fa-solid fa-trophy"
   }

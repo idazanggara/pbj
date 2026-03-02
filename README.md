@@ -18,7 +18,7 @@
 * [cite_start]**Bendahara:** 1. Alisha Amelia Dwi Putri, 2. Ameera Bilqis [cite: 6]
 * [cite_start]**Publikasi & Dokumentasi:** Ryan Antoni [cite: 6]
 * [cite_start]**Humas:** Rendy, Jefri, Dani, Bastian [cite: 6]
-* [cite_start]**IT:** Idaz [cite: 6]
+* [cite_start]**Tech:** Idaz [cite: 6]
 
 ## 🎯 Visi & Misi
 * [cite_start]**Visi:** Kita bisa bersatu, kita jadi satu, kita menjadi besar dan dikenal semua kalangan pecinta Pushbike[cite: 6].
