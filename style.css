@@ -620,8 +620,8 @@ body::after {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   font-size: 0.85rem;
-  margin-top: 80px;
-  margin-bottom: 80px;
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 .floating-card i {
   color: var(--clr-orange);
@@ -632,6 +632,7 @@ body::after {
 .fc--1 { animation: float 4s ease-in-out infinite; }
 .fc--2 { animation: float 4s ease-in-out infinite 1.3s; }
 .fc--3 { animation: float 4s ease-in-out infinite 2.6s; }
+.fc--4 { animation: float 4s ease-in-out infinite 3.9s; }
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
