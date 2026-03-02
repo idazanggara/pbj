@@ -15,15 +15,49 @@
        width=device-width = lebar halaman = lebar layar perangkat
        initial-scale=1.0 = tidak ada zoom awal saat halaman dibuka -->
 
+  <!-- ===== SEO — TITLE & META UTAMA ===== -->
+  <title>Pushbike Jakarta | Komunitas Pushbike , Runbike , Balance Bike & Sepeda Anak Jakarta #1</title>
+  <!-- Title: keyword utama di depan, max 60 karakter -->
+
   <meta name="description"
-    content="Jadwal dan lokasi latihan Pushbike Jakarta (PBJ) — komunitas Pushbike anak Jakarta sejak 2018." />
-  <!-- SEO: Deskripsi yang muncul di hasil pencarian Google (biasanya 150-160 karakter) -->
+    content="Pushbike Jakarta (PBJ) — komunitas balance bike & sepeda keseimbangan anak Jakarta sejak 2018. Jadwal latihan pushbike, lokasi latihan, daftar member. Cocok untuk anak usia 2–7 tahun. Gratis!" />
+  <!-- Meta description: 155 karakter, mengandung keyword utama -->
 
-  <meta name="author" content="IT PBJ — Idaz" />
-  <!-- Informasi pembuat halaman untuk metadata -->
+  <meta name="keywords"
+    content="pushbike, balance bike, sepeda keseimbangan, sepeda tanpa pedal, runbike, sepeda monyet, sepeda anak Jakarta, komunitas pushbike Jakarta, balance bike anak, pushbike Jakarta, latihan balance bike, komunitas sepeda anak, pushbike 2026, sepeda anak 2 tahun, balance bike Indonesia" />
 
-  <title>Pushbike Jakarta — Jadwal &amp; Lokasi Latihan</title>
-  <!-- Judul tab browser. &amp; adalah HTML entity untuk karakter "&" -->
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <!-- index = minta Google index halaman ini, follow = ikuti semua link -->
+
+  <meta name="author" content="Pushbike Jakarta — Tim Tech" />
+
+  <link rel="canonical" href="https://pbj-six.vercel.app/" />
+  <!-- Canonical: beritahu Google URL resmi halaman ini -->
+
+  <!-- ===== OPEN GRAPH (Facebook, WhatsApp, Telegram preview) ===== -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Pushbike Jakarta" />
+  <meta property="og:title" content="Pushbike Jakarta | Komunitas Balance Bike Anak Jakarta #1" />
+  <meta property="og:description"
+    content="Komunitas balance bike & pushbike anak Jakarta sejak 2018. Jadwal latihan, lokasi, & info pendaftaran member. Gratis untuk anak 2–7 tahun!" />
+  <meta property="og:url" content="https://pbj-six.vercel.app/" />
+  <meta property="og:image" content="https://pbj-six.vercel.app/assets/logo_PBJ.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="id_ID" />
+
+  <!-- ===== TWITTER / X CARD ===== -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Pushbike Jakarta | Komunitas Balance Bike Anak Jakarta" />
+  <meta name="twitter:description"
+    content="Komunitas balance bike & pushbike anak Jakarta sejak 2018. Jadwal latihan, lokasi, & pendaftaran gratis!" />
+  <meta name="twitter:image" content="https://pbj-six.vercel.app/assets/logo_PBJ.jpg" />
+
+  <!-- ===== GEO TAGS (SEO lokal Jakarta) ===== -->
+  <meta name="geo.region" content="ID-JK" />
+  <meta name="geo.placename" content="Jakarta, Indonesia" />
+  <meta name="geo.position" content="-6.1783;106.8876" />
+  <meta name="ICBM" content="-6.1783, 106.8876" />
 
   <!-- ===== FAVICON ===== -->
   <link rel="icon" type="image/x-icon" href="assets/favicon_io/favicon.ico" />
@@ -67,7 +101,117 @@
 
   <!-- ===== FONT AWESOME (Icon Library) ===== -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <!-- Font Awesome 6.5 — menyediakan ribuan ikon vektor siap pakai (fa-map-marker-alt, fa-calendar, dll.) -->
+  <!-- Font Awesome 6.5 — menyediakan ribuan ikon vektor siap pakai -->
+
+  <!-- ===== SCHEMA.ORG — STRUCTURED DATA (Rich Results Google) ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsClub",
+    "name": "Pushbike Jakarta",
+    "alternateName": ["PBJ", "Komunitas Pushbike Jakarta", "Balance Bike Jakarta"],
+    "description": "Komunitas balance bike dan pushbike anak-anak di Jakarta sejak 2018. Latihan rutin untuk anak usia 2–7 tahun setiap Selasa, Jumat, dan Minggu di Jakarta International Equestrian Park, Pulomas.",
+    "url": "https://pbj-six.vercel.app/",
+    "logo": "https://pbj-six.vercel.app/assets/logo_PBJ.jpg",
+    "image": "https://pbj-six.vercel.app/assets/logo_PBJ.jpg",
+    "foundingDate": "2018",
+    "sport": ["Balance Bike", "Pushbike", "Runbike", "Sepeda Keseimbangan"],
+    "email": "",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Jakarta International Equestrian Park, Jl. Pulomas",
+      "addressLocality": "Pulo Gadung",
+      "addressRegion": "Jakarta Timur",
+      "addressCountry": "ID"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -6.1783360361615145,
+      "longitude": 106.88764015581783
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": "Tuesday",
+        "opens": "20:00",
+        "closes": "22:00"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": "Friday",
+        "opens": "20:00",
+        "closes": "22:00"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": "Sunday",
+        "opens": "09:00",
+        "closes": "11:00"
+      }
+    ],
+    "sameAs": [
+      "https://www.instagram.com/pushbikejakarta"
+    ],
+    "keywords": "pushbike, balance bike, sepeda keseimbangan, sepeda tanpa pedal, runbike, sepeda monyet, komunitas sepeda anak Jakarta, balance bike Indonesia"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Apa itu balance bike / pushbike?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Balance bike (juga disebut pushbike, runbike, atau sepeda keseimbangan) adalah sepeda anak tanpa pedal dan tanpa rantai. Anak menggerakkannya dengan mengayuh menggunakan kaki langsung ke tanah. Sangat baik untuk melatih keseimbangan dan koordinasi anak usia 2–7 tahun."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Umur berapa anak bisa main balance bike / pushbike?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Balance bike cocok untuk anak mulai usia 18 bulan hingga 7 tahun. Komunitas Pushbike Jakarta (PBJ) membuka latihan untuk anak usia 2–7 tahun. Semakin dini anak mulai, semakin cepat mereka bisa bersepeda tanpa roda bantu."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Apa manfaat balance bike untuk balita?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Manfaat balance bike untuk balita antara lain: melatih keseimbangan dan koordinasi tubuh, meningkatkan kepercayaan diri, mengembangkan kemampuan motorik kasar, dan mempersiapkan anak untuk bersepeda roda dua tanpa roda bantu lebih cepat."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Berapa biaya mendaftar komunitas Pushbike Jakarta?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Pendaftaran komunitas Pushbike Jakarta (PBJ) GRATIS, tanpa syarat khusus. Cukup daftar via WhatsApp dan hadir di jadwal latihan. Latihan rutin diadakan setiap Selasa & Jumat malam (20:00–22:00) dan Minggu pagi (09:00–11:00) di JIEP Pulomas, Jakarta Timur."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Di mana lokasi latihan pushbike / balance bike di Jakarta?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Lokasi latihan utama Pushbike Jakarta adalah Jakarta International Equestrian Park (JIEP), Area Parkir Tengah, Jl. Pulomas, Pulo Gadung, Jakarta Timur. Lokasi event dan kompetisi di Jakarta International Stadium (JIS), Tanjung Priok, Jakarta Utara."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Apa bedanya balance bike dan sepeda roda tiga?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Balance bike (pushbike/runbike) mengajarkan anak keseimbangan secara alami karena tidak ada roda bantu — anak bertumpu pada kaki. Sepeda roda tiga membuat anak bergantung pada roda bantu sehingga transisi ke sepeda roda dua lebih lama. Anak yang belajar dengan balance bike biasanya bisa langsung naik sepeda roda dua tanpa roda bantu."
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>
@@ -540,6 +684,100 @@
             Data Anda aman dan hanya digunakan untuk keperluan komunitas Pushbike Jakarta.
           </p>
         </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FAQ SECTION — SEO & Rich Results Google
+       ============================================================ -->
+  <section class="section" id="faq" aria-labelledby="faq-title">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">
+          <i class="fa-solid fa-circle-question"></i> FAQ
+        </div>
+        <h2 class="section-title" id="faq-title">Pertanyaan Seputar<br />Balance Bike & Pushbike</h2>
+        <p class="section-subtitle">Semua yang perlu orang tua ketahui tentang <strong>balance bike</strong>,
+          <strong>pushbike</strong>, dan <strong>sepeda keseimbangan</strong> untuk anak.</p>
+      </div>
+
+      <div class="faq-list">
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            <i class="fa-solid fa-bicycle"></i>
+            Apa itu balance bike / pushbike / runbike?
+          </summary>
+          <div class="faq-answer">
+            <p><strong>Balance bike</strong> (juga disebut <strong>pushbike</strong>, <strong>runbike</strong>, atau
+              <strong>sepeda keseimbangan</strong> / <strong>sepeda tanpa pedal</strong>) adalah sepeda anak tanpa pedal
+              dan tanpa rantai. Anak menggerakkannya dengan mengayuh kaki langsung ke tanah — melatih keseimbangan dan
+              koordinasi secara alami. Di Jakarta, sering juga disebut <em>sepeda monyet</em>.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            <i class="fa-solid fa-child"></i>
+            Umur berapa anak bisa main balance bike / pushbike?
+          </summary>
+          <div class="faq-answer">
+            <p>Balance bike cocok untuk anak usia <strong>18 bulan hingga 7 tahun</strong>. Komunitas Pushbike Jakarta
+              (PBJ) membuka latihan untuk anak <strong>usia 2–7 tahun</strong>. Semakin dini mulai, semakin cepat anak
+              bisa bersepeda roda dua tanpa roda bantu.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            <i class="fa-solid fa-star"></i>
+            Apa manfaat balance bike untuk balita?
+          </summary>
+          <div class="faq-answer">
+            <p>Manfaat <strong>balance bike untuk balita</strong>: melatih keseimbangan & koordinasi, meningkatkan
+              kepercayaan diri, mengasah motorik kasar, dan mempersiapkan anak bersepeda roda dua tanpa roda bantu jauh
+              lebih cepat dibanding metode konvensional.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            <i class="fa-solid fa-scale-balanced"></i>
+            Apa bedanya balance bike dan sepeda roda tiga?
+          </summary>
+          <div class="faq-answer">
+            <p>Balance bike mengajarkan keseimbangan secara alami tanpa roda bantu. <strong>Sepeda roda tiga</strong>
+              membuat anak bergantung pada roda bantu sehingga transisi ke sepeda roda dua lebih lama. Anak yang belajar
+              dengan <strong>pushbike / balance bike</strong> biasanya langsung bisa naik sepeda roda dua tanpa roda
+              bantu.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            <i class="fa-solid fa-location-dot"></i>
+            Di mana lokasi latihan pushbike / balance bike di Jakarta?
+          </summary>
+          <div class="faq-answer">
+            <p>Latihan utama <strong>Pushbike Jakarta</strong> di <strong>Jakarta International Equestrian Park
+                (JIEP)</strong>, Jl. Pulomas, Pulo Gadung, Jakarta Timur — setiap Selasa & Jumat (20:00–22:00) dan
+              Minggu (09:00–11:00). Event & kompetisi di Jakarta International Stadium (JIS), Jakarta Utara.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            <i class="fa-solid fa-tag"></i>
+            Berapa biaya daftar komunitas Pushbike Jakarta?
+          </summary>
+          <div class="faq-answer">
+            <p>Pendaftaran komunitas <strong>Pushbike Jakarta (PBJ)</strong> <strong>GRATIS</strong>. Tidak ada syarat
+              khusus — cukup semangat dan cinta terhadap si kecil. Daftar via WhatsApp, lalu hadir di jadwal latihan.
+            </p>
+          </div>
+        </details>
+
       </div>
     </div>
   </section>

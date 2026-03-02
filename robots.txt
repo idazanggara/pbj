@@ -1,0 +1,8 @@
+# robots.txt — Pushbike Jakarta
+# Memberitahu crawler/bot mana yang boleh akses halaman ini
+
+User-agent: *
+Allow: /
+
+# Sitemap: lokasi file sitemap untuk mempercepat indexing Google
+Sitemap: https://pbj-six.vercel.app/sitemap.xml

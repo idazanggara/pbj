@@ -1403,6 +1403,89 @@ body::after {
 .scroll-top[hidden] { display: none; }
 
 /* ----------------------------------------------------------------
+   FAQ SECTION — SEO Accordion
+   ---------------------------------------------------------------- */
+#faq {
+  padding-top: calc(var(--section-py)); /* lebih jauh dari section di atasnya */
+  scroll-margin-top: 80px;
+}
+.faq-list {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,107,0,0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color var(--transition-normal);
+}
+
+.faq-item[open] {
+  border-color: rgba(255,107,0,0.5);
+}
+
+.faq-question {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 22px;
+  font-family: var(--font-racing);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--clr-text);
+  cursor: pointer;
+  list-style: none;
+  transition: color var(--transition-normal);
+  user-select: none;
+}
+
+.faq-question::-webkit-details-marker { display: none; }
+
+.faq-question i {
+  color: var(--clr-orange);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.faq-item[open] .faq-question {
+  color: var(--clr-orange);
+}
+
+.faq-question::after {
+  content: '+';
+  margin-left: auto;
+  font-size: 1.3rem;
+  color: var(--clr-orange);
+  transition: transform 0.3s ease;
+  line-height: 1;
+}
+
+.faq-item[open] .faq-question::after {
+  content: '−';
+}
+
+.faq-answer {
+  padding: 0 22px 18px;
+  color: var(--clr-text-dim);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  border-top: 1px solid rgba(255,107,0,0.1);
+  padding-top: 14px;
+}
+
+.faq-answer strong {
+  color: var(--clr-orange);
+  font-weight: 600;
+}
+
+/* ----------------------------------------------------------------
    MEDIA QUERIES
    ---------------------------------------------------------------- */
 @media (max-width: 1023px) {
@@ -1415,17 +1498,43 @@ body::after {
   .mobile-menu { display: flex; }
 
   .hero__cta-group { flex-direction: column; }
-  .hero__stats { gap: 16px; }
+  .hero__stats {
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 16px 18px;
+    width: 100%;
+  }
+  .hero__content { max-width: 100%; }
 
   .schedule-grid { grid-template-columns: 1fr; }
+
+  /* Pengurus: 1 kolom di semua HP */
+  .pengurus-grid { grid-template-columns: 1fr; }
+  .pengurus-card--multi { grid-column: span 1; }
 }
 
 @media (max-width: 480px) {
   .section-header { margin-bottom: 36px; }
   .filter-bar { gap: 6px; }
   .filter-btn { padding: 8px 16px; font-size: 0.75rem; }
-  .pengurus-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Pengurus: 1 kolom agar tidak ada yang terpotong */
+  .pengurus-grid { grid-template-columns: 1fr; }
+  .pengurus-card--multi { grid-column: span 1; }
+
   .register-form { padding: 24px 16px; }
+
+  /* Hero: pastikan konten tidak overflow */
+  .hero__content { max-width: 100%; padding-inline: 20px; }
+
+  /* Badge hero: nowrap agar tidak pecah-pecah */
+  .hero__badge { white-space: nowrap; font-size: 0.7rem; padding: 6px 12px; }
+
+  /* Title hero: kurangi sedikit ukuran di HP sempit */
+  .hero__title { font-size: clamp(2.4rem, 11vw, 3.2rem); }
+
+  /* Stats: ukuran angka lebih kecil */
+  .stat-number { font-size: 1.8rem; }
 }
 
 /* ----------------------------------------------------------------
