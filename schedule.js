@@ -332,3 +332,88 @@ function renderLocationList() {
     })
   }
 }
+
+/* ================================================================
+   5. DATA GALERI — Foto & Video kegiatan / prestasi PBJ
+   ----------------------------------------------------------------
+   CARA MENGISI (fleksibel — pilih salah satu penyimpanan):
+   - Foto  : isi `src` dengan path repo (mis. "assets/gallery/foto1.jpg")
+             ATAU URL Cloudinary/hosting lain.
+   - Video : isi `youtubeId` dengan ID video YouTube saja.
+             Contoh URL https://youtu.be/AbC123 → youtubeId: "AbC123"
+   - Biarkan `src`/`youtubeId` KOSONG untuk menampilkan kartu placeholder.
+   - tipe     : 'foto' | 'video'
+   - kategori : 'Latihan' | 'Lomba' | 'Prestasi'  (untuk filter)
+   - caption  : keterangan singkat di bawah gambar
+   ================================================================ */
+const galleryData = [
+  { tipe: 'foto',  kategori: 'Latihan',  src: '', caption: 'Latihan rutin di JIEP Pulomas' },
+  { tipe: 'video', kategori: 'Lomba',    src: '', youtubeId: '', caption: 'Cuplikan serunya race day' },
+  { tipe: 'foto',  kategori: 'Prestasi', src: '', caption: 'Podium juara anggota PBJ' },
+  { tipe: 'foto',  kategori: 'Latihan',  src: '', caption: 'Kebersamaan Mama & Papa Racing' },
+  { tipe: 'foto',  kategori: 'Lomba',    src: '', caption: 'Anak-anak beradu di lintasan' },
+  { tipe: 'video', kategori: 'Latihan',  src: '', youtubeId: '', caption: 'Tips latihan pertama' },
+]
+
+/**
+ * galleryIcon(item) — ikon untuk kartu placeholder (saat belum ada foto/video)
+ */
+function galleryIcon(item) {
+  if (item.tipe === 'video') return 'fa-solid fa-play'
+  const map = {
+    'Latihan': 'fa-solid fa-child-reaching',
+    'Lomba': 'fa-solid fa-flag-checkered',
+    'Prestasi': 'fa-solid fa-trophy'
+  }
+  return map[item.kategori] || 'fa-solid fa-image'
+}
+
+/**
+ * renderGallery(filter)
+ * Merender item galeri ke #galleryGrid.
+ * @param {string} filter - 'all' | 'Latihan' | 'Lomba' | 'Prestasi'
+ */
+function renderGallery(filter = 'all') {
+  const grid = document.getElementById('galleryGrid')
+  if (!grid) return
+
+  const items = filter === 'all'
+    ? galleryData
+    : galleryData.filter(g => g.kategori === filter)
+
+  if (items.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--clr-text-muted);">
+        <i class="fa-solid fa-camera-retro" style="font-size:2rem;margin-bottom:12px;display:block;"></i>
+        Belum ada dokumentasi untuk kategori ini.
+      </div>`
+    return
+  }
+
+  grid.innerHTML = items.map(item => {
+    const isVideo = item.tipe === 'video'
+    // Ada media asli? (foto punya src, video punya youtubeId)
+    const hasMedia = isVideo ? !!item.youtubeId : !!item.src
+    // Sumber untuk lightbox: youtubeId (video) atau src (foto)
+    const lightboxSrc = isVideo ? (item.youtubeId || '') : (item.src || '')
+
+    // Visual thumbnail: gambar asli, atau placeholder gradient bila kosong
+    const thumb = item.src
+      ? `<img src="${item.src}" alt="${item.caption}" loading="lazy" />`
+      : `<div class="gallery-placeholder"><i class="${galleryIcon(item)}"></i></div>`
+
+    const playOverlay = isVideo ? `<span class="gallery-play"><i class="fa-solid fa-play"></i></span>` : ''
+
+    return `
+      <figure class="gallery-item${hasMedia ? '' : ' gallery-item--placeholder'}"
+              data-type="${item.tipe}" data-src="${lightboxSrc}"
+              ${hasMedia ? 'role="button" tabindex="0" aria-label="Lihat ' + item.caption + '"' : ''}>
+        <div class="gallery-media">
+          ${thumb}
+          ${playOverlay}
+          <span class="gallery-tag">${item.kategori}</span>
+        </div>
+        <figcaption class="gallery-caption">${item.caption}</figcaption>
+      </figure>`
+  }).join('')
+}

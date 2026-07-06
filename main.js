@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderScheduleCards('all')   // Tampilkan semua kartu jadwal
   renderPengurusCards()        // Render kartu pengurus
   renderLocationList()         // Render list lokasi sidebar + opsi form
+  renderGallery('all')         // Render galeri foto & video
 
   /* ================================================================
      STEP 2: Navbar — Efek glassmorphism saat scroll
@@ -166,8 +167,8 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ================================================================
      STEP 5: Filter Jadwal — Tombol filter untuk menyaring kartu
      ================================================================ */
-  const filterBtns = document.querySelectorAll('.filter-btn')
-  // querySelectorAll() = ambil semua elemen yang cocok sebagai NodeList
+  const filterBtns = document.querySelectorAll('#schedule .filter-btn')
+  // Di-scope ke #schedule agar tidak menangkap tombol filter galeri (#galeri)
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -183,6 +184,71 @@ document.addEventListener('DOMContentLoaded', () => {
       // Panggil fungsi render dari schedule.js dengan filter yang dipilih
       renderScheduleCards(filter)
     })
+  })
+
+  /* ================================================================
+     STEP 5b: Galeri — Filter kategori + Lightbox foto/video
+     ================================================================ */
+  // Filter galeri (di-scope ke #galeri agar tidak bentrok dengan filter jadwal)
+  const galleryFilterBtns = document.querySelectorAll('#galeri .filter-btn')
+  galleryFilterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      galleryFilterBtns.forEach(b => b.classList.remove('filter-btn--active'))
+      btn.classList.add('filter-btn--active')
+      renderGallery(btn.dataset.filter)
+    })
+  })
+
+  // Lightbox — pratinjau foto (img) atau video (iframe YouTube) fullscreen
+  const lightbox = document.getElementById('lightbox')
+  const lightboxBody = document.getElementById('lightboxBody')
+  const lightboxClose = document.getElementById('lightboxClose')
+  const galleryGrid = document.getElementById('galleryGrid')
+
+  function openLightbox(type, src) {
+    if (!src) return // Item placeholder (belum ada media) tidak membuka apa-apa
+    if (type === 'video') {
+      // Embed YouTube; rel=0 = tidak menampilkan video channel lain di akhir
+      lightboxBody.innerHTML = `
+        <div class="lightbox-video">
+          <iframe src="https://www.youtube.com/embed/${src}?autoplay=1&rel=0"
+            title="Video Pushbike Jakarta" allowfullscreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+        </div>`
+    } else {
+      lightboxBody.innerHTML = `<img src="${src}" alt="Galeri Pushbike Jakarta" />`
+    }
+    lightbox.removeAttribute('hidden')
+    document.body.style.overflow = 'hidden'
+  }
+
+  function closeLightbox() {
+    lightbox.setAttribute('hidden', '')
+    lightboxBody.innerHTML = '' // Kosongkan agar video berhenti & hemat memori
+    document.body.style.overflow = ''
+  }
+
+  if (galleryGrid) {
+    galleryGrid.addEventListener('click', (e) => {
+      const fig = e.target.closest('.gallery-item')
+      if (!fig || fig.classList.contains('gallery-item--placeholder')) return
+      openLightbox(fig.dataset.type, fig.dataset.src)
+    })
+    // Aksesibilitas keyboard: Enter / Space membuka item yang difokus
+    galleryGrid.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return
+      const fig = e.target.closest('.gallery-item')
+      if (!fig || fig.classList.contains('gallery-item--placeholder')) return
+      e.preventDefault()
+      openLightbox(fig.dataset.type, fig.dataset.src)
+    })
+  }
+  if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox)
+  if (lightbox) {
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox() })
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox && !lightbox.hasAttribute('hidden')) closeLightbox()
   })
 
   /* ================================================================
@@ -376,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
      STEP 9: Intersection Observer — Animasi muncul saat scroll
      ================================================================ */
   const animatableElements = document.querySelectorAll(
-    '.schedule-card, .info-card, .pengurus-card, .feature-badge'
+    '.schedule-card, .info-card, .pengurus-card, .feature-badge, .impact-card, .safety-card, .gallery-item'
   )
 
   // IntersectionObserver = Web API native untuk memantau apakah elemen
@@ -403,6 +469,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // index * 0.05s = stagger delay: setiap kartu muncul 50ms setelah kartu sebelumnya
     observer.observe(el) // Mulai mengamati elemen ini
   })
+
+  // Update tahun copyright footer otomatis (tidak pernah usang)
+  const footerYear = document.getElementById('footerYear')
+  if (footerYear) footerYear.textContent = new Date().getFullYear()
 
   console.log('%c🚲 PBJ Website Loaded!', 'color:#e8002d;font-size:1.2rem;font-weight:bold;')
   // console.log dengan CSS formatting — pesan debug di Developer Tools (F12)

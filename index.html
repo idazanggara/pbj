@@ -247,7 +247,9 @@
         <!-- Link ke section #schedule (pakai anchor/hash link, smooth scroll diaktifkan via CSS) -->
         <a href="#map" class="nav-link">Lokasi</a>
         <a href="#info" class="nav-link">Info</a>
+        <a href="#manfaat" class="nav-link">Manfaat</a>
         <a href="#pengurus" class="nav-link">Pengurus</a>
+        <a href="#galeri" class="nav-link">Galeri</a>
         <a href="#register" class="nav-link nav-link--cta">Daftar Sekarang</a>
         <!-- nav-link--cta = CTA (Call-To-Action) tombol khusus warna accent -->
       </nav>
@@ -270,7 +272,9 @@
       <a href="#schedule" class="mobile-nav-link">Jadwal</a>
       <a href="#map" class="mobile-nav-link">Lokasi</a>
       <a href="#info" class="mobile-nav-link">Info</a>
+      <a href="#manfaat" class="mobile-nav-link">Manfaat</a>
       <a href="#pengurus" class="mobile-nav-link">Pengurus</a>
+      <a href="#galeri" class="mobile-nav-link">Galeri</a>
       <a href="#register" class="mobile-nav-link mobile-nav-link--cta">Daftar Sekarang</a>
     </div>
   </header>
@@ -298,10 +302,10 @@
 
       <h1 class="hero__title">
         <!-- <h1> = heading terpenting di halaman, hanya boleh ada SATU per halaman (SEO) -->
-        Jadwal &amp; Lokasi<br />
-        <span class="hero__title--accent">Latihan Pushbike</span>
-        <!-- <br /> = line break, pindah baris -->
-        <!-- span dengan class accent untuk warna highlight merah/oranye logo PBJ -->
+        <!-- Tiap kata satu baris agar ramping & tidak menutupi logo di background -->
+        Jadwal<br />
+        &amp; Lokasi<br />
+        <span class="hero__title--accent">Latihan<br />Pushbike</span>
       </h1>
 
       <p class="hero__subtitle">
@@ -548,6 +552,130 @@
   </section>
 
   <!-- ============================================================
+       MANFAAT SECTION — "Bukan Sekadar Mainan" (trust + bukti riset)
+       ============================================================ -->
+  <section class="benefit-section" id="manfaat">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">
+          <i class="fa-solid fa-heart-pulse"></i> Manfaat
+        </div>
+        <h2 class="section-title">Bukan Sekadar Mainan</h2>
+        <p class="section-subtitle">
+          Balance bike adalah alat tumbuh kembang yang direkomendasikan fisioterapis &amp; okupasi terapis anak —
+          melatih keseimbangan, motorik, dan rasa percaya diri sejak dini.
+        </p>
+      </div>
+
+      <!-- Angka bukti / impact band -->
+      <div class="impact-band">
+        <div class="impact-card">
+          <span class="impact-number">100%</span>
+          <span class="impact-label">
+            Anak balance bike berhasil naik sepeda roda dua tanpa roda bantu <em>(vs 75% roda bantu)</em>
+          </span>
+        </div>
+        <div class="impact-card">
+          <span class="impact-number">1,8<small> th</small></span>
+          <span class="impact-label">Lebih cepat bisa bersepeda mandiri dibanding metode roda bantu</span>
+        </div>
+        <div class="impact-card">
+          <span class="impact-number"><i class="fa-solid fa-user-doctor"></i></span>
+          <span class="impact-label">Direkomendasikan fisioterapis &amp; okupasi terapis anak untuk motorik &amp; keseimbangan</span>
+        </div>
+      </div>
+
+      <!-- Grid manfaat (memakai gaya info-card yang sudah ada) -->
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-card__icon"><i class="fa-solid fa-scale-balanced"></i></div>
+          <h3 class="info-card__title">Keseimbangan &amp; Motorik</h3>
+          <p class="info-card__text">
+            Melatih keseimbangan, koordinasi, tonus otot, dan kesadaran ruang — pondasi bersepeda yang dikuasai
+            lebih dulu, bukan ditunda.
+          </p>
+        </div>
+        <div class="info-card">
+          <div class="info-card__icon"><i class="fa-solid fa-shield-heart"></i></div>
+          <h3 class="info-card__title">Percaya Diri &amp; Mandiri</h3>
+          <p class="info-card__text">
+            Anak bisa menapak kaki untuk berhenti, jadi rasa takut jatuh berkurang. Keberhasilan kecil menumbuhkan
+            kepercayaan diri yang menular ke aktivitas lain.
+          </p>
+        </div>
+        <div class="info-card">
+          <div class="info-card__icon"><i class="fa-solid fa-children"></i></div>
+          <h3 class="info-card__title">Sosial &amp; Emosional</h3>
+          <p class="info-card__text">
+            Berlatih bersama teman sebaya melatih kemampuan sosial, sportivitas, dan ketahanan emosi — belajar
+            bangkit lagi setiap kali terjatuh.
+          </p>
+        </div>
+        <div class="info-card">
+          <div class="info-card__icon"><i class="fa-solid fa-brain"></i></div>
+          <h3 class="info-card__title">Fisik &amp; Kognitif</h3>
+          <p class="info-card__text">
+            Menumbuhkan kebiasaan aktif sejak dini, meningkatkan kebugaran, fokus, rentang perhatian, dan fungsi
+            otak anak.
+          </p>
+        </div>
+      </div>
+
+      <p class="source-note">
+        <i class="fa-solid fa-circle-check"></i>
+        Berdasarkan studi terkontrol tumbuh kembang anak &amp; rekomendasi terapis anak.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       KEAMANAN SECTION — Checklist perlengkapan wajib
+       ============================================================ -->
+  <section class="safety-section" id="keamanan">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">
+          <i class="fa-solid fa-shield-halved"></i> Keamanan
+        </div>
+        <h2 class="section-title">Keamanan Prioritas Kami</h2>
+        <p class="section-subtitle">
+          Sebelum meluncur, pastikan si kecil memakai perlengkapan wajib. Latihan PBJ selalu didampingi &amp;
+          di lokasi aman jauh dari lalu lintas.
+        </p>
+      </div>
+
+      <div class="safety-grid">
+        <div class="safety-card">
+          <div class="safety-card__icon"><i class="fa-solid fa-helmet-safety"></i></div>
+          <h3 class="safety-card__title">Helm Wajib</h3>
+          <p>
+            Wajib sejak luncuran pertama. Pilih standar CPSC/CE/SNI, pas di kepala — jarak alis ke helm cukup
+            1–2 jari, tali terpasang kencang.
+          </p>
+        </div>
+        <div class="safety-card">
+          <div class="safety-card__icon"><i class="fa-solid fa-hand-dots"></i></div>
+          <h3 class="safety-card__title">Pelindung Lutut &amp; Siku</h3>
+          <p>Berbantalan dengan tali lembut untuk mengurangi lecet saat terjatuh, tetap nyaman dipakai anak.</p>
+        </div>
+        <div class="safety-card">
+          <div class="safety-card__icon"><i class="fa-solid fa-shoe-prints"></i></div>
+          <h3 class="safety-card__title">Sepatu Tertutup</h3>
+          <p>Wajib sneakers. Sandal jepit, Crocs, atau nyeker dilarang — telapak kaki anak adalah remnya.</p>
+        </div>
+        <div class="safety-card">
+          <div class="safety-card__icon"><i class="fa-solid fa-people-roof"></i></div>
+          <h3 class="safety-card__title">Lokasi Aman &amp; Didampingi</h3>
+          <p>
+            Latihan di area tertutup (JIEP Pulomas) jauh dari lalu lintas, dengan pendampingan pengurus &amp;
+            sesama orang tua.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
        PENGURUS SECTION — Susunan pengurus PBJ
        ============================================================ -->
   <section class="pengurus-section" id="pengurus">
@@ -567,6 +695,40 @@
       <div class="pengurus-grid" id="pengurusGrid">
         <!-- Diisi oleh JavaScript dari data di schedule.js -->
       </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       GALERI SECTION — Dokumentasi foto & video kegiatan/prestasi
+       ============================================================ -->
+  <section class="gallery-section" id="galeri">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-badge">
+          <i class="fa-solid fa-images"></i> Galeri
+        </div>
+        <h2 class="section-title">Galeri Kegiatan &amp; Prestasi</h2>
+        <p class="section-subtitle">
+          Momen latihan, keseruan lomba, dan prestasi anak-anak Pushbike Jakarta.
+        </p>
+      </div>
+
+      <!-- Filter kategori galeri -->
+      <div class="filter-bar" role="group" aria-label="Filter galeri">
+        <button class="filter-btn filter-btn--active" data-filter="all">Semua</button>
+        <button class="filter-btn" data-filter="Latihan">
+          <i class="fa-solid fa-child-reaching"></i> Latihan
+        </button>
+        <button class="filter-btn" data-filter="Lomba">
+          <i class="fa-solid fa-flag-checkered"></i> Lomba
+        </button>
+        <button class="filter-btn" data-filter="Prestasi">
+          <i class="fa-solid fa-trophy"></i> Prestasi
+        </button>
+      </div>
+
+      <!-- Grid galeri (di-render oleh renderGallery di schedule.js) -->
+      <div class="gallery-grid" id="galleryGrid"></div>
     </div>
   </section>
 
@@ -859,7 +1021,7 @@
         <hr class="footer-divider" />
         <!-- <hr> = horizontal rule (garis pemisah) -->
         <p class="footer-copy">
-          &copy; 2024 Pushbike Jakarta (PBJ). All rights reserved.
+          &copy; <span id="footerYear">2026</span> Pushbike Jakarta (PBJ). All rights reserved.
           <!-- &copy; = HTML entity untuk simbol © (copyright) -->
           Dibuat oleh <strong>Idaz</strong> — Tech PBJ.
         </p>
@@ -883,6 +1045,18 @@
         Cukup tekan <strong>Kirim</strong> — pengurus akan segera menghubungi Anda!
       </p>
       <button class="btn btn--primary" id="modalCloseBtn">Tutup</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       LIGHTBOX — Pratinjau foto / video galeri (fullscreen)
+       ============================================================ -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Pratinjau galeri" hidden>
+    <button class="lightbox__close" id="lightboxClose" aria-label="Tutup pratinjau">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <div class="lightbox__body" id="lightboxBody">
+      <!-- Diisi JS: <img> untuk foto, atau <iframe> YouTube untuk video -->
     </div>
   </div>
 
