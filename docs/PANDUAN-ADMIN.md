@@ -285,6 +285,48 @@ Kemungkinan kunci API bermasalah. Hubungi tim tech, minta cek
 
 ---
 
+## Bagian H. Supaya Website Muncul di Google (WAJIB, sekali saja)
+
+Website baru **tidak otomatis muncul di Google**. Sebagus apa pun isinya,
+Google harus "berkenalan" dulu lewat Google Search Console. Tanpa langkah
+ini, mengetik "pushbike jakarta" di Google tidak akan menampilkan website.
+
+1. Buka [search.google.com/search-console](https://search.google.com/search-console),
+   login dengan akun Google PBJ.
+2. Klik **Add property** (Tambahkan properti), pilih tipe **URL prefix**,
+   isi alamat website lengkap: `https://pushbikejakarta.vercel.app/`
+   lalu klik **Continue**.
+3. Pilih metode verifikasi **HTML tag**. Google memberi satu baris kode
+   seperti `<meta name="google-site-verification" content="Abc123..." />`.
+   Salin baris itu, kirim ke tim tech untuk ditempel di `index.html`
+   (tempatnya sudah disiapkan, ada komentar penanda di bagian atas file).
+   Setelah kode terpasang dan website ter-deploy, kembali ke Search
+   Console dan klik **Verify**.
+4. Setelah terverifikasi, di menu kiri pilih **Sitemaps**, ketik
+   `sitemap.xml`, klik **Submit**.
+5. Terakhir, di kolom pencarian paling atas Search Console, tempel
+   `https://pushbikejakarta.vercel.app/` lalu tekan Enter, dan klik
+   **Request Indexing** (Minta Pengindeksan).
+
+**Kapan mulai muncul?** Biasanya beberapa hari sampai 2 minggu untuk
+pencarian nama ("pushbike jakarta"). Untuk kata kunci umum ("balance bike
+anak", "komunitas pushbike") butuh waktu lebih lama dan sangat terbantu oleh:
+
+- **Cantumkan link website di bio Instagram @pushbikejakarta** dan sebut
+  di postingan. Link dari akun aktif adalah sinyal kuat buat Google.
+- **Buat Google Business Profile** ([business.google.com](https://business.google.com))
+  untuk "Pushbike Jakarta" dengan lokasi JIEP Pulomas. Ini membuat PBJ
+  muncul di Google Maps dan pencarian lokal ("pushbike jakarta timur").
+- Minta komunitas lain / media yang meliput event mencantumkan link website.
+
+**Catatan pindah domain nanti** (mis. ke pushbikejakarta.org): jangan hanya
+ganti alamat. Minta tim tech mengganti semua URL di `index.html` (canonical,
+og:url, schema), `robots.txt`, dan `sitemap.xml`, memasang redirect dari
+domain lama, lalu daftarkan domain baru di Search Console dengan cara yang
+sama.
+
+---
+
 ## Lampiran: Mengganti Feed Instagram ke Akun PBJ
 
 Saat ini feed Instagram di website masih memakai data percobaan. Untuk

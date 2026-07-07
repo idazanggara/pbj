@@ -16,8 +16,8 @@
        initial-scale=1.0 = tidak ada zoom awal saat halaman dibuka -->
 
   <!-- ===== SEO — TITLE & META UTAMA ===== -->
-  <title>Pushbike Jakarta | Komunitas Pushbike , Runbike , Balance Bike & Sepeda Anak Jakarta #1</title>
-  <!-- Title: keyword utama di depan, max 60 karakter -->
+  <title>Pushbike Jakarta | Komunitas Pushbike, Runbike & Balance Bike Anak Jakarta</title>
+  <!-- Title: keyword utama di depan, nama brand paling awal -->
 
   <meta name="description"
     content="Pushbike Jakarta (PBJ), komunitas balance bike & sepeda keseimbangan anak Jakarta sejak 2018. Jadwal latihan pushbike, lokasi latihan, daftar member. Cocok untuk anak usia 2–7 tahun. Pendaftaran gratis!" />
@@ -29,9 +29,14 @@
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <!-- index = minta Google index halaman ini, follow = ikuti semua link -->
 
+  <!-- ⬇️ VERIFIKASI GOOGLE SEARCH CONSOLE: setelah mendaftar di
+       search.google.com/search-console (metode "HTML tag"), tempel meta
+       tag verifikasi yang diberikan Google TEPAT DI BAWAH komentar ini.
+       Contoh: <meta name="google-site-verification" content="kode..." /> -->
+
   <meta name="author" content="Pushbike Jakarta, Tim Tech" />
 
-  <link rel="canonical" href="https://pbj-six.vercel.app/" />
+  <link rel="canonical" href="https://pushbikejakarta.vercel.app/" />
   <!-- Canonical: beritahu Google URL resmi halaman ini -->
 
   <!-- ===== OPEN GRAPH (Facebook, WhatsApp, Telegram preview) ===== -->
@@ -40,8 +45,8 @@
   <meta property="og:title" content="Pushbike Jakarta | Komunitas Balance Bike Anak Jakarta #1" />
   <meta property="og:description"
     content="Komunitas balance bike & pushbike anak Jakarta sejak 2018. Jadwal latihan, lokasi, & info pendaftaran member. Pendaftaran gratis untuk anak 2–7 tahun!" />
-  <meta property="og:url" content="https://pbj-six.vercel.app/" />
-  <meta property="og:image" content="https://pbj-six.vercel.app/assets/logo_PBJ.jpg" />
+  <meta property="og:url" content="https://pushbikejakarta.vercel.app/" />
+  <meta property="og:image" content="https://pushbikejakarta.vercel.app/assets/logo_PBJ.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:locale" content="id_ID" />
@@ -51,7 +56,7 @@
   <meta name="twitter:title" content="Pushbike Jakarta | Komunitas Balance Bike Anak Jakarta" />
   <meta name="twitter:description"
     content="Komunitas balance bike & pushbike anak Jakarta sejak 2018. Jadwal latihan, lokasi, & pendaftaran gratis!" />
-  <meta name="twitter:image" content="https://pbj-six.vercel.app/assets/logo_PBJ.jpg" />
+  <meta name="twitter:image" content="https://pushbikejakarta.vercel.app/assets/logo_PBJ.jpg" />
 
   <!-- ===== GEO TAGS (SEO lokal Jakarta) ===== -->
   <meta name="geo.region" content="ID-JK" />
@@ -106,6 +111,17 @@
   <!-- Font Awesome 6.5 — menyediakan ribuan ikon vektor siap pakai -->
 
   <!-- ===== SCHEMA.ORG — STRUCTURED DATA (Rich Results Google) ===== -->
+  <!-- WebSite: membantu Google mengenali & menampilkan nama situs -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Pushbike Jakarta",
+    "alternateName": ["PBJ", "Push Bike Jakarta"],
+    "url": "https://pushbikejakarta.vercel.app/"
+  }
+  </script>
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -113,9 +129,9 @@
     "name": "Pushbike Jakarta",
     "alternateName": ["PBJ", "Komunitas Pushbike Jakarta", "Balance Bike Jakarta"],
     "description": "Komunitas balance bike dan pushbike anak-anak di Jakarta sejak 2018. Latihan rutin untuk anak usia 2–7 tahun setiap Selasa, Jumat, dan Minggu di Jakarta International Equestrian Park, Pulomas.",
-    "url": "https://pbj-six.vercel.app/",
-    "logo": "https://pbj-six.vercel.app/assets/logo_PBJ.jpg",
-    "image": "https://pbj-six.vercel.app/assets/logo_PBJ.jpg",
+    "url": "https://pushbikejakarta.vercel.app/",
+    "logo": "https://pushbikejakarta.vercel.app/assets/logo_PBJ.jpg",
+    "image": "https://pushbikejakarta.vercel.app/assets/logo_PBJ.jpg",
     "foundingDate": "2018",
     "sport": ["Balance Bike", "Pushbike", "Runbike", "Sepeda Keseimbangan"],
     "email": "",
@@ -233,6 +249,14 @@
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "Harga balance bike anak bervariasi: model entry-level mulai dari ratusan ribu rupiah, sedangkan pushbike spek race (rangka ringan, bearing halus) bisa jutaan rupiah. Untuk anak yang baru mulai, sepeda entry-level yang ukurannya pas sudah lebih dari cukup."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Merek pushbike / balance bike apa saja yang biasa dipakai?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Merek yang populer di komunitas dan race pushbike Indonesia antara lain London Taxi, Strider, Papabike, Bike8, Rockfish, Gipsy, Xpush, dan Meroca. Semua merek itu bisa dipakai latihan maupun lomba di Pushbike Jakarta. Tidak ada keharusan merek tertentu: yang paling penting ukurannya pas dengan anak dan kondisinya aman. Untuk mulai, merek entry-level seperti London Taxi sudah sangat cukup; spek race bisa menyusul kalau si kecil mulai serius."
         }
       },
       {
@@ -1118,6 +1142,22 @@
               <strong>ratusan ribu rupiah</strong>, sedangkan pushbike spek race (rangka ringan, bearing halus) bisa
               <strong>jutaan rupiah</strong>. Untuk anak yang baru mulai, sepeda entry-level yang ukurannya pas sudah
               lebih dari cukup. Jangan biarkan harga jadi penghalang si kecil mencoba.</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">
+            <i class="fa-solid fa-bicycle"></i>
+            Merek pushbike / balance bike apa saja yang biasa dipakai?
+          </summary>
+          <div class="faq-answer">
+            <p>Merek yang populer di komunitas dan race pushbike Indonesia antara lain
+              <strong>London Taxi</strong>, <strong>Strider</strong>, <strong>Papabike</strong>,
+              <strong>Bike8</strong>, <strong>Rockfish</strong>, <strong>Gipsy</strong>,
+              <strong>Xpush</strong>, dan <strong>Meroca</strong>. Semua merek itu bisa dipakai latihan
+              maupun lomba di Pushbike Jakarta. Tidak ada keharusan merek tertentu: yang paling penting
+              ukurannya pas dengan anak dan kondisinya aman. Untuk mulai, merek entry-level seperti
+              London Taxi sudah sangat cukup; spek race bisa menyusul kalau si kecil mulai serius.</p>
           </div>
         </details>
 
