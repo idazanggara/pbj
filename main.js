@@ -72,6 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ================================================================
      STEP 4: Inisialisasi Peta Leaflet.js
      ================================================================ */
+  // try/catch: kalau CDN Leaflet gagal dimuat (L undefined), hanya petanya
+  // yang mati — form, galeri, dan interaksi lain tetap berfungsi
+  try {
 
   // Membuat instance peta di elemen #leafletMap
   const map = L.map('leafletMap', {
@@ -117,7 +120,13 @@ document.addEventListener('DOMContentLoaded', () => {
   lokasiData.forEach(loc => {
     // Ambil jadwal untuk lokasi ini
     const schedules = jadwalData.filter(j => j.lokasi_id === loc.id)
-    const jadwalText = schedules.map(j => `<strong>${j.hari}</strong> ${j.jam}`).join('<br>')
+    // Hari & jam dua kolom rata (memakai gaya .schedule-line yang sama
+    // dengan daftar lokasi di sidebar peta)
+    const jadwalText = schedules.map(j => `
+      <span class="schedule-line">
+        <strong class="schedule-line__day">${j.hari}</strong>
+        <span class="schedule-line__time">${j.jam}</span>
+      </span>`).join('')
 
     // Buat marker di koordinat lokasi dengan ikon kustom
     const marker = L.marker(loc.koordinat, { icon: pbjIcon })
@@ -164,6 +173,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (markers[id]) markers[id].openPopup()
   })
 
+  } catch (error) {
+    console.warn('Peta tidak dapat dimuat (CDN Leaflet bermasalah):', error)
+  }
+
   /* ================================================================
      STEP 5: Filter Jadwal — Tombol filter untuk menyaring kartu
      ================================================================ */
@@ -207,16 +220,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function openLightbox(type, src) {
     if (!src) return // Item placeholder (belum ada media) tidak membuka apa-apa
-    if (type === 'video') {
+    // src berasal dari atribut data-* (bisa berisi karakter apa pun),
+    // jadi JANGAN diinterpolasi mentah ke innerHTML: ID di-encode ke URL,
+    // dan foto dibuat lewat DOM API (src sebagai properti, bukan markup).
+    if (type === 'drive-video') {
+      // Video dari Google Drive: src = file ID → embed player preview Drive
+      lightboxBody.innerHTML = `
+        <div class="lightbox-video">
+          <iframe src="https://drive.google.com/file/d/${encodeURIComponent(src)}/preview"
+            title="Video Pushbike Jakarta" allowfullscreen
+            allow="autoplay; encrypted-media"></iframe>
+        </div>`
+    } else if (type === 'video') {
       // Embed YouTube; rel=0 = tidak menampilkan video channel lain di akhir
       lightboxBody.innerHTML = `
         <div class="lightbox-video">
-          <iframe src="https://www.youtube.com/embed/${src}?autoplay=1&rel=0"
+          <iframe src="https://www.youtube.com/embed/${encodeURIComponent(src)}?autoplay=1&rel=0"
             title="Video Pushbike Jakarta" allowfullscreen
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
         </div>`
     } else {
-      lightboxBody.innerHTML = `<img src="${src}" alt="Galeri Pushbike Jakarta" />`
+      const img = document.createElement('img')
+      img.src = src
+      img.alt = 'Galeri Pushbike Jakarta'
+      lightboxBody.replaceChildren(img)
     }
     lightbox.removeAttribute('hidden')
     document.body.style.overflow = 'hidden'
@@ -267,6 +294,27 @@ document.addEventListener('DOMContentLoaded', () => {
   const submitBtn = document.getElementById('submitBtn')
   const successModal = document.getElementById('successModal')
 
+  // --- ISI OPSI TAHUN KELAHIRAN ANAK ---
+  // Rentang mengikuti usia komunitas (1–7 tahun) dan otomatis
+  // menyesuaikan tahun berjalan, jadi tidak perlu diubah manual tiap tahun.
+  const birthYearSelect = document.getElementById('childBirthYear')
+  if (birthYearSelect) {
+    const USIA_MIN = 1
+    const USIA_MAX = 7
+    const tahunSekarang = new Date().getFullYear()
+
+    // +1 di batas akhir: anak berusia N tahun bisa lahir di tahun
+    // (sekarang - N) ATAU (sekarang - N - 1), tergantung bulan lahirnya.
+    // Contoh: Juli 2026, anak 7 tahun bisa lahir 2019 maupun Nov 2018.
+    for (let usia = USIA_MIN; usia <= USIA_MAX + 1; usia++) {
+      const tahunLahir = tahunSekarang - usia
+      const option = document.createElement('option')
+      option.value = tahunLahir
+      option.textContent = tahunLahir
+      birthYearSelect.appendChild(option)
+    }
+  }
+
   form.addEventListener('submit', (e) => {
     e.preventDefault() // Cegah reload halaman (default behavior form HTML)
 
@@ -311,6 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const namaOrtu = document.getElementById('parentName').value.trim()
     const namaAnak = document.getElementById('childName').value.trim()
     const usiaAnak = document.getElementById('childAge').value
+    const tahunLahirAnak = document.getElementById('childBirthYear').value
 
     // Ambil TEKS lokasi (bukan value/id-nya) dari option yang dipilih
     const lokasiEl = document.getElementById('preferredLocation')
@@ -335,6 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `👤 *Nama Orang Tua:* ${namaOrtu}`,
       `👶 *Nama Anak:* ${namaAnak}`,
       `🎂 *Usia Anak:* ${usiaAnak} tahun`,
+      `📆 *Tahun Kelahiran:* ${tahunLahirAnak}`,
       `📱 *Nomor WA:* ${phone}`,
       `📍 *Lokasi Latihan Pilihan:* ${namaLokasi}`,
       ``,
@@ -474,6 +524,5 @@ document.addEventListener('DOMContentLoaded', () => {
   const footerYear = document.getElementById('footerYear')
   if (footerYear) footerYear.textContent = new Date().getFullYear()
 
-  console.log('%c🚲 PBJ Website Loaded!', 'color:#e8002d;font-size:1.2rem;font-weight:bold;')
-  // console.log dengan CSS formatting — pesan debug di Developer Tools (F12)
+  // (Pesan debug console dihapus: tidak ada console.log di kode production)
 })
