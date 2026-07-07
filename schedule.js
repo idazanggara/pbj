@@ -26,8 +26,10 @@ const lokasiData = [
     alamat: "Area Parkir Tengah, Jl. Pulomas, Pulo Gadung, Jakarta Timur",
     koordinat: [-6.1783360361615145, 106.88764015581783],
     // Koordinat: Jakarta International Equestrian Park (verified), Jakarta Timur
-    googleMapsUrl: "https://maps.app.goo.gl/8NE4wRdLytoG9gbN7"
+    googleMapsUrl: "https://maps.app.goo.gl/8NE4wRdLytoG9gbN7",
     // Link resmi dari pengumuman grup WA PBJ
+    tersediaDiForm: true
+    // true = lokasi muncul sebagai pilihan di form pendaftaran
   },
   {
     id: 2,
@@ -36,7 +38,10 @@ const lokasiData = [
     alamat: "Jl. Sunter Jaya No.1, Tanjung Priok, Jakarta Utara",
     koordinat: [-6.125395980152184, 106.86048685340594],
     // Koordinat: JIS (Jakarta International Stadium), Tanjung Priok
-    googleMapsUrl: "https://maps.google.com/?q=Jakarta+International+Stadium+JIS"
+    googleMapsUrl: "https://maps.google.com/?q=Jakarta+International+Stadium+JIS",
+    tersediaDiForm: false
+    // Sementara disembunyikan dari form pendaftaran (hanya venue event).
+    // Ubah ke true kalau JIS dibuka sebagai pilihan lokasi latihan.
   }
 ]
 
@@ -86,7 +91,7 @@ const jadwalData = [
     // Venue event & kompetisi sesional — jadwal menyesuaikan
     jam: "Menyesuaikan jadwal event",
     lokasi_id: 2,                           // Jakarta International Stadium (JIS)
-    keterangan: "Venue kompetisi & event sesional PBJ — pantau pengumuman grup WA atau bisa chat admin",
+    keterangan: "Venue kompetisi & event sesional PBJ, pantau pengumuman grup WA atau bisa chat admin",
     terbuka: false,                          // Event tertentu membutuhkan pendaftaran
     icon: "fa-solid fa-trophy"
   }
@@ -137,7 +142,7 @@ const pengurusData = [
   {
     jabatan: "Tech",
     icon: "fa-solid fa-laptop-code",
-    anggota: ["Idaz"]
+    anggota: ["Idaz Anggara"]
   }
 ]
 
@@ -307,7 +312,13 @@ function renderLocationList() {
     list.innerHTML = lokasiData.map(loc => {
       // Ambil jadwal untuk lokasi ini
       const schedules = jadwalData.filter(j => j.lokasi_id === loc.id)
-      const jadwalText = schedules.map(j => `${j.hari} ${j.jam}`).join(' | ')
+      // Satu jadwal per baris, hari & jam dibuat dua kolom (lebar kolom hari
+      // tetap, diatur CSS .schedule-line__day) supaya jamnya rata kiri
+      const jadwalText = schedules.map(j => `
+        <span class="schedule-line">
+          <span class="schedule-line__day">${j.hari}</span>
+          <span class="schedule-line__time">${j.jam}</span>
+        </span>`).join('')
 
       return `
         <div class="location-item" data-lat="${loc.koordinat[0]}" data-lng="${loc.koordinat[1]}" data-id="${loc.id}">
@@ -322,9 +333,12 @@ function renderLocationList() {
     }).join('')
   }
 
-  // Isi opsi select form pendaftaran dengan nama-nama lokasi
+  // Isi opsi select form pendaftaran dengan nama-nama lokasi.
+  // Hanya lokasi yang secara EKSPLISIT diberi tersediaDiForm: false yang
+  // disembunyikan; lokasi baru tanpa flag otomatis ikut tampil (aman
+  // dari lupa menambahkan flag saat menyalin objek lokasi lama).
   if (select) {
-    lokasiData.forEach(loc => {
+    lokasiData.filter(loc => loc.tersediaDiForm !== false).forEach(loc => {
       const option = document.createElement('option') // Buat elemen <option> baru
       option.value = loc.id       // Value yang dikirim saat form submit
       option.textContent = loc.nama_tempat // Teks yang tampil

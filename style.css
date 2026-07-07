@@ -140,6 +140,11 @@ body::after {
 /* ----------------------------------------------------------------
    UTILITY CLASSES
    ---------------------------------------------------------------- */
+/* Atribut hidden HTML harus SELALU menang, termasuk atas elemen yang
+   punya display:flex/grid sendiri. Tanpa ini, elemen ber-atribut hidden
+   bisa tetap tampil (bug kelas ini pernah terjadi pada .view-toggle). */
+[hidden] { display: none !important; }
+
 .container {
   width: 100%;
   max-width: 1200px;
@@ -147,6 +152,14 @@ body::after {
   padding-inline: clamp(16px, 4vw, 48px);
   position: relative;
   z-index: 1;
+}
+
+/* Kerangka section generik: dipakai section baru (#events, #instagram,
+   #faq) lewat class="section" supaya jarak vertikal & offset anchor
+   terhadap navbar konsisten tanpa menyalin dua deklarasi ini. */
+.section {
+  padding-block: var(--section-py);
+  scroll-margin-top: 80px;
 }
 
 .section-header {
@@ -296,17 +309,14 @@ body::after {
 
 .logo-text {
   font-family: var(--font-racing);
-  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-size: clamp(1.05rem, 2vw, 1.4rem);
   font-weight: 900;
-  color: var(--clr-white);
+  /* Navy solid (warna logo & judul section), BUKAN gradient oranye:
+     gradient oranye tenggelam di latar krem/oranye sehingga sulit dibaca */
+  color: var(--clr-navy);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   line-height: 1;
-  /* Orange gradient text */
-  background: var(--gradient-orange);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .logo-sub {
@@ -404,7 +414,9 @@ body::after {
   position: relative;
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  /* flex-start = konten hero (badge dst.) mepet ke atas, tepat di bawah navbar
+     (tinggi navbar sudah di-reserve lewat padding-top di bawah) */
+  align-items: flex-start;
   overflow: hidden;
   padding-top: 75px;
   /* Background utama hero: banner branded PBJ (anak balance bike + skyline Jakarta) */
@@ -625,7 +637,10 @@ body::after {
   flex-direction: column; /* Added for vertical stacking */
   gap: 36px;
   position: absolute;
-  right: calc((100vw - 1200px) / 2); /* Aligned to the right edge of the content area */
+  /* max() = jarak dari kanan tidak pernah kurang dari 40px, jadi kartu
+     tidak terpotong di layar sempit (dulu bisa negatif saat layar <1200px).
+     +80px = digeser lebih ke kiri dari tepi konten di layar lebar. */
+  right: max(40px, calc((100vw - 1200px) / 2 + 80px));
   top: 50%;
   transform: translateY(-50%);
   z-index: 1;
@@ -906,6 +921,11 @@ body::after {
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+
+/* Baris jadwal dua kolom: kolom hari lebar tetap supaya jam rata kiri
+   (efek "tab": Selasa/Jumat/Minggu sejajar, jam-jam juga sejajar) */
+.schedule-line { display: flex; gap: 10px; }
+.schedule-line__day { flex: 0 0 62px; }
 
 .leaflet-popup-content-wrapper {
   background: var(--clr-bg-card) !important;
@@ -1194,7 +1214,6 @@ body::after {
   padding: 24px;
   animation: fadeIn 0.25s ease;
 }
-.lightbox[hidden] { display: none; }
 .lightbox__body { max-width: 960px; width: 100%; }
 .lightbox__body img {
   width: 100%; max-height: 82vh;
@@ -1224,39 +1243,35 @@ body::after {
    WATERMARK LOGO — Logo PBJ samar di tengah tiap section (selain hero)
    mix-blend-mode: multiply membuang latar PUTIH pada logo_PBJ.jpg,
    sehingga hanya bentuk logonya yang tampil sebagai watermark.
+
+   CARA PAKAI: cukup tambahkan class "has-watermark" pada tag <section>
+   di HTML. Tidak perlu mengedit CSS lagi untuk section baru.
    ---------------------------------------------------------------- */
-.schedule,
-.map-section,
-.info-section,
-.benefit-section,
-.safety-section,
-.pengurus-section,
-.gallery-section,
-.register-section,
-#faq {
+.has-watermark {
   position: relative;
 }
 
-.schedule::after,
-.map-section::after,
-.info-section::after,
-.benefit-section::after,
-.safety-section::after,
-.pengurus-section::after,
-.gallery-section::after,
-.register-section::after,
-#faq::after {
+.has-watermark::after {
   content: '';
   position: absolute;
   inset: 0;
   background-image: url('assets/logo_PBJ.jpg');
   background-repeat: no-repeat;
   background-position: center;
-  background-size: min(900px, 85%);
+  background-size: min(1300px, 105%);
   mix-blend-mode: multiply;   /* buang latar putih JPG → hanya logo tampil */
   opacity: 0.13;              /* watermark samar tapi terlihat */
   pointer-events: none;
   z-index: 0;                 /* di belakang .container (z-index:1) */
+}
+
+/* Watermark responsif: di layar kecil ukuran relatif dinaikkan supaya logo
+   tetap terlihat jelas (105% dari lebar HP terlalu kecil untuk section
+   yang tinggi). */
+@media (max-width: 1023px) {
+  .has-watermark::after {
+    background-size: min(700px, 165%);
+  }
 }
 
 /* ----------------------------------------------------------------
@@ -1611,7 +1626,6 @@ body::after {
   padding: 24px;
   animation: fadeIn 0.25s ease;
 }
-.modal-overlay[hidden] { display: none; }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -1665,15 +1679,11 @@ body::after {
   animation: slideUp 0.3s ease;
 }
 .scroll-top:hover { transform: translateY(-5px); box-shadow: 0 8px 36px rgba(255,107,0,0.7); }
-.scroll-top[hidden] { display: none; }
 
 /* ----------------------------------------------------------------
    FAQ SECTION — SEO Accordion
    ---------------------------------------------------------------- */
-#faq {
-  padding-top: calc(var(--section-py)); /* lebih jauh dari section di atasnya */
-  scroll-margin-top: 80px;
-}
+/* #faq memakai kerangka .section (padding & scroll-margin) */
 .faq-list {
   max-width: 800px;
   margin: 0 auto;
@@ -1833,6 +1843,305 @@ body::after {
 
   /* Stats: ukuran angka lebih kecil */
   .stat-number { font-size: 1.8rem; }
+}
+
+/* ----------------------------------------------------------------
+   GALERI GOOGLE DRIVE — toggle mode & kartu folder (gdrive-gallery.js)
+   ---------------------------------------------------------------- */
+/* Toggle "Kategori | Folder" di atas filter galeri */
+.view-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+/* (Perilaku hidden ditangani aturan global [hidden] di bagian atas file) */
+.view-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 20px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--clr-text-muted);
+  background: transparent;
+  border: 1px solid rgba(255, 107, 0, 0.35);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+/* Hover hanya untuk tombol NON-aktif; tombol aktif tetap putih di atas
+   oranye (kalau tidak, teksnya jadi oranye di latar oranye = "hilang") */
+.view-toggle-btn:not(.view-toggle-btn--active):hover { color: var(--clr-orange); }
+.view-toggle-btn--active,
+.view-toggle-btn--active:hover {
+  color: #fff;
+  background: var(--clr-orange);
+  border-color: var(--clr-orange);
+}
+
+/* Kartu folder pada mode "Folder" */
+.drive-folder-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 20px;
+  font: inherit;
+  border: 1px solid rgba(255, 107, 0, 0.25);
+  border-radius: var(--radius-md, 14px);
+  background: rgba(255, 107, 0, 0.06);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.drive-folder-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-glow); }
+.drive-folder-card__icon { font-size: 2.2rem; color: var(--clr-orange); }
+.drive-folder-card__name { font-weight: 700; color: var(--clr-text); }
+.drive-folder-card__count { font-size: 0.8rem; color: var(--clr-text-muted); }
+
+/* Header saat sebuah folder dibuka (tombol kembali + nama folder) */
+.drive-folder-header {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+.drive-folder-header__title {
+  font-weight: 700;
+  color: var(--clr-text);
+}
+.drive-folder-header__title i { color: var(--clr-orange); margin-right: 6px; }
+
+/* ----------------------------------------------------------------
+   EVENTS SECTION — Kalender event / race (events.js)
+   ---------------------------------------------------------------- */
+#events {
+  /* padding & scroll-margin dari kerangka .section */
+  background: var(--clr-bg-2);
+  /* Section selalu setinggi satu layar penuh, konten di tengah vertikal,
+     supaya tetap lapang meski event masih kosong (hanya kartu placeholder). */
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+#events .container { width: 100%; }
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  margin-inline: auto;
+}
+
+.event-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+  border-radius: var(--radius-md, 14px);
+  border: 1px solid rgba(255, 107, 0, 0.2);
+  background: var(--clr-bg);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.event-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-glow); }
+.event-card--done { opacity: 0.75; }
+
+.event-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.event-card__kategori {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--clr-orange);
+  background: rgba(255, 107, 0, 0.12);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+.event-card__status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #1a7f37;
+  background: rgba(26, 127, 55, 0.12);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+.event-card__status--done {
+  color: var(--clr-text-muted);
+  background: rgba(120, 120, 120, 0.12);
+}
+
+.event-card__title { font-size: 1.15rem; color: var(--clr-text); }
+
+.event-card__meta {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.88rem;
+  color: var(--clr-text-muted);
+}
+.event-card__meta i { color: var(--clr-orange); width: 18px; }
+
+.event-card__desc { font-size: 0.9rem; color: var(--clr-text-muted); line-height: 1.6; }
+
+.event-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: auto;
+}
+.event-card__btn { font-size: 0.82rem; padding: 9px 16px; }
+
+/* Placeholder saat data event belum dikonfigurasi */
+.events-fallback {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 96px 24px;
+  border: 1px dashed rgba(255, 107, 0, 0.4);
+  border-radius: var(--radius-md, 14px);
+  background: rgba(255, 107, 0, 0.05);
+}
+.events-fallback__icon { font-size: 2.2rem; color: var(--clr-orange); margin-bottom: 12px; }
+.events-fallback__title { font-weight: 700; color: var(--clr-text); margin-bottom: 6px; }
+.events-fallback__text { color: var(--clr-text-muted); font-size: 0.92rem; }
+.events-fallback__text a { color: var(--clr-orange); font-weight: 600; text-decoration: none; }
+.events-fallback__text a:hover { text-decoration: underline; }
+
+/* ----------------------------------------------------------------
+   FOOTER — link admin kecil (khusus pengurus)
+   ---------------------------------------------------------------- */
+.footer-admin-link {
+  margin-left: 12px;
+  font-size: 0.75rem;
+  color: var(--clr-text-muted);
+  opacity: 0.55;
+  text-decoration: none;
+}
+.footer-admin-link:hover { opacity: 1; color: var(--clr-orange); }
+
+/* Mobile: beri ruang ekstra di bawah copyright supaya link Admin tidak
+   tertutup tombol scroll-to-top yang melayang di kanan bawah */
+@media (max-width: 768px) {
+  .footer-bottom { padding-bottom: 72px; }
+}
+
+/* ----------------------------------------------------------------
+   INSTAGRAM SECTION — Grid postingan @pushbikejakarta (instagram.js)
+   ---------------------------------------------------------------- */
+.instagram-handle { color: var(--clr-orange); text-decoration: none; }
+.instagram-handle:hover { text-decoration: underline; }
+
+/* Jarak atas-bawah section standar (sama seperti Pengurus/Galeri) —
+   tanpa ini konten Instagram menempel ke section sebelumnya. */
+/* #instagram memakai kerangka .section (padding & scroll-margin) */
+
+/* Section Instagram memakai container lebih lebar dari section lain
+   supaya grid postingan terasa penuh di layar laptop/desktop. */
+#instagram .container { max-width: 1500px; }
+
+.instagram-grid {
+  /* Flex (bukan grid) supaya baris terakhir yang tidak penuh
+     otomatis rata tengah, tidak menggantung di kiri. */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  --ig-gap: 18px;
+  gap: var(--ig-gap);
+  margin-bottom: 40px;
+}
+
+/* Kartu postingan: rasio persegi seperti feed Instagram, 4 kolom di desktop */
+.instagram-card {
+  position: relative;
+  display: block;
+  width: calc((100% - 3 * var(--ig-gap)) / 4);
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-md, 14px);
+  overflow: hidden;
+  background: rgba(255, 107, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.instagram-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-glow); }
+.instagram-card:focus-visible { outline: 3px solid var(--clr-orange); outline-offset: 2px; }
+
+.instagram-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.instagram-card:hover img { transform: scale(1.06); }
+
+/* Overlay ikon IG saat hover */
+.instagram-card__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #fff;
+  background: rgba(255, 107, 0, 0.55);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.instagram-card:hover .instagram-card__overlay { opacity: 1; }
+
+/* Penanda video/reel di pojok kartu */
+.instagram-card__type {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 50%;
+}
+
+/* Kartu fallback saat feed belum dikonfigurasi */
+.instagram-fallback {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 48px 24px;
+  text-align: center;
+  text-decoration: none;
+  border: 1px dashed rgba(255, 107, 0, 0.4);
+  border-radius: var(--radius-md, 14px);
+  background: rgba(255, 107, 0, 0.06);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+.instagram-fallback:hover { transform: translateY(-4px); background: rgba(255, 107, 0, 0.12); }
+.instagram-fallback__icon { font-size: 2.4rem; color: var(--clr-orange); }
+.instagram-fallback__title { color: var(--clr-text); font-weight: 700; }
+.instagram-fallback__handle { color: var(--clr-orange); font-weight: 700; letter-spacing: 0.04em; }
+
+.instagram-cta { text-align: center; }
+
+/* Tablet: 3 kolom */
+@media (max-width: 1023px) {
+  .instagram-card { width: calc((100% - 2 * var(--ig-gap)) / 3); }
+}
+
+/* HP: 2 kolom dengan jarak lebih rapat */
+@media (max-width: 768px) {
+  .instagram-grid { --ig-gap: 12px; }
+  .instagram-card { width: calc((100% - var(--ig-gap)) / 2); }
 }
 
 /* ----------------------------------------------------------------

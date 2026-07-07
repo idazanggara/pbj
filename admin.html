@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Pushbike Jakarta</title>
+  <!-- Halaman internal pengurus: JANGAN diindeks mesin pencari -->
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="assets/favicon_io/favicon.ico" />
+  <link rel="stylesheet" href="style.css?v=8" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    /* Gaya khusus halaman admin (sederhana, satu halaman) */
+    .admin-page {
+      min-height: 100vh;
+      padding: 48px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--clr-bg);
+    }
+    .admin-box { width: 100%; max-width: 720px; }
+    .admin-title { font-size: 1.6rem; margin-bottom: 8px; color: var(--clr-text); }
+    .admin-subtitle { color: var(--clr-text-muted); margin-bottom: 28px; }
+    .admin-cards { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
+    .admin-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      border-radius: var(--radius-md, 14px);
+      border: 1px solid rgba(255, 107, 0, 0.25);
+      background: rgba(255, 107, 0, 0.06);
+      text-decoration: none;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .admin-card:hover { transform: translateY(-3px); background: rgba(255, 107, 0, 0.12); }
+    .admin-card--disabled { opacity: 0.55; pointer-events: none; }
+    .admin-card__icon { font-size: 1.6rem; color: var(--clr-orange); width: 40px; text-align: center; }
+    .admin-card__title { font-weight: 700; color: var(--clr-text); display: block; }
+    .admin-card__desc { color: var(--clr-text-muted); font-size: 0.88rem; }
+    .admin-note {
+      font-size: 0.85rem;
+      color: var(--clr-text-muted);
+      border-left: 3px solid var(--clr-orange);
+      padding-left: 14px;
+      line-height: 1.7;
+    }
+    .admin-back { display: inline-block; margin-top: 24px; color: var(--clr-orange); text-decoration: none; font-weight: 600; }
+    .admin-back:hover { text-decoration: underline; }
+  </style>
+</head>
+
+<body>
+  <main class="admin-page">
+    <div class="admin-box">
+      <h1 class="admin-title"><i class="fa-solid fa-user-gear"></i> Admin Pushbike Jakarta</h1>
+      <p class="admin-subtitle">
+        Pengelolaan konten dilakukan lewat Google Drive &amp; Google Sheets memakai
+        <strong>akun Google resmi PBJ</strong>, tanpa server dan tanpa login tambahan.
+        Keamanannya mengikuti akun Google itu sendiri: hanya yang punya akses edit yang bisa mengubah konten.
+      </p>
+
+      <div class="admin-cards" id="adminCards">
+        <!-- Kartu diisi oleh script di bawah, berdasarkan config.js -->
+      </div>
+
+      <p class="admin-note">
+        <strong>Cara kerja singkat:</strong><br />
+        • <strong>Galeri</strong>: upload foto/video ke subfolder kategori di folder Drive
+        (subfolder baru = kategori/filter baru di website).<br />
+        • <strong>Event</strong>: tambah/edit/hapus baris di Google Sheet
+        (kolom: Nama, Tanggal, Lokasi, Kategori, Deskripsi, LinkInfo, LinkMedia, Status).<br />
+        • Perubahan tampil otomatis di website tanpa menyentuh kode.<br />
+        • Panduan setup lengkap ada di komentar file <code>config.js</code>.
+      </p>
+
+      <a class="admin-back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Kembali ke website</a>
+    </div>
+  </main>
+
+  <!-- Versi ?v= HARUS sama dengan yang di index.html supaya kedua halaman
+       membaca config.js dari cache entry yang sama (tidak ada yang stale) -->
+  <script src="config.js?v=3"></script>
+  <script>
+    // Bangun kartu link pengelolaan dari config.js.
+    // Bila ID belum diisi, kartu tampil nonaktif dengan petunjuk setup.
+    const cardsEl = document.getElementById('adminCards')
+
+    // Guard: kalau config.js gagal dimuat, tampilkan kartu nonaktif
+    // dengan petunjuk, bukan halaman kosong karena ReferenceError
+    const isConfigLoaded = typeof adminDriveUrl === 'function'
+    const driveUrl = isConfigLoaded ? adminDriveUrl() : ''
+    const sheetUrl = isConfigLoaded ? adminSheetUrl() : ''
+
+    function cardHtml(href, icon, title, desc, isEnabled) {
+      const disabledClass = isEnabled ? '' : ' admin-card--disabled'
+      const target = isEnabled ? `href="${href}" target="_blank" rel="noopener"` : ''
+      return `
+        <a class="admin-card${disabledClass}" ${target}>
+          <span class="admin-card__icon"><i class="${icon}"></i></span>
+          <span>
+            <span class="admin-card__title">${title}</span>
+            <span class="admin-card__desc">${desc}</span>
+          </span>
+        </a>`
+    }
+
+    cardsEl.innerHTML = [
+      cardHtml(
+        driveUrl,
+        'fa-brands fa-google-drive',
+        'Kelola Galeri (Google Drive)',
+        driveUrl
+          ? 'Buka folder galeri: upload / hapus foto & video, atur subfolder kategori.'
+          : 'Belum dikonfigurasi: isi DRIVE_GALLERY_FOLDER_ID di config.js.',
+        Boolean(driveUrl)
+      ),
+      cardHtml(
+        sheetUrl,
+        'fa-solid fa-table-list',
+        'Kelola Event (Google Sheets)',
+        sheetUrl
+          ? 'Buka sheet event: tambah / edit / hapus baris event & race.'
+          : 'Belum dikonfigurasi: isi EVENTS_SHEET_ID di config.js.',
+        Boolean(sheetUrl)
+      )
+    ].join('')
+  </script>
+</body>
+
+</html>
