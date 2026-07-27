@@ -165,10 +165,13 @@ function renderEventsFallback(grid) {
 }
 
 /* ================================================================
-   MODAL DETAIL EVENT + EMBED INSTAGRAM (lazy-load)
+   MODAL DETAIL EVENT + EMBED INSTAGRAM (via iframe /embed)
    Kartu event yang LinkMedia-nya berupa post Instagram membuka modal
-   ini alih-alih pindah ke IG. Skrip embed.js Instagram HANYA dimuat saat
-   modal pertama kali dibuka (lazy) supaya tidak memberatkan halaman.
+   ini alih-alih pindah ke IG. Post ditampilkan lewat IFRAME resmi
+   Instagram (…/embed/captioned), BUKAN skrip embed.js — karena embed.js
+   hanya andal me-render post PERTAMA di halaman (post ke-2 dst. sering
+   gagal saat modal dipakai berulang). Iframe memuat tiap post mandiri,
+   dan tingginya disesuaikan otomatis lewat pesan "MEASURE" dari IG.
    ================================================================ */
 function setupEventModal(grid) {
   const modal = document.getElementById('eventModal')
@@ -192,6 +195,17 @@ function setupEventModal(grid) {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && modal.classList.contains('is-open')) closeEventModal()
   })
+
+  // Instagram /embed mengirim tinggi konten via postMessage; kita pakai untuk
+  // menyesuaikan tinggi iframe agar pas (tidak kepotong / tak ada ruang kosong).
+  window.addEventListener('message', (e) => {
+    if (e.origin !== 'https://www.instagram.com') return
+    let data
+    try { data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data } catch (_) { return }
+    if (!data || data.type !== 'MEASURE' || !data.details || !data.details.height) return
+    const iframe = modal.querySelector('.event-modal__iframe')
+    if (iframe) iframe.style.height = data.details.height + 'px'
+  })
 }
 
 function openEventModal({ postUrl, title, desc }) {
@@ -205,21 +219,23 @@ function openEventModal({ postUrl, title, desc }) {
 
   modal.querySelector('.event-modal__ig-link').href = postUrl
 
-  // Blockquote resmi Instagram; embed.js mengubahnya jadi post penuh.
-  // postUrl sudah dipastikan URL instagram.com/(p|reel|tv)/ sebelum sampai sini.
-  modal.querySelector('.event-modal__embed').innerHTML =
-    '<blockquote class="instagram-media" data-instgrm-captioned' +
-    ' data-instgrm-permalink="' + escapeAttr(postUrl) + '" data-instgrm-version="14"' +
-    ' style="margin:0 auto; max-width:540px; width:100%;"></blockquote>'
+  // IFRAME embed resmi Instagram (…/embed/captioned) — bukan skrip embed.js.
+  // postUrl sudah dipastikan URL instagram.com/(p|reel|tv)/ sebelum sampai sini;
+  // ambil tipe + id-nya, buang query string, lalu bangun URL /embed yang bersih.
+  const parts = postUrl.match(/instagram\.com\/(p|reel|tv)\/([\w-]+)/i)
+  const embedSrc = parts
+    ? `https://www.instagram.com/${parts[1]}/${parts[2]}/embed/captioned`
+    : ''
+  modal.querySelector('.event-modal__embed').innerHTML = embedSrc
+    ? `<iframe class="event-modal__iframe" src="${escapeAttr(embedSrc)}"
+         title="Postingan Instagram event" loading="lazy" scrolling="no"
+         allowtransparency="true" frameborder="0"></iframe>`
+    : ''
 
   modal.classList.add('is-open')
   modal.setAttribute('aria-hidden', 'false')
   document.body.style.overflow = 'hidden' // cegah scroll latar
   modal.querySelector('.event-modal__close').focus()
-
-  loadInstagramEmbedScript().then(() => {
-    if (window.instgrm && window.instgrm.embeds) window.instgrm.embeds.process()
-  })
 }
 
 function closeEventModal() {
@@ -230,31 +246,6 @@ function closeEventModal() {
   document.body.style.overflow = ''
   // Kosongkan embed supaya video/iframe IG berhenti & modal ringan lagi.
   modal.querySelector('.event-modal__embed').innerHTML = ''
-}
-
-/**
- * loadInstagramEmbedScript()
- * Memuat https://www.instagram.com/embed.js SEKALI saja, saat dibutuhkan.
- * Selalu resolve (termasuk saat gagal) supaya modal tetap tampil dengan
- * link fallback "Buka di Instagram".
- */
-function loadInstagramEmbedScript() {
-  return new Promise((resolve) => {
-    if (window.instgrm && window.instgrm.embeds) return resolve()
-    const existing = document.getElementById('ig-embed-js')
-    if (existing) {
-      existing.addEventListener('load', () => resolve(), { once: true })
-      existing.addEventListener('error', () => resolve(), { once: true })
-      return
-    }
-    const script = document.createElement('script')
-    script.id = 'ig-embed-js'
-    script.async = true
-    script.src = 'https://www.instagram.com/embed.js'
-    script.onload = () => resolve()
-    script.onerror = () => resolve()
-    document.body.appendChild(script)
-  })
 }
 
 /* escapeHtml/escapeAttr/normalizeHttpUrl dipakai dari config.js (helper bersama) */
