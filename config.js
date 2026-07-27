@@ -146,6 +146,31 @@ function isSafeHttpUrl(url) {
   return /^https?:\/\//i.test(url)
 }
 
+/**
+ * normalizeHttpUrl(raw)
+ * Mengubah URL "polos" dari admin menjadi URL http(s) yang aman, ATAU ''
+ * kalau tidak valid. Latar belakang: admin non-teknis sering menempel link
+ * TANPA "https://" (mis. "bit.ly/xxx" atau "www.instagram.com/..") — kalau
+ * langsung dipakai, isSafeHttpUrl menolaknya dan tombol/link malah hilang.
+ * Aturan:
+ *   - sudah diawali http:// atau https://        → dipakai apa adanya
+ *   - skema berbahaya (javascript:, data:, dst.)  → DITOLAK ('')
+ *   - tanpa skema tapi seperti domain ("bit.ly/x")→ ditambah "https://"
+ *   - selain itu (teks biasa tanpa domain)        → DITOLAK ('')
+ * Dengan begini kolom link di Google Sheet boleh diisi tanpa https:// dan
+ * tetap aman dari skema berbahaya.
+ */
+function normalizeHttpUrl(raw) {
+  const value = String(raw ?? '').trim()
+  if (!value) return ''
+  if (/^https?:\/\//i.test(value)) return value
+  // Skema yang tidak boleh jadi href tombol → tolak
+  if (/^(javascript|data|vbscript|file|mailto|tel|blob):/i.test(value)) return ''
+  // Tanpa skema tapi seperti domain (ada "titik-domain") → anggap https
+  if (/^[\w-]+(\.[\w-]+)+([/:?#]|$)/.test(value)) return 'https://' + value
+  return ''
+}
+
 /* ---------------- LINK ADMIN (dipakai admin.html) ----------------
    Link cepat menuju "dashboard" pengelolaan. Terisi otomatis dari ID
    di atas; tidak perlu diubah manual. */

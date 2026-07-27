@@ -1052,6 +1052,28 @@
   </section>
 
   <!-- ============================================================
+       MODAL DETAIL EVENT — menampilkan embed post Instagram (foto +
+       caption) tanpa keluar dari situs. Diisi & dibuka oleh events.js saat
+       tombol "Foto & Video" sebuah event (yang LinkMedia-nya post Instagram)
+       diklik. embed.js Instagram dimuat lazy oleh events.js.
+       ============================================================ -->
+  <div class="event-modal" id="eventModal" role="dialog" aria-modal="true"
+    aria-labelledby="eventModalTitle" aria-hidden="true">
+    <div class="event-modal__backdrop" data-close="1"></div>
+    <div class="event-modal__dialog" role="document">
+      <button class="event-modal__close" type="button" aria-label="Tutup" data-close="1">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <h3 class="event-modal__title" id="eventModalTitle"></h3>
+      <p class="event-modal__desc"></p>
+      <div class="event-modal__embed"></div>
+      <a class="event-modal__ig-link" href="#" target="_blank" rel="noopener">
+        <i class="fa-brands fa-instagram"></i> Buka di Instagram
+      </a>
+    </div>
+  </div>
+
+  <!-- ============================================================
        INSTAGRAM SECTION — Postingan terbaru @pushbikejakarta
        Grid diisi oleh instagram.js:
        - Jika feed URL (Behold) dikonfigurasi → postingan terbaru otomatis
