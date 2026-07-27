@@ -139,7 +139,7 @@
   <!-- ===== STYLESHEET UTAMA ===== -->
   <!-- ?v= = cache-busting: naikkan angkanya tiap kali style.css diubah
        supaya browser pengunjung tidak memakai versi lama dari cache -->
-  <link rel="stylesheet" href="style.css?v=12" />
+  <link rel="stylesheet" href="css/style.css?v=12" />
   <!-- Menghubungkan file CSS eksternal yang mengatur tampilan/design halaman ini -->
 
   <!-- ===== LEAFLET.JS (Library Peta Interaktif Open Source) ===== -->
@@ -1761,21 +1761,21 @@
        ============================================================ -->
   <!-- ?v= = cache-busting, naikkan angkanya tiap file JS diubah -->
   <!-- config.js = pusat konfigurasi Google Drive & Sheets (dimuat paling awal) -->
-  <script src="config.js?v=6"></script>
-  <script src="schedule.js?v=8"></script>
+  <script src="js/config.js?v=6"></script>
+  <script src="js/schedule.js?v=8"></script>
   <!-- gdrive-gallery.js = galeri dari Google Drive (mode Kategori & Per Latihan) -->
-  <script src="gdrive-gallery.js?v=4"></script>
+  <script src="js/gdrive-gallery.js?v=4"></script>
   <!-- gallery-sessions.js = galeri "Per Latihan" dari Google Sheets (dipanggil
        gdrive-gallery.js saat pengunjung klik toggle "Per Latihan") -->
-  <script src="gallery-sessions.js?v=1"></script>
+  <script src="js/gallery-sessions.js?v=1"></script>
   <!-- events.js = kalender event/race dari Google Sheets -->
-  <script src="events.js?v=7"></script>
+  <script src="js/events.js?v=7"></script>
   <!-- instagram.js = render feed Instagram @pushbikejakarta di #instagramGrid -->
-  <script src="instagram.js?v=4"></script>
+  <script src="js/instagram.js?v=4"></script>
   <!-- schedule.js = data jadwal, lokasi, pengurus + fungsi render kartu -->
   <!-- Letakkan SEBELUM main.js agar data tersedia saat main.js dijalankan -->
 
-  <script src="main.js?v=7"></script>
+  <script src="js/main.js?v=7"></script>
   <!-- main.js = logika utama: navbar, peta Leaflet, filter, form, modal, scroll -->
   <!-- Letakkan di AKHIR body agar semua elemen HTML sudah ada saat script berjalan -->
 

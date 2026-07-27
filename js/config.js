@@ -93,7 +93,7 @@ const GALLERY_SESSIONS_SHEET_ID = '1LOVfycAscUlDoIo9OUABnhhRYBYQr1_M_kjux6oESn8'
    SEMENTARA (TESTING): memakai file sample lokal berisi feed percobaan.
    Ganti dengan 'https://feeds.behold.so/...' saat siap production,
    atau kosongkan ('') untuk menampilkan kartu ajakan follow. */
-const INSTAGRAM_FEED_URL = 'instagram-feed-sample.json'
+const INSTAGRAM_FEED_URL = 'data/instagram-feed-sample.json'
 
 /* ================================================================
    HELPER BERSAMA
