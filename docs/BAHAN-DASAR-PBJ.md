@@ -58,20 +58,14 @@ Ini adalah amunisi utama untuk meyakinkan orang tua. Semuanya didukung sumber ah
 - **Patokan usia:** sekitar **18 bulan – 2 tahun**, begitu anak sudah **berjalan mandiri dengan stabil**. ([woom](https://woom.com/en_INT/when-is-the-right-time-for-a-balance-bike)) ([Milestones & Motherhood — Pediatric PT](https://milestonesandmotherhood.com/a-pediatric-pts-thoughts-on-balance-bikes/))
 - Prinsip penting: **"stages, not ages"** (tahapan, bukan sekadar umur). Tanda siap: sudah bisa jalan & lari mandiri, naik-turun sepeda sendiri, nyaman mendorong dengan kedua kaki, dan bisa berdiri satu kaki beberapa detik. ([woom](https://woom.com/en_US/3-signs-your-kiddo-is-ready-for-a-pedal-bike))
 
-### b. Memilih Ukuran (Usia vs Inseam vs Ukuran Ban)
+### b. Memilih Ukuran Sadel (Inseam, Bukan Usia)
 Kunci fit yang benar bukan hanya usia, tapi **inseam** (panjang selangkang: jarak dari pangkal paha dalam ke lantai) dibanding **tinggi sadel**.
 
 - **Aturan emas sadel:** untuk balance bike, tinggi sadel sebaiknya **0,5"–1,5" (±1–4 cm) DI BAWAH inseam** anak, supaya **kedua telapak kaki menapak rata** dengan lutut sedikit menekuk. Kalau anak berjinjit, dia tidak bisa berhenti dengan aman. ([Two Wheeling Tots](https://www.twowheelingtots.com/kids-bike-sizes-guide-a-new-trick-to-finding-the-best-fit/)) ([Retrospec](https://retrospec.com/blogs/gear-guides/balance-bike-safety-tips-for-parents))
 
-| Ukuran ban | Perkiraan usia | Inseam / tinggi anak (acuan) |
-|---|---|---|
-| **12"** | ±18 bln – 3,5 th | inseam ±25–37 cm, tinggi ±79–102 cm |
-| **14"** | ±3 – 4,5 th | anak yang lebih tinggi / mulai agak telat |
-| **16"** | ±4 – 6 th | biasanya sudah masuk sepeda pedal single-speed |
-
 > Selalu **cek langsung**: dudukkan anak, pastikan kedua kaki menapak rata. Prioritaskan inseam & pengalaman anak, bukan hanya usia. ([woom Sizing Guide](https://woom.com/en_US/tips-size))
 
-> **PENTING — Konteks PBJ / pushbike Indonesia:** Di komunitas & lomba pushbike Indonesia (termasuk PBJ), standar yang dipakai adalah **ban 12 inci untuk SEMUA usia** — kelas lomba dibedakan berdasarkan **usia / tahun kelahiran**, bukan ukuran ban. Tabel 12"/14"/16" di atas hanya acuan umum internasional (woom/Strider); JANGAN tampilkan variasi ukuran ban di website PBJ karena tidak relevan & bisa menyesatkan orang tua.
+> **PENTING — Konteks PBJ / pushbike Indonesia:** Di komunitas & lomba pushbike Indonesia (termasuk PBJ), standar yang dipakai adalah **ban 12 inci untuk SEMUA usia** — kelas lomba dibedakan berdasarkan **usia / tahun kelahiran**, bukan ukuran ban. Variasi ukuran ban 12"/14"/16" (umum di sepeda pedal internasional woom/Strider) TIDAK relevan untuk PBJ — JANGAN tampilkan kalkulator/tabel ukuran ban di website karena bisa menyesatkan orang tua.
 
 ### c. Perlengkapan Keamanan WAJIB
 - **Helm** yang pas — **wajib bahkan untuk luncuran pelan pertama**. Helm duduk rata di kepala, hanya **1–2 jari** jarak antara alis dan tepi bawah helm; tali terpasang kencang. ([Retrospec](https://retrospec.com/blogs/gear-guides/balance-bike-safety-tips-for-parents)) ([Seattle Children's](https://www.seattlechildrens.org/healthy-tides/bike-helmet-mistakes/))
@@ -131,7 +125,44 @@ Melatih **kemampuan sosial** anak lewat interaksi teman sebaya, mengembangkan **
 
 ---
 
-## 5. Trust Signals — Apa yang Membuat Orang Tua Percaya
+## 5. Fakta Operasional & Profil PBJ (Sumber Kebenaran untuk Copy Web)
+
+> Bab ini adalah rujukan tunggal untuk semua copy operasional (FAQ, About) di website PBJ.
+> Dikonfirmasi langsung oleh pemilik komunitas — kalau ada bagian lain di dokumen ini yang
+> bertentangan dengan bab ini, bab ini yang benar.
+
+### a. Fakta Operasional
+
+| Fakta | Nilai |
+|---|---|
+| Usia mulai | 2 tahun |
+| Usia transisi/pensiun | Sekitar 5–6 tahun, **banyak yang lanjut sampai 7–8 tahun**. Kelas race berdasarkan tahun kelahiran (bergeser tiap tahun — jangan hardcode tahun spesifik di copy statis). |
+| Sepeda | Balance bike / pushbike **12 inch**, merek bebas, dibawa sendiri |
+| Perlengkapan wajib | Helm, pelindung lutut (knee), pelindung siku (elbow), sepatu tertutup, celana panjang & kaos lengan panjang |
+| Trial | **Boleh**, tanpa harus jadi member |
+| Jadwal reguler | Selasa & Jumat 20.00–22.00, Minggu 09.00–11.00 — plus kelas privat (tambahan opsional untuk yang mengejar prestasi) |
+| Lokasi | **JIEP Pulomas** (Pacuan Kuda Pulomas) — satu tempat, dua sebutan; satu-satunya lokasi latihan |
+| Sedayu | Dulu ada, **sekarang sudah tidak** |
+| Biaya per kedatangan | Member Rp35.000 · Non-member Rp50.000 — **sudah termasuk susu** (selama persediaan hari itu) |
+| Biaya pendaftaran/formulir | **Tidak ada** |
+| Open member | Dibuka **2× setahun**, kuota terbatas, daftar via link di bio Instagram (linktr.ee). **Saat ini tutup sampai awal 2027.** |
+| Di luar masa open | Tetap boleh ikut latihan sebagai **non-member** Rp50.000/kedatangan |
+| Nominal biaya member | Sengaja **tidak ditulis** di web (berubah tiap sesi) → arahkan ke WhatsApp |
+| WA admin | `6285691530710` |
+
+**Skema member:** member baru & yang perpanjang di awal tahun mendapat jersey lengan panjang +
+celana panjang + baselayer (lebih mahal); yang perpanjang di tengah tahun mendapat baselayer
+saja (lebih murah). Catatan jujur: member baru yang mendaftar di sesi tengah tahun tetap
+mendapat baselayer dengan desain edisi awal tahun.
+
+### b. Profil & Sejarah
+
+Pushbike Jakarta (PBJ) berdiri sejak **2018**, didirikan oleh **Oky Pancen Hoki** ("Om Oky").
+Slogan komunitas: **"Hore Rame-Rame, Satu Sepeda Sejuta Sahabat."**
+
+---
+
+## 6. Trust Signals — Apa yang Membuat Orang Tua Percaya
 
 Orang tua menilai **keamanan + kredibilitas + bukti sosial**. Yang wajib ditonjolkan PBJ:
 
@@ -147,13 +178,13 @@ Orang tua menilai **keamanan + kredibilitas + bukti sosial**. Yang wajib ditonjo
 
 ---
 
-## 6. Rekomendasi Konkret untuk Website PBJ
+## 7. Rekomendasi Konkret untuk Website PBJ
 
-- **Hero** dengan CTA jelas: *"Coba Gratis Latihan Pertama"* / *"Daftar Anak Anda"* + foto anak asli (bukan stok).
+- **Hero** dengan CTA jelas: *"Ikut Latihan / Trial (Rp50.000, termasuk susu)"* / *"Daftar Jadi Member"* + foto anak asli (bukan stok).
 - **Bar bukti sosial**: "Berdiri sejak 2018 · X anggota aktif · Latihan tiap Minggu di JIEP Pulomas".
 - **Section "Bukan Sekadar Mainan"** — manfaat tumbuh kembang + kutipan riset (1,8 th lebih cepat; 100% success rate).
 - **Section keamanan** — checklist perlengkapan wajib + kebijakan keselamatan PBJ.
-- **Panduan ukuran interaktif** — kalkulator usia/tinggi/inseam → rekomendasi 12"/14"/16".
+- **Panduan ukuran sadel** — cara mengatur tinggi sadel sesuai inseam anak (PBJ pakai ban 12" untuk semua usia, bukan kalkulator ukuran ban).
 - **Galeri & testimoni** — video pendek orang tua + dokumentasi event.
 - **Halaman prestasi** — piala/medali anggota, foto podium.
 - **Jadwal & lokasi + CTA WhatsApp sticky** di mobile.
@@ -161,22 +192,22 @@ Orang tua menilai **keamanan + kredibilitas + bukti sosial**. Yang wajib ditonjo
 
 ---
 
-## 7. Keyword SEO (Bahasa Indonesia)
+## 8. Keyword SEO (Bahasa Indonesia)
 
 **Utama:** balance bike anak, pushbike anak, sepeda tanpa pedal anak, sepeda keseimbangan anak, runbike anak.
 **Lokal/komunitas:** komunitas pushbike Jakarta, balance bike Jakarta, latihan pushbike Pulomas, pushbike Jakarta Timur, klub balance bike anak Jakarta.
 **Edukasi/long-tail:** manfaat balance bike untuk anak, balance bike vs roda bantu, ukuran balance bike sesuai usia, umur berapa anak mulai balance bike, cara memilih balance bike anak, kapan anak pindah ke sepeda pedal.
 **Kompetisi:** lomba pushbike anak, pushbike race Jakarta, kejuaraan balance bike Indonesia, kelas usia pushbike race.
-**Transaksional/konversi:** daftar komunitas pushbike anak, kelas balance bike anak Jakarta, coba gratis balance bike anak.
+**Transaksional/konversi:** daftar komunitas pushbike anak, kelas balance bike anak Jakarta, trial latihan pushbike anak Jakarta.
 
 ---
 
-## 8. Ide Konten / Section Website
+## 9. Ide Konten / Section Website
 
 1. "Apa Itu Balance Bike?" — edukasi + video 30 detik.
 2. "5 Manfaat yang Didukung Riset" — infografik bersumber.
 3. "Balance Bike vs Roda Bantu vs Roda Tiga" — tabel perbandingan.
-4. "Panduan Ukuran & Usia" — kalkulator + tabel 12"/14"/16".
+4. "Panduan Ukuran & Usia" — cara mengatur tinggi sadel sesuai inseam anak.
 5. "Checklist Keamanan Wajib" — helm, pelindung, sepatu.
 6. "Latihan Pertama: Langkah demi Langkah".
 7. "Kapan Anak Siap Pindah ke Pedal?" — checklist.

@@ -105,11 +105,11 @@ function renderEvents(grid, events) {
       ? '<span class="event-card__status event-card__status--done">Selesai</span>'
       : '<span class="event-card__status">Akan Datang</span>'
 
-    const infoBtn = event.linkInfo && isSafeEventUrl(event.linkInfo)
+    const infoBtn = event.linkInfo && isSafeHttpUrl(event.linkInfo)
       ? `<a class="btn btn--primary event-card__btn" href="${escapeAttr(event.linkInfo)}" target="_blank" rel="noopener">
            <i class="fa-solid fa-circle-info"></i> Info & Daftar</a>`
       : ''
-    const mediaBtn = event.linkMedia && isSafeEventUrl(event.linkMedia)
+    const mediaBtn = event.linkMedia && isSafeHttpUrl(event.linkMedia)
       ? `<a class="btn btn--ghost event-card__btn" href="${escapeAttr(event.linkMedia)}" target="_blank" rel="noopener">
            <i class="fa-solid fa-photo-film"></i> Foto & Video</a>`
       : ''
@@ -145,13 +145,4 @@ function renderEventsFallback(grid) {
     </div>`
 }
 
-/* ================================================================
-   UTILITAS
-   ================================================================ */
-
-/** Hanya izinkan link http/https dari sheet (tolak javascript: dsb.). */
-function isSafeEventUrl(url) {
-  return /^https?:\/\//i.test(url)
-}
-
-/* escapeHtml/escapeAttr dipakai dari config.js (helper bersama) */
+/* escapeHtml/escapeAttr/isSafeHttpUrl dipakai dari config.js (helper bersama) */

@@ -5,9 +5,13 @@
    ================================================================ */
 
 /* ----------------------------------------------------------------
-   GOOGLE FONTS IMPORT
+   GOOGLE FONTS
+   Font (Inter, Space Grotesk, Barlow Condensed) di-load lewat SATU
+   <link> di <head> index.html. Dulu ada @import di sini juga yang
+   memuat font YANG SAMA — browser jadi request font dua kali (dobel
+   network round-trip, lebih lambat). Sudah dihapus; kalau butuh ganti
+   berat/keluarga font, edit <link> di index.html, bukan di sini.
    ---------------------------------------------------------------- */
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
 
 /* ----------------------------------------------------------------
    CSS CUSTOM PROPERTIES (VARIABLES)
@@ -421,7 +425,7 @@ body::after {
   padding-top: 75px;
   /* Background utama hero: banner branded PBJ (anak balance bike + skyline Jakarta) */
   background-color: var(--clr-bg);            /* Fallback saat gambar belum termuat */
-  background-image: url('assets/bg/PBJ-bg-1.png');
+  background-image: url('assets/bg/PBJ-bg-1.webp');
   background-size: cover;                      /* Isi penuh area hero, jaga aspek rasio */
   background-position: center center;          /* Fokus ke tengah komposisi gambar */
   background-repeat: no-repeat;
@@ -1044,6 +1048,46 @@ body::after {
 }
 .feature-badge:hover { color: var(--clr-orange-lt); border-color: rgba(255,107,0,0.4); background: rgba(255,107,0,0.07); }
 .feature-badge i { color: var(--clr-orange); }
+
+/* Blok About tambahan (Batch B): Founder & Sejarah, Sistem Pelatihan, Nilai & Spirit,
+   Jenjang Atlet. Reuse "bahasa visual" .about-pushbike (kartu bg-card + border + radius-xl)
+   supaya konsisten dengan kartu About yang sudah ada, tapi satu kolom (teks saja, tanpa
+   grid badge) karena isinya lebih panjang / naratif. */
+.about-block {
+  background: var(--clr-bg-card);
+  border: 1px solid rgba(255,107,0,0.1);
+  border-radius: var(--radius-xl);
+  padding: clamp(24px, 4vw, 48px);
+  margin-top: 28px;
+}
+.about-block__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-racing);
+  font-size: 1.4rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+}
+.about-block__title i { color: var(--clr-orange); }
+.about-block p { color: var(--clr-text-muted); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.75; }
+.about-block p:last-child { margin-bottom: 0; }
+
+/* Slogan PBJ ditonjolkan sebagai pull-quote, bukan teks paragraf biasa */
+.about-slogan {
+  font-family: var(--font-racing);
+  font-size: clamp(1.25rem, 3vw, 1.7rem);
+  font-weight: 800;
+  font-style: normal;
+  color: var(--clr-orange);
+  text-align: center;
+  margin: 0 0 20px;
+  padding: 20px;
+  background: rgba(255,107,0,0.06);
+  border-radius: var(--radius-md, 14px);
+}
 
 /* ----------------------------------------------------------------
    MANFAAT SECTION — "Bukan Sekadar Mainan" (trust + bukti riset)
@@ -1760,6 +1804,52 @@ body::after {
   font-weight: 600;
 }
 
+/* Judul pemisah dua kelompok FAQ ("Mau Gabung?" vs "Seputar Balance Bike & Pushbike").
+   Kelompok kedua dan seterusnya diberi garis pemisah tipis + jarak ekstra di atas
+   supaya jelas terlihat sebagai kelompok baru, bukan cuma judul biasa. */
+.faq-group-title {
+  font-family: var(--font-racing);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--clr-orange);
+  margin: 0 0 4px;
+}
+
+.faq-group-title:not(:first-child) {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255,107,0,0.15);
+}
+
+/* Tombol "salin link" — hanya ada di FAQ Kelompok A (operasional), supaya admin
+   bisa membalas DM dengan satu link presisi ke jawaban spesifik. Lihat mekanik
+   hash + clipboard di main.js. */
+.faq-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 6px 12px;
+  background: none;
+  border: 1px solid rgba(255,107,0,0.35);
+  border-radius: 8px;
+  color: var(--clr-orange);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-normal), color var(--transition-normal);
+}
+
+.faq-copy-btn:hover {
+  background: rgba(255,107,0,0.1);
+}
+
+.faq-copy-btn i {
+  font-size: 0.75rem;
+}
+
 /* ----------------------------------------------------------------
    MEDIA QUERIES
    ---------------------------------------------------------------- */
@@ -1782,6 +1872,15 @@ body::after {
     /* Konten di-top-align (bukan center) supaya badge & judul menempel dekat
        header, tak turun ke tengah viewport di layar sempit. */
     align-items: flex-start;
+    /* FIX BUG "background putih di iPhone Safari": rule dasar .hero (di atas)
+       pakai background-attachment: fixed untuk efek parallax. iOS Safari
+       TIDAK mendukung fixed di elemen yang juga punya overflow: hidden
+       (lihat rule dasar .hero) — gambar gagal dilukis sama sekali, sehingga
+       background-color fallback (putih) yang tampil, bukan gambarnya.
+       'scroll' = perilaku background normal (ikut scroll bareng konten),
+       aman & didukung semua browser; efek parallax memang cuma bonus
+       desktop, jadi tidak masalah dimatikan di mobile. */
+    background-attachment: scroll;
   }
   /* Jarak kecil dari header (navbar sudah di-reserve lewat padding-top .hero). */
   .hero__content { padding-top: 16px; }
@@ -1999,6 +2098,43 @@ body::after {
   margin-top: auto;
 }
 .event-card__btn { font-size: 0.82rem; padding: 9px 16px; }
+
+/* Kartu galeri "Per Latihan" (gallery-sessions.js) — gaya mengikuti .event-card
+   supaya konsisten dengan kartu event, dipakai di dalam .gallery-grid yang sama
+   dengan galeri Kategori (grid generik auto-fill sudah ada). */
+.session-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+  border-radius: var(--radius-md, 14px);
+  border: 1px solid rgba(255, 107, 0, 0.2);
+  background: var(--clr-bg);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.session-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-glow); }
+
+.session-card__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.session-card__icon {
+  font-size: 1.4rem;
+  color: var(--clr-orange);
+  flex-shrink: 0;
+}
+.session-card__tanggal { font-weight: 700; color: var(--clr-text); }
+.session-card__sesi { font-size: 0.88rem; color: var(--clr-text-muted); }
+
+.session-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: auto;
+}
+.session-card__btn { font-size: 0.82rem; padding: 9px 16px; }
+.session-card__empty { font-size: 0.85rem; color: var(--clr-text-muted); font-style: italic; }
 
 /* Placeholder saat data event belum dikonfigurasi */
 .events-fallback {

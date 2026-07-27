@@ -35,7 +35,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const grid = document.getElementById('instagramGrid')
   if (!grid) return // Section tidak ada di halaman ini
 
-  if (!INSTAGRAM_FEED_URL) {
+  // GUARD: cek typeof dulu, bukan langsung `!INSTAGRAM_FEED_URL`. Variabel ini
+  // didefinisikan di config.js yang harus dimuat SEBELUM instagram.js (lihat
+  // urutan <script> di index.html) — kalau config.js gagal dimuat atau nama
+  // variabelnya berubah, `!INSTAGRAM_FEED_URL` saja akan melempar ReferenceError
+  // dan mematikan seluruh file ini. Pola yang sama dipakai events.js:25-29.
+  const isConfigured = typeof INSTAGRAM_FEED_URL !== 'undefined' && INSTAGRAM_FEED_URL
+  if (!isConfigured) {
     renderInstagramFallback(grid)
     return
   }

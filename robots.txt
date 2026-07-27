@@ -1,6 +1,15 @@
 # robots.txt — Pushbike Jakarta
 # Memberitahu crawler/bot mana yang boleh akses halaman ini
 
+# PENTING (dibaca sebelum edit): bot AI (GPTBot, ClaudeBot, Google-Extended,
+# PerplexityBot, Bingbot, dll.) SENGAJA diizinkan lewat "Allow: /" di bawah —
+# BUKAN kelalaian. Alasan: mesin AI (ChatGPT, Gemini, Perplexity, Google AI
+# Overview) menjawab pertanyaan calon orang tua lewat RAG (ambil dulu dari
+# indeks, baru jawab) — situs yang di-blokir tidak mungkin dikutip sama
+# sekali. PBJ situs kecil justru diuntungkan kalau mudah ditemukan & dikutip.
+# JANGAN PERNAH menambah baris "Disallow" untuk bot AI di atas tanpa alasan
+# kuat & didiskusikan dulu — itu sama saja membutakan PBJ dari pencarian
+# berbasis AI yang makin banyak dipakai orang tua.
 User-agent: *
 Allow: /
 

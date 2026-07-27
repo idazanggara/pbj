@@ -13,7 +13,7 @@
  * A. GALERI DARI GOOGLE DRIVE
  *    1. Buat folder induk di Google Drive, misal "Galeri PBJ".
  *    2. Di dalamnya buat subfolder per kategori:
- *       "Latihan", "Lomba", "Prestasi" (bebas menambah kategori baru —
+ *       "Latihan", "Race", "Prestasi" (bebas menambah kategori baru —
  *       nama subfolder otomatis menjadi tombol filter di website).
  *    3. Klik kanan folder induk → Share → "Anyone with the link: Viewer".
  *    4. Salin ID folder dari URL-nya:
@@ -42,12 +42,50 @@
  *    (Itulah "CRUD"-nya — lewat Google Sheets, tanpa server.)
  */
 
-/* ---------------- GOOGLE DRIVE (Galeri) ---------------- */
-const DRIVE_API_KEY = ''
-const DRIVE_GALLERY_FOLDER_ID = ''
+/* ---------------- WHATSAPP ADMIN ----------------
+   SATU-SATUNYA tempat nomor WA admin/sekretaris PBJ ditulis di seluruh
+   proyek. Format: kode negara + nomor TANPA angka 0 di depan
+   (contoh: 628123456789, bukan 08123456789).
 
-/* ---------------- GOOGLE SHEETS (Event) ---------------- */
-const EVENTS_SHEET_ID = ''
+   Nomor ini dipakai main.js untuk mengisi otomatis:
+     - Tombol WhatsApp di footer (ikon sosial & baris kontak)
+     - Link WhatsApp yang terisi otomatis dari form pendaftaran
+     - Setiap teks yang menampilkan nomor ini di FAQ (elemen
+       <span data-wa-number> di index.html) dan di dalam JSON-LD FAQPage
+       (placeholder teks __ADMIN_WA_NUMBER__ di index.html)
+
+   GANTI NOMOR? Cukup ubah nilai di baris ini SAJA (mis. kalau nomor WA
+   admin berganti tiap tahun) — main.js otomatis menyebarkannya ke semua
+   link & teks di atas saat halaman dimuat. TIDAK PERLU cari-ganti manual
+   di index.html. */
+const ADMIN_WA_NUMBER = '6285691530710'
+
+/* ---------------- GOOGLE DRIVE (Galeri) ---------------- */
+const DRIVE_API_KEY = 'AIzaSyBtHNF8yJw7cMN6rjKslp6-Wvj_QXJGz5E'
+const DRIVE_GALLERY_FOLDER_ID = '1FRvqquhu045ksHXsN1wFHLrb0R1QU6xR'
+
+/* ---------------- GOOGLE SHEETS (Event & Race) ---------------- */
+const EVENTS_SHEET_ID = '140ah0IgNFHR05216BuHFrVH90OWEX-_mK5S6S9H0ql8'
+
+/* ---------------- GOOGLE SHEETS (Galeri per Latihan) ----------------
+   Dibaca oleh gallery-sessions.js untuk mode tampilan "Per Latihan" di
+   section Galeri — BEDA dari galeri Kategori (baca folder Google Drive
+   PBJ sendiri). Kolom sheet (baris pertama = judul kolom):
+     Tanggal | Sesi | Fotografer | LinkDrive
+   - Tanggal     : format YYYY-MM-DD (mis. "2026-07-14"), ditampilkan
+                   apa adanya sebagai teks di kartu.
+   - Sesi        : nama sesi bebas, mis. "Latihan Pagi" atau "Race Day".
+   - Fotografer  : nama fotografer/pemilik folder foto, jadi label tombol.
+   - LinkDrive   : URL folder Google Drive milik fotografer tsb (folder
+                   ITU SENDIRI yang dibagikan publik oleh fotografer,
+                   BUKAN folder Drive PBJ) — wajib diawali https://
+   SATU BARIS per LINK. Kalau satu sesi punya 3 fotografer, isi 3 baris
+   dengan Tanggal+Sesi yang SAMA — website otomatis mengelompokkannya
+   jadi satu kartu berisi 3 tombol. Kenapa lewat Sheet, bukan Drive API
+   seperti galeri Kategori? Karena foto tiap sesi tersebar di folder
+   Drive milik fotografer yang berbeda-beda (di luar Drive PBJ), jadi
+   tidak bisa dipindai otomatis lewat query "'{id}' in parents". */
+const GALLERY_SESSIONS_SHEET_ID = '1LOVfycAscUlDoIo9OUABnhhRYBYQr1_M_kjux6oESn8'
 
 /* ---------------- INSTAGRAM (feed Behold) ----------------
    Isi dengan URL feed JSON dari behold.so milik akun @pushbikejakarta
@@ -58,7 +96,8 @@ const EVENTS_SHEET_ID = ''
 const INSTAGRAM_FEED_URL = 'instagram-feed-sample.json'
 
 /* ================================================================
-   HELPER BERSAMA (dipakai instagram.js, events.js, gdrive-gallery.js)
+   HELPER BERSAMA
+   (dipakai instagram.js, events.js, gdrive-gallery.js, gallery-sessions.js)
    ================================================================ */
 
 /* Batas tunggu request eksternal, supaya section tidak menggantung
@@ -91,6 +130,20 @@ function escapeHtml(value) {
 }
 function escapeAttr(value) {
   return escapeHtml(value).replaceAll('"', '&quot;').replaceAll("'", '&#39;')
+}
+
+/**
+ * isSafeHttpUrl(url)
+ * Hanya izinkan URL yang benar-benar diawali http:// atau https://.
+ * Dipakai untuk SEMUA link yang datang dari data eksternal (baris Google
+ * Sheets, deskripsi file Drive, dll.) sebelum ditaruh sebagai href —
+ * mencegah skema berbahaya seperti "javascript:..." ikut tersisip kalau
+ * ada yang iseng (atau salah ketik) mengisi kolom link di Sheet.
+ * (Sebelumnya bernama isSafeEventUrl dan hanya hidup di events.js;
+ * sekarang di sini supaya bisa dipakai bersama events.js & gallery-sessions.js.)
+ */
+function isSafeHttpUrl(url) {
+  return /^https?:\/\//i.test(url)
 }
 
 /* ---------------- LINK ADMIN (dipakai admin.html) ----------------

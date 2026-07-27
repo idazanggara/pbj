@@ -15,12 +15,35 @@
        width=device-width = lebar halaman = lebar layar perangkat
        initial-scale=1.0 = tidak ada zoom awal saat halaman dibuka -->
 
+  <script>
+    // Dijalankan SEPAGI mungkin (baris pertama <head>, sebelum script lain)
+    // supaya menang lomba dengan perilaku bawaan browser: kalau halaman
+    // dibuka dengan URL berakhiran '#faq-xxx', browser otomatis scroll ke
+    // elemen dengan id itu — dan karena situs ini pakai
+    // "scroll-behavior: smooth" (style.css), browser bahkan akan MENGULANG
+    // scroll itu tiap kali tata letak halaman bergeser (mis. galeri/feed
+    // Instagram di atas FAQ baru selesai dimuat), selalu ke posisi RATA ATAS
+    // (bukan tengah) — ini membuat elemen FAQ ketutup navbar fixed, dan
+    // menyaingi mekanik scroll kita sendiri (lihat main.js, openFaqFromHash).
+    //
+    // Solusinya: simpan hash aslinya ke window.__initialFaqHash, lalu buang
+    // '#...' dari address bar SEBELUM browser sempat scroll native. Dengan
+    // hash sudah kosong di URL, browser tidak akan mencoba scroll otomatis
+    // sama sekali — main.js yang sepenuhnya mengatur buka + scroll ke posisi
+    // tengah (lihat STEP 10 di main.js).
+    window.__initialFaqHash = location.hash
+    if (location.hash) {
+      history.replaceState(null, '', location.pathname + location.search)
+    }
+  </script>
+
   <!-- ===== SEO — TITLE & META UTAMA ===== -->
-  <title>Pushbike Jakarta | Komunitas Pushbike, Runbike & Balance Bike Anak Jakarta</title>
-  <!-- Title: keyword utama di depan, nama brand paling awal -->
+  <title>Pushbike Jakarta — Komunitas Balance Bike Anak Jakarta</title>
+  <!-- Title: nama brand + keyword utama, ~57 karakter -->
 
   <meta name="description"
-    content="Pushbike Jakarta (PBJ), komunitas balance bike & sepeda keseimbangan anak Jakarta sejak 2018. Jadwal latihan pushbike, lokasi latihan, daftar member. Cocok untuk anak usia 2–7 tahun. Pendaftaran gratis!" />
+    content="Pushbike Jakarta (PBJ): komunitas balance bike anak Jakarta sejak 2018. Latihan Selasa, Jumat & Minggu di JIEP Pulomas. Trial boleh, mulai usia 2 tahun." />
+  <!-- Meta description ~155 karakter — hindari klaim "gratis" (ada kas Rp50rb) -->
   <!-- Meta description: 155 karakter, mengandung keyword utama -->
 
   <meta name="keywords"
@@ -46,7 +69,11 @@
   <meta property="og:description"
     content="Komunitas balance bike & pushbike anak Jakarta sejak 2018. Jadwal latihan, lokasi, & info pendaftaran member. Pendaftaran gratis untuk anak 2–7 tahun!" />
   <meta property="og:url" content="https://pushbikejakarta.vercel.app/" />
-  <meta property="og:image" content="https://pushbikejakarta.vercel.app/assets/logo_PBJ.jpg" />
+  <!-- og-image.jpg = crop 1200x630 ASLI dari logo_PBJ.jpg (dibuat via sips, lihat riwayat
+       kerja) — sebelumnya og:image menunjuk ke logo_PBJ.jpg (1772x827) padahal
+       og:image:width/height MENGAKU 1200x630, jadi preview WhatsApp/social media
+       terpotong asal-asalan karena rasio yang diklaim tidak sama dengan file aslinya. -->
+  <meta property="og:image" content="https://pushbikejakarta.vercel.app/assets/og-image.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:locale" content="id_ID" />
@@ -56,7 +83,7 @@
   <meta name="twitter:title" content="Pushbike Jakarta | Komunitas Balance Bike Anak Jakarta" />
   <meta name="twitter:description"
     content="Komunitas balance bike & pushbike anak Jakarta sejak 2018. Jadwal latihan, lokasi, & pendaftaran gratis!" />
-  <meta name="twitter:image" content="https://pushbikejakarta.vercel.app/assets/logo_PBJ.jpg" />
+  <meta name="twitter:image" content="https://pushbikejakarta.vercel.app/assets/og-image.jpg" />
 
   <!-- ===== GEO TAGS (SEO lokal Jakarta) ===== -->
   <meta name="geo.region" content="ID-JK" />
@@ -77,6 +104,20 @@
   <link rel="manifest" href="assets/favicon_io/site.webmanifest" />
   <!-- site.webmanifest = file konfigurasi PWA (nama app, warna, ikon, dll.) -->
 
+  <!-- ===== PRELOAD GAMBAR BACKGROUND HERO =====
+       Kenapa perlu? .hero pakai `background-image` di style.css (bukan <img>), dan
+       browser TIDAK mendeteksi background-image lewat "preload scanner" (pemindaian
+       cepat di awal sebelum CSS selesai di-parse) — jadi normalnya gambar background
+       baru mulai diunduh SETELAH style.css selesai diproses, menunda gambar terbesar
+       yang pertama kali terlihat pengunjung (LCP/Largest Contentful Paint, salah satu
+       metrik Core Web Vitals yang dipakai Google untuk performa & SEO).
+       `<link rel="preload">` memberi tahu browser untuk mulai unduh gambar ini LEBIH
+       AWAL, paralel dengan CSS. Dua baris (desktop & mobile) dengan atribut `media`
+       supaya browser hanya mengunduh SATU varian yang relevan dengan ukuran layarnya
+       (sama seperti breakpoint @media (max-width:1023px) di style.css). -->
+  <link rel="preload" as="image" href="assets/bg/PBJ-bg-1.webp" media="(min-width: 1024px)" />
+  <link rel="preload" as="image" href="assets/bg/PBJ-bg-1-mobile.webp" media="(max-width: 1023px)" />
+
   <!-- ===== GOOGLE FONTS ===== -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <!-- Buka koneksi awal ke server Google Fonts sebelum font diunduh (mempercepat loading) -->
@@ -85,16 +126,20 @@
   <!-- Buka koneksi ke CDN aset font Google, crossorigin diperlukan untuk keamanan CORS -->
 
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
     rel="stylesheet" />
-  <!-- Mengimpor font Inter (untuk teks umum) dan Space Grotesk (untuk heading/judul)
+  <!-- Mengimpor Inter (teks umum), Space Grotesk (heading/judul), dan Barlow Condensed
+       (font "racing" untuk elemen bergaya balap, dipakai var(--font-racing) di style.css).
        wght@300..900 = semua ketebalan dari thin sampai black
-       display=swap = gunakan font fallback dulu, ganti setelah font dimuat (menghindari FOBT/flash of invisible text) -->
+       display=swap = gunakan font fallback dulu, ganti setelah font dimuat (menghindari FOBT/flash of invisible text)
+       SATU <link> ini adalah SATU-SATUNYA tempat font di-load — sebelumnya style.css
+       punya @import terpisah yang memuat font YANG SAMA lagi (dobel request, lebih
+       lambat), sudah dihapus supaya font hanya diminta sekali. -->
 
   <!-- ===== STYLESHEET UTAMA ===== -->
   <!-- ?v= = cache-busting: naikkan angkanya tiap kali style.css diubah
        supaya browser pengunjung tidak memakai versi lama dari cache -->
-  <link rel="stylesheet" href="style.css?v=8" />
+  <link rel="stylesheet" href="style.css?v=10" />
   <!-- Menghubungkan file CSS eksternal yang mengatur tampilan/design halaman ini -->
 
   <!-- ===== LEAFLET.JS (Library Peta Interaktif Open Source) ===== -->
@@ -133,6 +178,7 @@
     "logo": "https://pushbikejakarta.vercel.app/assets/logo_PBJ.jpg",
     "image": "https://pushbikejakarta.vercel.app/assets/logo_PBJ.jpg",
     "foundingDate": "2018",
+    "founder": { "@type": "Person", "name": "Oky Pancen Hoki" },
     "sport": ["Balance Bike", "Pushbike", "Runbike", "Sepeda Keseimbangan"],
     "email": "",
     "address": {
@@ -168,7 +214,8 @@
       }
     ],
     "sameAs": [
-      "https://www.instagram.com/pushbikejakarta"
+      "https://www.instagram.com/pushbikejakarta",
+      "https://www.youtube.com/@pushbikejakarta6288"
     ],
     "keywords": "pushbike, balance bike, sepeda keseimbangan, sepeda tanpa pedal, runbike, sepeda monyet, komunitas sepeda anak Jakarta, balance bike Indonesia"
   }
@@ -181,10 +228,82 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "Apa itu balance bike / pushbike?",
+        "name": "Bagaimana cara gabung PBJ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Balance bike (juga disebut pushbike, runbike, atau sepeda keseimbangan) adalah sepeda anak tanpa pedal dan tanpa rantai. Anak menggerakkannya dengan mengayuh menggunakan kaki langsung ke tanah. Sangat baik untuk melatih keseimbangan dan koordinasi anak usia 2–7 tahun."
+          "text": "Cara paling cepat gabung PBJ adalah datang langsung ke sesi latihan sebagai non-member dengan biaya Rp50.000 per kedatangan (sudah termasuk susu), tanpa perlu mendaftar dulu. Untuk jadi member resmi, pendaftaran open member hanya dibuka dua kali setahun lewat link di bio Instagram @pushbikejakarta, dan saat ini sedang tutup sampai awal 2027. Cukup bawa sepeda 12 inci sendiri dan perlengkapan wajib (helm, pelindung lutut & siku, sepatu tertutup), lalu langsung ikut latihan Selasa, Jumat, atau Minggu di JIEP Pulomas. Masih ragu? Tanya langsung ke WhatsApp admin di __ADMIN_WA_NUMBER__."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Anak saya 2 tahun, boleh ikut?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Boleh — PBJ menerima anak mulai usia 2 tahun untuk mulai belajar balance bike. Kebanyakan anak berlatih sampai masa transisi sekitar usia 5 sampai 6 tahun, dan banyak yang tetap lanjut hingga 7 sampai 8 tahun sebelum pindah ke sepeda pedal atau cabang lain. Kelas race dibagi berdasarkan tahun kelahiran, jadi anak selalu bertanding dengan teman seusia. Tidak perlu buru-buru: yang penting anak sudah bisa berjalan mandiri dan siap mencoba, sisanya coach yang bimbing pelan-pelan."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Boleh coba/nonton dulu?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Boleh banget — orang tua dan anak boleh datang dulu untuk melihat suasana latihan atau langsung mencoba naik balance bike, tanpa harus jadi member terlebih dahulu. Kalau anak langsung ikut latihan hari itu, biayanya sama seperti jalur non-member: Rp50.000 per kedatangan, sudah termasuk susu. Cukup pakai baju olahraga dan bawa sepeda kalau sudah punya; sepatu tertutup tetap wajib bahkan untuk sesi coba-coba pertama."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Berapa biayanya?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Biaya latihan dihitung per kedatangan, bukan iuran bulanan tetap: Rp35.000 untuk member dan Rp50.000 untuk non-member, dan keduanya sudah termasuk susu selama persediaan hari itu masih ada. Tidak ada biaya pendaftaran atau formulir sama sekali hanya untuk bisa datang latihan. Nominal biaya member bisa berubah dari sesi ke sesi, jadi untuk info terbaru langsung tanyakan ke WhatsApp admin di __ADMIN_WA_NUMBER__."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Apa saja syaratnya?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Syaratnya sederhana: anak membawa balance bike / pushbike 12 inci sendiri (merek bebas) dan memakai perlengkapan wajib berupa helm, pelindung lutut, pelindung siku, sepatu tertutup, celana panjang, dan kaos lengan panjang. Tanpa perlengkapan itu, anak belum boleh turun ke arena latihan demi keamanan. Semua bisa dipakai untuk trial maupun latihan rutin; tidak ada syarat administrasi atau formulir pendaftaran untuk sekadar ikut latihan."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Masih open member?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Saat ini pendaftaran member baru sedang tutup dan baru dibuka lagi awal 2027, karena open member PBJ hanya berlangsung dua kali setahun dengan kuota terbatas lewat link di bio Instagram @pushbikejakarta. Di luar masa open ini, anak tetap boleh ikut latihan rutin sebagai non-member. Biayanya Rp50.000 per kedatangan (termasuk susu), jadi tidak perlu menunggu open member untuk mulai. Pantau bio Instagram @pushbikejakarta menjelang awal 2027 untuk info pembukaan pendaftaran."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Ada latihan di Sedayu?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Tidak ada lagi — latihan di Sedayu dulu pernah berjalan, tapi sekarang sudah tidak diadakan sama sekali. Satu-satunya lokasi latihan PBJ saat ini adalah JIEP Pulomas, yang juga dikenal warga sekitar dengan sebutan Pacuan Kuda Pulomas, jadi pastikan datang ke lokasi itu. Jadwalnya Selasa & Jumat malam serta Minggu pagi — lihat detail lengkap di FAQ jadwal atau section Jadwal & Lokasi di halaman ini."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Latihan kapan & di mana?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Latihan reguler PBJ ada tiga sesi seminggu: Selasa dan Jumat pukul 20.00–22.00, serta Minggu pukul 09.00–11.00, semuanya berlokasi di JIEP Pulomas (Pacuan Kuda Pulomas). Untuk anak yang mengejar prestasi, tersedia juga kelas privat sebagai tambahan opsional di luar tiga sesi reguler ini. Datang saja di jam-jam itu — tidak perlu janjian dulu untuk sesi reguler, cukup bawa sepeda dan perlengkapan wajib."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Nomor WA admin?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Nomor WhatsApp admin/sekretaris PBJ adalah __ADMIN_WA_NUMBER__ — bisa dihubungi langsung untuk tanya jadwal, biaya member terbaru, status open member, atau pertanyaan lain seputar latihan dan pendaftaran. Tombol WhatsApp di footer serta form pendaftaran situs ini juga otomatis terhubung ke nomor yang sama. Simpan nomor ini untuk bertanya kapan saja seputar jadwal latihan, biaya, syarat, atau status open member — semua pertanyaan operasional PBJ dikelola lewat WhatsApp yang sama."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Apa itu balance bike / pushbike / runbike?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Balance bike (juga disebut pushbike, runbike, atau sepeda keseimbangan / sepeda tanpa pedal) adalah sepeda anak tanpa pedal dan tanpa rantai. Anak menggerakkannya dengan mengayuh kaki langsung ke tanah, sehingga melatih keseimbangan dan koordinasi secara alami. Di Jakarta, sering juga disebut sepeda monyet."
         }
       },
       {
@@ -192,7 +311,7 @@
         "name": "Umur berapa anak bisa main balance bike / pushbike?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Balance bike cocok untuk anak mulai usia 18 bulan hingga 7 tahun. Komunitas Pushbike Jakarta (PBJ) membuka latihan untuk anak usia 2–7 tahun. Semakin dini anak mulai, semakin cepat mereka bisa bersepeda tanpa roda bantu."
+          "text": "Balance bike cocok untuk anak usia 18 bulan hingga 7 tahun. Komunitas Pushbike Jakarta (PBJ) membuka latihan untuk anak usia 2–7 tahun. Semakin dini mulai, semakin cepat anak bisa bersepeda roda dua tanpa roda bantu."
         }
       },
       {
@@ -200,23 +319,7 @@
         "name": "Apa manfaat balance bike untuk balita?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Manfaat balance bike untuk balita antara lain: melatih keseimbangan dan koordinasi tubuh, meningkatkan kepercayaan diri, mengembangkan kemampuan motorik kasar, dan mempersiapkan anak untuk bersepeda roda dua tanpa roda bantu lebih cepat."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Berapa biaya mendaftar komunitas Pushbike Jakarta?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Tidak ada biaya pendaftaran untuk bergabung dengan Pushbike Jakarta (PBJ). Member baru cukup membeli jersey resmi PBJ, lalu ada iuran member setiap 6 bulan (semacam SPP) untuk mendukung operasional komunitas. Info nominal terbaru bisa ditanyakan via WhatsApp saat mendaftar."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Di mana lokasi latihan pushbike / balance bike di Jakarta?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Lokasi latihan utama Pushbike Jakarta adalah Jakarta International Equestrian Park (JIEP), Area Parkir Tengah, Jl. Pulomas, Pulo Gadung, Jakarta Timur. Lokasi event dan kompetisi di Jakarta International Stadium (JIS), Tanjung Priok, Jakarta Utara."
+          "text": "Manfaat balance bike untuk balita: melatih keseimbangan & koordinasi, meningkatkan kepercayaan diri, mengasah motorik kasar, dan mempersiapkan anak bersepeda roda dua tanpa roda bantu jauh lebih cepat dibanding metode konvensional."
         }
       },
       {
@@ -224,7 +327,23 @@
         "name": "Apa bedanya balance bike dan sepeda roda tiga?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Balance bike (pushbike/runbike) mengajarkan anak keseimbangan secara alami karena tidak ada roda bantu, sehingga anak bertumpu pada kakinya sendiri. Sepeda roda tiga membuat anak bergantung pada roda bantu sehingga transisi ke sepeda roda dua lebih lama. Anak yang belajar dengan balance bike biasanya bisa langsung naik sepeda roda dua tanpa roda bantu."
+          "text": "Balance bike mengajarkan keseimbangan secara alami tanpa roda bantu. Sepeda roda tiga membuat anak bergantung pada roda bantu sehingga transisi ke sepeda roda dua lebih lama. Anak yang belajar dengan pushbike / balance bike biasanya langsung bisa naik sepeda roda dua tanpa roda bantu."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Di mana lokasi latihan pushbike / balance bike di Jakarta?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Latihan utama Pushbike Jakarta di Jakarta International Equestrian Park (JIEP), Jl. Pulomas, Pulo Gadung, Jakarta Timur, setiap Selasa & Jumat (20:00–22:00) dan Minggu (09:00–11:00). Event & kompetisi di Jakarta International Stadium (JIS), Jakarta Utara."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Berapa biaya daftar komunitas Pushbike Jakarta?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Tidak ada biaya pendaftaran untuk bergabung dengan Pushbike Jakarta (PBJ). Member baru cukup membeli jersey resmi PBJ, lalu ada iuran member setiap 6 bulan (semacam SPP) untuk mendukung operasional komunitas. Info nominal terbaru bisa ditanyakan via WhatsApp saat mendaftar."
         }
       },
       {
@@ -232,7 +351,7 @@
         "name": "Apakah harus punya pushbike sendiri untuk ikut latihan?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Ya, setiap anak perlu membawa balance bike / pushbike sendiri saat latihan. Untuk mulai tidak perlu sepeda mahal: yang penting ukurannya pas dan anak nyaman. Upgrade ke spek race bisa menyusul kalau anak mulai serius."
+          "text": "Ya, setiap anak perlu membawa balance bike / pushbike sendiri saat latihan. Tenang, untuk mulai tidak perlu sepeda mahal: yang penting ukurannya pas dan anak nyaman. Upgrade ke spek race bisa menyusul kalau si kecil mulai serius."
         }
       },
       {
@@ -240,7 +359,7 @@
         "name": "Bagaimana cara memilih ukuran balance bike yang tepat?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Kuncinya bukan usia, tapi tinggi sadel vs inseam (jarak selangkangan ke lantai). Atur sadel sekitar 1–4 cm di bawah inseam agar kedua telapak kaki menapak rata dengan lutut sedikit menekuk. Jangan sampai anak berjinjit, karena kaki anak adalah remnya. Di komunitas dan lomba pushbike Indonesia, standar yang dipakai adalah ban 12 inci untuk semua usia."
+          "text": "Kuncinya bukan usia, tapi tinggi sadel vs inseam (jarak selangkangan ke lantai). Atur sadel ±1–4 cm di bawah inseam agar kedua telapak kaki menapak rata dengan lutut sedikit menekuk. Jangan sampai anak berjinjit, karena kaki anak adalah remnya. Di komunitas & lomba pushbike Indonesia, standar yang dipakai adalah ban 12 inci untuk semua usia."
         }
       },
       {
@@ -248,7 +367,7 @@
         "name": "Berapa harga balance bike / pushbike anak?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Harga balance bike anak bervariasi: model entry-level mulai dari ratusan ribu rupiah, sedangkan pushbike spek race (rangka ringan, bearing halus) bisa jutaan rupiah. Untuk anak yang baru mulai, sepeda entry-level yang ukurannya pas sudah lebih dari cukup."
+          "text": "Harga balance bike anak bervariasi: model entry-level mulai dari ratusan ribu rupiah, sedangkan pushbike spek race (rangka ringan, bearing halus) bisa jutaan rupiah. Untuk anak yang baru mulai, sepeda entry-level yang ukurannya pas sudah lebih dari cukup. Jangan biarkan harga jadi penghalang si kecil mencoba."
         }
       },
       {
@@ -264,7 +383,7 @@
         "name": "Anak saya takut / belum mau naik, bagaimana mengajarinya?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Jangan dipaksa, mulailah bertahap: ajak anak berjalan sambil duduk di sadel di permukaan halus dan rata, lalu perlahan dorong lebih kuat hingga berani mengangkat kaki dan meluncur (glide). Sesi singkat saja, dan beri semangat, bukan koreksi. Melihat teman sebaya bermain di komunitas biasanya membuat anak yang tadinya takut jadi ikut penasaran dan mau mencoba."
+          "text": "Jangan dipaksa, mulailah bertahap: ajak anak berjalan sambil duduk di sadel di permukaan halus dan rata, lalu perlahan dorong lebih kuat hingga berani mengangkat kaki dan meluncur (glide). Sesi singkat saja, dan beri semangat, bukan koreksi. Di PBJ, melihat teman sebaya bermain biasanya membuat anak yang tadinya takut jadi ikut penasaran dan mau mencoba."
         }
       },
       {
@@ -272,7 +391,7 @@
         "name": "Apakah balance bike aman untuk balita? Perlengkapan apa yang wajib?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Aman, selama perlengkapannya benar: helm yang pas wajib (jarak alis ke tepi helm 1–2 jari, tali kencang; cari standar SNI, CPSC, atau CE EN 1078), sepatu tertutup (sandal, Crocs, atau nyeker dilarang karena telapak kaki anak adalah remnya), plus pelindung lutut dan siku. Balance bike sendiri rendah dan ringan, kaki anak selalu bisa menapak, sehingga rasa takut jatuhnya minim."
+          "text": "Aman, selama perlengkapannya benar: helm yang pas wajib (jarak alis ke tepi helm 1–2 jari, tali kencang; cari standar SNI, CPSC, atau CE EN 1078), sepatu tertutup (sandal, Crocs, atau nyeker dilarang karena telapak kaki anak adalah remnya), plus pelindung lutut & siku. Balance bike sendiri rendah dan ringan, kaki anak selalu bisa menapak, sehingga rasa takut jatuhnya minim."
         }
       },
       {
@@ -280,7 +399,7 @@
         "name": "Kapan anak siap pindah ke sepeda pedal?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Tandanya: anak sudah meluncur jauh dengan kedua kaki terangkat, bisa bermanuver dan belok dengan percaya diri, dan anak sendiri yang minta sepeda pedal. Umumnya terjadi di usia 3–6 tahun. Riset menunjukkan anak yang belajar dengan balance bike bisa bersepeda roda dua sekitar 1,8 tahun lebih cepat dibanding yang memakai roda bantu."
+          "text": "Tandanya: anak sudah meluncur jauh dengan kedua kaki terangkat, bisa bermanuver dan belok dengan percaya diri, dan anak sendiri yang minta sepeda pedal. Umumnya terjadi di usia 3–6 tahun. Riset menunjukkan anak yang belajar dengan balance bike bisa bersepeda roda dua ±1,8 tahun lebih cepat dibanding yang memakai roda bantu."
         }
       },
       {
@@ -288,7 +407,7 @@
         "name": "Apa itu race pushbike dan bagaimana anak bisa ikut lomba?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Race pushbike adalah lomba balap balance bike untuk anak usia 2–7 tahun. Kelas dibagi berdasarkan tahun kelahiran (dan biasanya dipisah Boys/Girls), dengan format babak kualifikasi (heat) menuju final (main event). Di Pushbike Jakarta, anak dibina dari nol saat latihan rutin hingga siap ikut fun race dan kompetisi nasional. Tanpa target, yang utama anak senang."
+          "text": "Race pushbike adalah lomba balap balance bike untuk anak usia 2–7 tahun. Kelas dibagi berdasarkan tahun kelahiran (dan biasanya dipisah Boys/Girls), dengan format babak kualifikasi (heat) menuju final (main event). Di PBJ, anak dibina dari nol saat latihan rutin hingga siap ikut fun race dan kompetisi nasional. Tanpa target, yang utama anak senang."
         }
       }
     ]
@@ -385,11 +504,11 @@
       <!-- Badge kecil di atas judul, memberikan konteks lokasi & tahun berdiri -->
 
       <h1 class="hero__title">
-        <!-- <h1> = heading terpenting di halaman, hanya boleh ada SATU per halaman (SEO) -->
-        <!-- Tiap kata satu baris agar ramping & tidak menutupi logo di background -->
-        Jadwal<br />
-        &amp; Lokasi<br />
-        <span class="hero__title--accent">Latihan<br />Pushbike</span>
+        <!-- <h1> = heading terpenting di halaman, hanya boleh ada SATU per halaman (SEO).
+             SEO: memuat nama brand + keyword utama "balance bike" di H1, bukan cuma
+             di <title>, supaya topik halaman jelas untuk mesin pencari maupun AI. -->
+        Pushbike Jakarta<br />
+        <span class="hero__title--accent">Komunitas Balance Bike<br />Anak Jakarta</span>
       </h1>
 
       <p class="hero__subtitle">
@@ -634,6 +753,84 @@
           </div>
         </div>
       </div>
+
+      <!-- ============================================================
+           BLOK TAMBAHAN — Founder, Sistem Pelatihan, Nilai, Jenjang Atlet
+           (Batch B: trust/E-E-A-T — membuktikan PBJ komunitas sungguhan
+           dengan sejarah & sistem jelas, bukan sekadar halaman marketing).
+           Semua fakta di 4 blok ini HANYA dari daftar "FAKTA PROFIL" yang
+           diberikan pemilik — klaim pemilik tentang komunitasnya sendiri,
+           ditulis apa adanya, TANPA menambah nama akademi mitra spesifik
+           (belum diberikan) dan TANPA hardcode tahun kelahiran (kelas race
+           bergeser tiap tahun, lihat FAQ #faq-usia untuk framing usia yang
+           sama). Tiap blok dibuka kalimat inti dulu (answer-first), baru
+           elaborasi — pola yang sama dipakai di FAQ Kelompok A.
+           ============================================================ -->
+
+      <div class="about-block">
+        <h3 class="about-block__title"><i class="fa-solid fa-flag"></i> Founder &amp; Sejarah</h3>
+        <p>
+          Pushbike Jakarta berdiri sejak <strong>2018</strong> dan tumbuh menjadi salah satu
+          komunitas pushbike terbesar di Jakarta maupun Indonesia, digagas dan dipimpin oleh
+          <strong>Oky Pancen Hoki ("Om Oky")</strong> sebagai tokoh kunci pergerakannya.
+        </p>
+        <p>
+          Awal mulanya sederhana: sekumpulan orang tua penghobi otomotif yang membelikan
+          anak-anaknya balance bike, lalu rutin berkumpul latihan bersama. Dari situlah
+          komunitas ini terus berkembang menjadi seperti sekarang.
+        </p>
+      </div>
+
+      <div class="about-block">
+        <h3 class="about-block__title"><i class="fa-solid fa-layer-group"></i> Sistem Pelatihan Berjenjang</h3>
+        <p>
+          Latihan bersama (latber) di PBJ terstruktur dalam tiga tahap: <strong>pemanasan</strong>,
+          <strong>simulasi race</strong> (gate start, cornering, sprint), lalu
+          <strong>cooling down</strong> — semuanya dipandu tim coach, dengan
+          <strong>tiga sesi reguler</strong> per minggu (Selasa &amp; Jumat malam, Minggu pagi)
+          plus <strong>kelas privat</strong> sebagai tambahan opsional untuk yang mengejar
+          prestasi.
+        </p>
+        <p>
+          Kelas privat masuk dalam <strong>High Performance Class</strong>: pelatihan disiplin
+          dan berjenjang untuk membentuk fisik maupun mental rider, dengan durasi &amp;
+          intensitas lebih tinggi serta teknik lanjutan — power sprint, cornering, gate start,
+          hingga taktik memotong jalur — plus simulasi tekanan balapan sesungguhnya.
+        </p>
+      </div>
+
+      <div class="about-block">
+        <h3 class="about-block__title"><i class="fa-solid fa-heart"></i> Nilai &amp; Spirit</h3>
+        <blockquote class="about-slogan">
+          &ldquo;Hore Rame-Rame, Satu Sepeda Sejuta Sahabat&rdquo;
+        </blockquote>
+        <p>
+          Nilai yang dipegang PBJ sederhana: <strong>step by step, nikmati prosesnya</strong> —
+          kemenangan sesungguhnya bukan cuma soal podium, tapi keberanian anak untuk mulai
+          mencoba, bangkit lagi setiap kali jatuh, dan tetap ceria bersosialisasi dengan
+          teman-temannya.
+        </p>
+        <p>
+          Semua proses ini tidak lepas dari <strong>The Power of Moms &amp; Dads</strong> yang
+          selalu mendampingi di setiap sesi latihan.
+        </p>
+      </div>
+
+      <div class="about-block">
+        <h3 class="about-block__title"><i class="fa-solid fa-route"></i> Jenjang Atlet</h3>
+        <p>
+          Anak biasanya mulai belajar pushbike sejak usia <strong>2 tahun</strong>, memasuki
+          masa transisi sekitar <strong>5–6 tahun</strong>, dan banyak yang tetap lanjut sampai
+          <strong>7–8 tahun</strong> sebelum "pensiun" dari pushbike.
+        </p>
+        <p>
+          Setelah itu, PBJ menyalurkan mereka lewat kemitraan akademi ke cabang olahraga lain
+          seperti <strong>BMX Racing/Cycling, Inline Skate, dan Mini Racing/MiniGP</strong>,
+          supaya semangat berkompetisi anak tetap berlanjut. Misi jangka panjang PBJ adalah
+          menjadi <strong>feeder talenta muda</strong> untuk olahraga nasional maupun
+          internasional, dimulai dari balance bike sejak usia dini.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -799,14 +996,16 @@
         </p>
       </div>
 
-      <!-- Toggle mode tampilan galeri (muncul saat galeri Google Drive aktif):
-           "Kategori" = grid campuran dengan filter; "Folder" = jelajah per folder Drive -->
+      <!-- Toggle mode tampilan galeri (muncul saat galeri Google Drive dan/atau Sheet
+           galeri-per-sesi aktif): "Kategori" = grid campuran dari Drive dengan filter;
+           "Per Latihan" = kartu per sesi (Tanggal+Sesi) dari Google Sheet, tombol link
+           langsung ke folder Drive tiap fotografer. Lihat gallery-sessions.js. -->
       <div class="view-toggle" id="galleryViewToggle" role="group" aria-label="Mode tampilan galeri" hidden>
         <button class="view-toggle-btn view-toggle-btn--active" data-view="kategori">
           <i class="fa-solid fa-table-cells"></i> Kategori
         </button>
-        <button class="view-toggle-btn" data-view="folder">
-          <i class="fa-solid fa-folder-open"></i> Folder
+        <button class="view-toggle-btn" data-view="sesi">
+          <i class="fa-solid fa-calendar-week"></i> Per Latihan
         </button>
       </div>
 
@@ -816,8 +1015,8 @@
         <button class="filter-btn" data-filter="Latihan">
           <i class="fa-solid fa-child-reaching"></i> Latihan
         </button>
-        <button class="filter-btn" data-filter="Lomba">
-          <i class="fa-solid fa-flag-checkered"></i> Lomba
+        <button class="filter-btn" data-filter="Race">
+          <i class="fa-solid fa-flag-checkered"></i> Race
         </button>
         <button class="filter-btn" data-filter="Prestasi">
           <i class="fa-solid fa-trophy"></i> Prestasi
@@ -1031,6 +1230,199 @@
 
       <div class="faq-list">
 
+        <!-- ============================================================
+             KELOMPOK A — "Mau Gabung?" (FAQ operasional)
+             Sumber pertanyaan: DM Instagram @pushbikejakarta nyata (riset
+             2026-07-17). Tiap item punya id + tombol "salin link" supaya
+             admin bisa balas DM dengan satu link presisi ke jawaban
+             spesifik (lihat mekanik hash di main.js). JANGAN tulis nominal
+             biaya member di sini (keputusan pemilik, arahkan ke WA) dan
+             JANGAN hardcode tahun kelahiran untuk kelas race (bergeser
+             tiap tahun — taruh di Sheet Event, bukan di teks statis).
+             ============================================================ -->
+        <h3 class="faq-group-title">Mau Gabung?</h3>
+
+        <details class="faq-item" id="faq-cara-daftar">
+          <summary class="faq-question">
+            <i class="fa-solid fa-user-plus"></i>
+            Bagaimana cara gabung PBJ?
+          </summary>
+          <div class="faq-answer">
+            <p>Cara paling cepat gabung PBJ adalah datang langsung ke sesi latihan sebagai
+              <strong>non-member</strong> dengan biaya <strong>Rp50.000 per kedatangan</strong>
+              (sudah termasuk susu), tanpa perlu mendaftar dulu. Untuk jadi member resmi,
+              pendaftaran open member hanya dibuka dua kali setahun lewat link di bio Instagram
+              @pushbikejakarta, dan saat ini sedang <strong>tutup sampai awal 2027</strong>.</p>
+            <p>Cukup bawa sepeda 12 inci sendiri dan perlengkapan wajib (helm, pelindung lutut
+              &amp; siku, sepatu tertutup), lalu langsung ikut latihan Selasa, Jumat, atau Minggu
+              di JIEP Pulomas. Masih ragu? Tanya langsung ke WhatsApp admin di
+              <span data-wa-number>6285691530710</span>.</p>
+            <button type="button" class="faq-copy-btn" data-faq-id="faq-cara-daftar">
+              <i class="fa-solid fa-link"></i> Salin link jawaban ini
+            </button>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-usia">
+          <summary class="faq-question">
+            <i class="fa-solid fa-child-reaching"></i>
+            Anak saya 2 tahun, boleh ikut?
+          </summary>
+          <div class="faq-answer">
+            <p>Boleh — PBJ menerima anak <strong>mulai usia 2 tahun</strong> untuk mulai belajar
+              balance bike. Kebanyakan anak berlatih sampai masa transisi sekitar usia
+              <strong>5 sampai 6 tahun</strong>, dan banyak yang tetap lanjut hingga
+              <strong>7 sampai 8 tahun</strong> sebelum pindah ke sepeda pedal atau cabang
+              lain.</p>
+            <p>Kelas race dibagi berdasarkan tahun kelahiran, jadi anak selalu bertanding dengan
+              teman seusia. Tidak perlu buru-buru: yang penting anak sudah bisa berjalan mandiri
+              dan siap mencoba, sisanya coach yang bimbing pelan-pelan.</p>
+            <button type="button" class="faq-copy-btn" data-faq-id="faq-usia">
+              <i class="fa-solid fa-link"></i> Salin link jawaban ini
+            </button>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-trial">
+          <summary class="faq-question">
+            <i class="fa-solid fa-eye"></i>
+            Boleh coba/nonton dulu?
+          </summary>
+          <div class="faq-answer">
+            <p>Boleh banget — orang tua dan anak boleh datang dulu untuk melihat suasana latihan
+              atau langsung mencoba naik balance bike, <strong>tanpa harus jadi member</strong>
+              terlebih dahulu. Kalau anak langsung ikut latihan hari itu, biayanya sama seperti
+              jalur non-member: <strong>Rp50.000 per kedatangan</strong>, sudah termasuk susu.</p>
+            <p>Cukup pakai baju olahraga dan bawa sepeda kalau sudah punya; sepatu tertutup tetap
+              wajib bahkan untuk sesi coba-coba pertama.</p>
+            <button type="button" class="faq-copy-btn" data-faq-id="faq-trial">
+              <i class="fa-solid fa-link"></i> Salin link jawaban ini
+            </button>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-biaya">
+          <summary class="faq-question">
+            <i class="fa-solid fa-coins"></i>
+            Berapa biayanya?
+          </summary>
+          <div class="faq-answer">
+            <p>Biaya latihan dihitung per kedatangan, bukan iuran bulanan tetap:
+              <strong>Rp35.000 untuk member</strong> dan <strong>Rp50.000 untuk
+              non-member</strong>, dan keduanya <strong>sudah termasuk susu</strong> selama
+              persediaan hari itu masih ada. Tidak ada biaya pendaftaran atau formulir sama
+              sekali hanya untuk bisa datang latihan.</p>
+            <p>Nominal biaya member bisa berubah dari sesi ke sesi, jadi untuk info terbaru
+              langsung tanyakan ke WhatsApp admin di <span data-wa-number>6285691530710</span>.</p>
+            <button type="button" class="faq-copy-btn" data-faq-id="faq-biaya">
+              <i class="fa-solid fa-link"></i> Salin link jawaban ini
+            </button>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-syarat">
+          <summary class="faq-question">
+            <i class="fa-solid fa-clipboard-check"></i>
+            Apa saja syaratnya?
+          </summary>
+          <div class="faq-answer">
+            <p>Syaratnya sederhana: anak membawa
+              <strong>balance bike / pushbike 12 inci sendiri</strong> (merek bebas) dan memakai
+              perlengkapan wajib berupa <strong>helm, pelindung lutut, pelindung siku, sepatu
+              tertutup, celana panjang, dan kaos lengan panjang</strong>. Tanpa perlengkapan itu,
+              anak belum boleh turun ke arena latihan demi keamanan.</p>
+            <p>Semua bisa dipakai untuk trial maupun latihan rutin; tidak ada syarat administrasi
+              atau formulir pendaftaran untuk sekadar ikut latihan.</p>
+            <button type="button" class="faq-copy-btn" data-faq-id="faq-syarat">
+              <i class="fa-solid fa-link"></i> Salin link jawaban ini
+            </button>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-open-member">
+          <summary class="faq-question">
+            <i class="fa-solid fa-door-open"></i>
+            Masih open member?
+          </summary>
+          <div class="faq-answer">
+            <p>Saat ini pendaftaran member baru sedang <strong>tutup dan baru dibuka lagi awal
+              2027</strong>, karena open member PBJ hanya berlangsung <strong>dua kali
+              setahun</strong> dengan kuota terbatas lewat link di bio Instagram
+              @pushbikejakarta. Di luar masa open ini, anak tetap boleh ikut latihan rutin
+              sebagai <strong>non-member</strong>.</p>
+            <p>Biayanya Rp50.000 per kedatangan (termasuk susu), jadi tidak perlu menunggu open
+              member untuk mulai. Pantau bio Instagram @pushbikejakarta menjelang awal 2027
+              untuk info pembukaan pendaftaran.</p>
+            <button type="button" class="faq-copy-btn" data-faq-id="faq-open-member">
+              <i class="fa-solid fa-link"></i> Salin link jawaban ini
+            </button>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-lokasi-lain">
+          <summary class="faq-question">
+            <i class="fa-solid fa-map-pin"></i>
+            Ada latihan di Sedayu?
+          </summary>
+          <div class="faq-answer">
+            <p>Tidak ada lagi — latihan di Sedayu dulu pernah berjalan, tapi sekarang
+              <strong>sudah tidak diadakan</strong> sama sekali. Satu-satunya lokasi latihan PBJ
+              saat ini adalah <strong>JIEP Pulomas</strong>, yang juga dikenal warga sekitar
+              dengan sebutan <strong>Pacuan Kuda Pulomas</strong>, jadi pastikan datang ke lokasi
+              itu.</p>
+            <p>Jadwalnya Selasa &amp; Jumat malam serta Minggu pagi — lihat detail lengkap di FAQ
+              jadwal atau section Jadwal &amp; Lokasi di halaman ini.</p>
+            <button type="button" class="faq-copy-btn" data-faq-id="faq-lokasi-lain">
+              <i class="fa-solid fa-link"></i> Salin link jawaban ini
+            </button>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-jadwal">
+          <summary class="faq-question">
+            <i class="fa-solid fa-calendar-days"></i>
+            Latihan kapan &amp; di mana?
+          </summary>
+          <div class="faq-answer">
+            <p>Latihan reguler PBJ ada <strong>tiga sesi seminggu</strong>: Selasa dan Jumat
+              pukul <strong>20.00–22.00</strong>, serta Minggu pukul
+              <strong>09.00–11.00</strong>, semuanya berlokasi di <strong>JIEP Pulomas</strong>
+              (Pacuan Kuda Pulomas). Untuk anak yang mengejar prestasi, tersedia juga
+              <strong>kelas privat</strong> sebagai tambahan opsional di luar tiga sesi reguler
+              ini.</p>
+            <p>Datang saja di jam-jam itu — tidak perlu janjian dulu untuk sesi reguler, cukup
+              bawa sepeda dan perlengkapan wajib.</p>
+            <button type="button" class="faq-copy-btn" data-faq-id="faq-jadwal">
+              <i class="fa-solid fa-link"></i> Salin link jawaban ini
+            </button>
+          </div>
+        </details>
+
+        <details class="faq-item" id="faq-kontak">
+          <summary class="faq-question">
+            <i class="fa-brands fa-whatsapp"></i>
+            Nomor WA admin?
+          </summary>
+          <div class="faq-answer">
+            <p>Nomor WhatsApp admin/sekretaris PBJ adalah <strong><span data-wa-number>6285691530710</span></strong> — bisa
+              dihubungi langsung untuk tanya jadwal, biaya member terbaru, status open member,
+              atau pertanyaan lain seputar latihan dan pendaftaran. Tombol WhatsApp di footer
+              serta form pendaftaran situs ini juga otomatis terhubung ke nomor yang sama.</p>
+            <p>Simpan nomor ini untuk bertanya kapan saja seputar jadwal latihan, biaya, syarat,
+              atau status open member — semua pertanyaan operasional PBJ dikelola lewat WhatsApp
+              yang sama.</p>
+            <button type="button" class="faq-copy-btn" data-faq-id="faq-kontak">
+              <i class="fa-solid fa-link"></i> Salin link jawaban ini
+            </button>
+          </div>
+        </details>
+
+        <!-- ============================================================
+             KELOMPOK B — "Seputar Balance Bike & Pushbike" (FAQ edukatif)
+             14 item LAMA, aset SEO — TIDAK diubah satu karakter pun.
+             ============================================================ -->
+        <h3 class="faq-group-title">Seputar Balance Bike &amp; Pushbike</h3>
+
         <details class="faq-item">
           <summary class="faq-question">
             <i class="fa-solid fa-bicycle"></i>
@@ -1238,15 +1630,19 @@
             Komunitas balance bike non-profit untuk anak-anak Jakarta sejak 2018.
             Dibuat dengan ❤️ oleh tim Tech Pushbike Jakarta.
           </p>
-          <!-- Ikon media sosial -->
+          <!-- Ikon media sosial — SEO: link href="#" sebelumnya tidak mengarah ke
+               mana pun (bug), sekarang mengarah ke akun resmi PBJ di tiap kanal. -->
           <div class="footer-social">
-            <a href="#" class="social-link" aria-label="Instagram Pushbike Jakarta">
+            <a href="https://instagram.com/pushbikejakarta" class="social-link"
+              aria-label="Instagram Pushbike Jakarta" target="_blank" rel="noopener">
               <i class="fa-brands fa-instagram"></i>
             </a>
-            <a href="#" class="social-link" aria-label="WhatsApp Grup Pushbike Jakarta">
+            <a id="waSocialLink" class="social-link"
+              aria-label="WhatsApp Admin Pushbike Jakarta" target="_blank" rel="noopener">
               <i class="fa-brands fa-whatsapp"></i>
             </a>
-            <a href="#" class="social-link" aria-label="YouTube Pushbike Jakarta">
+            <a href="https://www.youtube.com/@pushbikejakarta6288" class="social-link"
+              aria-label="YouTube Pushbike Jakarta" target="_blank" rel="noopener">
               <i class="fa-brands fa-youtube"></i>
             </a>
           </div>
@@ -1282,11 +1678,6 @@
               <span>Jabodetabek, Indonesia</span>
             </li>
           </ul>
-          <div class="footer-tech-badge">
-            <!-- Informasi tech stack yang digunakan, sesuai README.md -->
-            <span>Powered by</span>
-            <strong>Python Django</strong>
-          </div>
         </div>
       </div>
 
@@ -1348,18 +1739,21 @@
        ============================================================ -->
   <!-- ?v= = cache-busting, naikkan angkanya tiap file JS diubah -->
   <!-- config.js = pusat konfigurasi Google Drive & Sheets (dimuat paling awal) -->
-  <script src="config.js?v=3"></script>
-  <script src="schedule.js?v=6"></script>
-  <!-- gdrive-gallery.js = galeri dari Google Drive (mode kategori & folder) -->
-  <script src="gdrive-gallery.js?v=3"></script>
+  <script src="config.js?v=5"></script>
+  <script src="schedule.js?v=8"></script>
+  <!-- gdrive-gallery.js = galeri dari Google Drive (mode Kategori & Per Latihan) -->
+  <script src="gdrive-gallery.js?v=4"></script>
+  <!-- gallery-sessions.js = galeri "Per Latihan" dari Google Sheets (dipanggil
+       gdrive-gallery.js saat pengunjung klik toggle "Per Latihan") -->
+  <script src="gallery-sessions.js?v=1"></script>
   <!-- events.js = kalender event/race dari Google Sheets -->
-  <script src="events.js?v=3"></script>
+  <script src="events.js?v=4"></script>
   <!-- instagram.js = render feed Instagram @pushbikejakarta di #instagramGrid -->
-  <script src="instagram.js?v=3"></script>
+  <script src="instagram.js?v=4"></script>
   <!-- schedule.js = data jadwal, lokasi, pengurus + fungsi render kartu -->
   <!-- Letakkan SEBELUM main.js agar data tersedia saat main.js dijalankan -->
 
-  <script src="main.js?v=4"></script>
+  <script src="main.js?v=7"></script>
   <!-- main.js = logika utama: navbar, peta Leaflet, filter, form, modal, scroll -->
   <!-- Letakkan di AKHIR body agar semua elemen HTML sudah ada saat script berjalan -->
 

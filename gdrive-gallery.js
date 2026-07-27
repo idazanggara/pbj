@@ -2,17 +2,28 @@
  * gdrive-gallery.js — Galeri dari Google Drive (section #galeri)
  *
  * CARA KERJA:
- * - Sumber foto/video adalah SATU folder induk Google Drive
+ * - Sumber foto/video mode "Kategori" adalah SATU folder induk Google Drive
  *   (DRIVE_GALLERY_FOLDER_ID di config.js). Subfolder = kategori.
  * - Dua mode tampilan (tombol toggle di atas filter):
- *   1. "Kategori" : semua media digabung, difilter per kategori
- *                   (tombol filter dibangun otomatis dari nama subfolder).
- *   2. "Folder"   : menampilkan kartu folder; klik folder → isi foldernya.
- * - Selama DRIVE_API_KEY / DRIVE_GALLERY_FOLDER_ID kosong (atau fetch
- *   gagal), galeri lokal bawaan (renderGallery di schedule.js) tetap
- *   dipakai dan toggle disembunyikan — web tidak pernah tampak rusak.
+ *   1. "Kategori"    : semua media digabung, difilter per kategori
+ *                      (tombol filter dibangun otomatis dari nama subfolder Drive).
+ *   2. "Per Latihan" : kartu per sesi latihan (Tanggal+Sesi), berisi tombol link
+ *                      langsung ke folder Drive tiap fotografer. Sumbernya Google
+ *                      SHEET (GALLERY_SESSIONS_SHEET_ID), BUKAN Drive API — logika
+ *                      fetch/render-nya ada di gallery-sessions.js (initGallerySessions),
+ *                      dipanggil dari sini secara on-demand. Alasan pakai Sheet:
+ *                      foto tiap sesi ada di folder Drive milik fotografer yang
+ *                      berbeda-beda (bukan folder Drive PBJ), jadi tidak bisa
+ *                      dipindai otomatis lewat query "'{id}' in parents" seperti
+ *                      mode Kategori.
+ * - PENTING: mode "Per Latihan" TIDAK BUTUH DRIVE_API_KEY sama sekali (decoupled).
+ *   Toggle tetap muncul selama SALAH SATU sumber (Drive ATAU Sheet sesi) terisi.
+ *   Kalau DRIVE_API_KEY/DRIVE_GALLERY_FOLDER_ID kosong (atau fetch gagal), tab
+ *   Kategori otomatis kembali ke galeri lokal bawaan (renderGallery di
+ *   schedule.js) — web tidak pernah tampak rusak.
  *
- * Bergantung pada: config.js (konstanta), schedule.js (fallback),
+ * Bergantung pada: config.js (konstanta + isSafeHttpUrl/escapeAttr/escapeHtml),
+ * schedule.js (fallback galeri lokal), gallery-sessions.js (mode Per Latihan),
  * main.js (lightbox — item Drive memakai data-type "foto"/"drive-video").
  */
 
@@ -23,20 +34,28 @@ const DRIVE_PAGE_SIZE = 100
 const driveGalleryState = {
   folders: [],          // [{ id, name }]
   filesByFolder: {},    // { folderId: [file, ...] }
-  viewMode: 'kategori', // 'kategori' | 'folder'
-  activeFilter: 'all',  // filter kategori aktif
-  openFolderId: null    // folder yang sedang dibuka pada mode folder
+  viewMode: 'kategori', // 'kategori' | 'sesi'
+  activeFilter: 'all',  // filter kategori aktif (khusus mode kategori)
+  driveReady: false     // true setelah folder & file Drive berhasil diambil
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   const grid = document.getElementById('galleryGrid')
   if (!grid) return
 
-  const isConfigured =
+  const isDriveConfigured =
     typeof DRIVE_API_KEY !== 'undefined' && DRIVE_API_KEY &&
     typeof DRIVE_GALLERY_FOLDER_ID !== 'undefined' && DRIVE_GALLERY_FOLDER_ID
+  const isSessionsConfigured =
+    typeof GALLERY_SESSIONS_SHEET_ID !== 'undefined' && GALLERY_SESSIONS_SHEET_ID
 
-  if (!isConfigured) return // Fallback: galeri lokal dari schedule.js
+  // Toggle "Kategori | Per Latihan" berguna begitu SALAH SATU sumber aktif — mode
+  // "Per Latihan" berdiri sendiri (baca Google Sheet), sama sekali tidak butuh Drive.
+  if (isDriveConfigured || isSessionsConfigured) {
+    buildDriveViewToggle()
+  }
+
+  if (!isDriveConfigured) return // Tab Kategori tetap pakai galeri lokal fallback (schedule.js)
 
   initDriveGallery().catch(error => {
     console.warn('Galeri Google Drive tidak dapat dimuat:', error)
@@ -57,8 +76,8 @@ async function initDriveGallery() {
   folders.forEach((folder, index) => {
     driveGalleryState.filesByFolder[folder.id] = filesLists[index]
   })
+  driveGalleryState.driveReady = true
 
-  buildDriveViewToggle()
   buildDriveFilterBar()
   renderDriveGallery()
 }
@@ -116,7 +135,7 @@ async function driveApi(query, fields, orderBy) {
    PEMBANGUN UI — toggle mode & filter kategori
    ================================================================ */
 
-/** Tampilkan tombol toggle "Kategori | Folder" (tersembunyi by default). */
+/** Tampilkan tombol toggle "Kategori | Per Latihan" (tersembunyi by default). */
 function buildDriveViewToggle() {
   const toggle = document.getElementById('galleryViewToggle')
   if (!toggle) return
@@ -127,7 +146,6 @@ function buildDriveViewToggle() {
       toggle.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.remove('view-toggle-btn--active'))
       btn.classList.add('view-toggle-btn--active')
       driveGalleryState.viewMode = btn.dataset.view
-      driveGalleryState.openFolderId = null
       // Filter kategori hanya relevan di mode kategori
       const filterBar = document.querySelector('#galeri .filter-bar')
       if (filterBar) filterBar.style.display = driveGalleryState.viewMode === 'kategori' ? '' : 'none'
@@ -138,7 +156,7 @@ function buildDriveViewToggle() {
 
 /**
  * Bangun ulang tombol filter dari nama subfolder Drive.
- * Mengganti tombol filter statis (Latihan/Lomba/Prestasi) sehingga
+ * Mengganti tombol filter statis (Latihan/Race/Prestasi) sehingga
  * kategori baru di Drive otomatis muncul tanpa mengubah kode.
  */
 function buildDriveFilterBar() {
@@ -167,18 +185,31 @@ function buildDriveFilterBar() {
 /* ================================================================
    RENDERER
    ================================================================ */
+
+/**
+ * renderDriveGallery()
+ * Dispatcher utama: pilih renderer sesuai `driveGalleryState.viewMode`.
+ * - 'sesi'     → serahkan ke gallery-sessions.js (baca Google Sheet, tidak
+ *               peduli status Drive sama sekali).
+ * - 'kategori' → kalau Drive belum/tidak siap (driveReady masih false —
+ *               mis. DRIVE_API_KEY kosong, atau fetch gagal), JANGAN render
+ *               grid Drive yang kosong; biarkan galeri lokal fallback dari
+ *               schedule.js (sudah dirender main.js saat load) tetap tampil.
+ */
 function renderDriveGallery() {
   const grid = document.getElementById('galleryGrid')
   if (!grid) return
 
-  if (driveGalleryState.viewMode === 'folder') {
-    if (driveGalleryState.openFolderId) {
-      renderDriveFolderContents(grid, driveGalleryState.openFolderId)
-    } else {
-      renderDriveFolderList(grid)
-    }
+  if (driveGalleryState.viewMode === 'sesi') {
+    initGallerySessions(grid)
     return
   }
+
+  if (!driveGalleryState.driveReady) {
+    if (typeof renderGallery === 'function') renderGallery('all')
+    return
+  }
+
   renderDriveKategoriGrid(grid)
 }
 
@@ -191,60 +222,6 @@ function renderDriveKategoriGrid(grid) {
     .flatMap(folder => filesByFolder[folder.id].map(file => driveCardHtml(file, folder.name)))
 
   grid.innerHTML = items.length > 0 ? items.join('') : driveEmptyHtml('Belum ada dokumentasi untuk kategori ini.')
-}
-
-/** Mode Folder: daftar kartu folder yang terdaftar di Drive. */
-function renderDriveFolderList(grid) {
-  const cards = driveGalleryState.folders.map(folder => {
-    const count = driveGalleryState.filesByFolder[folder.id].length
-    return `
-      <button class="drive-folder-card" data-folder="${escapeAttr(folder.id)}">
-        <i class="fa-solid fa-folder drive-folder-card__icon"></i>
-        <span class="drive-folder-card__name">${escapeHtml(folder.name)}</span>
-        <span class="drive-folder-card__count">${count} media</span>
-      </button>`
-  }).join('')
-
-  grid.innerHTML = cards || driveEmptyHtml('Belum ada folder galeri yang terdaftar.')
-
-  grid.querySelectorAll('.drive-folder-card').forEach(card => {
-    card.addEventListener('click', () => {
-      driveGalleryState.openFolderId = card.dataset.folder
-      renderDriveGallery()
-    })
-  })
-}
-
-/** Mode Folder → isi salah satu folder + tombol kembali. */
-function renderDriveFolderContents(grid, folderId) {
-  const folder = driveGalleryState.folders.find(f => f.id === folderId)
-  if (!folder) {
-    driveGalleryState.openFolderId = null
-    renderDriveGallery()
-    return
-  }
-
-  const files = driveGalleryState.filesByFolder[folderId]
-  const cards = files.map(file => driveCardHtml(file, folder.name)).join('')
-
-  grid.innerHTML = `
-    <div class="drive-folder-header">
-      <button class="btn btn--ghost drive-back-btn" id="driveBackBtn">
-        <i class="fa-solid fa-arrow-left"></i> Semua Folder
-      </button>
-      <span class="drive-folder-header__title">
-        <i class="fa-solid fa-folder-open"></i> ${escapeHtml(folder.name)}
-      </span>
-    </div>
-    ${cards || driveEmptyHtml('Folder ini masih kosong.')}`
-
-  const backBtn = document.getElementById('driveBackBtn')
-  if (backBtn) {
-    backBtn.addEventListener('click', () => {
-      driveGalleryState.openFolderId = null
-      renderDriveGallery()
-    })
-  }
 }
 
 /* ================================================================

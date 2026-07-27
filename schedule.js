@@ -261,8 +261,16 @@ function renderPengurusCards() {
 
     // Buat inisial dari nama: ambil huruf pertama tiap kata, maks 2 karakter
     // Contoh: "Alisha Amelia Dwi Putri" → "AA"
+    // GUARD: nama diketik manual oleh admin non-dev di atas, jadi format-nya
+    // tidak selalu rapi — mis. ada dua spasi tak sengaja ("Budi  Santoso").
+    // Tanpa .filter(Boolean), split(' ') akan menyisakan elemen string kosong
+    // ('') di array, lalu w[0] pada elemen kosong itu jadi undefined dan
+    // .toUpperCase() melempar TypeError yang mematikan seluruh render kartu
+    // pengurus. .filter(Boolean) membuang elemen kosong itu SEBELUM diproses,
+    // tanpa mengubah array nama.split() aslinya (immutable).
     const getInitial = (nama) =>
       nama.split(' ')                        // Pecah nama jadi array kata
+        .filter(Boolean)                   // Buang elemen kosong akibat spasi ganda
         .slice(0, 2)                       // Ambil maksimal 2 kata pertama
         .map(w => w[0].toUpperCase())      // Ambil huruf pertama, jadikan kapital
         .join('')                          // Gabungkan → "AA"
@@ -357,15 +365,15 @@ function renderLocationList() {
              Contoh URL https://youtu.be/AbC123 → youtubeId: "AbC123"
    - Biarkan `src`/`youtubeId` KOSONG untuk menampilkan kartu placeholder.
    - tipe     : 'foto' | 'video'
-   - kategori : 'Latihan' | 'Lomba' | 'Prestasi'  (untuk filter)
+   - kategori : 'Latihan' | 'Race' | 'Prestasi'  (untuk filter)
    - caption  : keterangan singkat di bawah gambar
    ================================================================ */
 const galleryData = [
   { tipe: 'foto',  kategori: 'Latihan',  src: '', caption: 'Latihan rutin di JIEP Pulomas' },
-  { tipe: 'video', kategori: 'Lomba',    src: '', youtubeId: '', caption: 'Cuplikan serunya race day' },
+  { tipe: 'video', kategori: 'Race',     src: '', youtubeId: '', caption: 'Cuplikan serunya race day' },
   { tipe: 'foto',  kategori: 'Prestasi', src: '', caption: 'Podium juara anggota PBJ' },
   { tipe: 'foto',  kategori: 'Latihan',  src: '', caption: 'Kebersamaan Mama & Papa Racing' },
-  { tipe: 'foto',  kategori: 'Lomba',    src: '', caption: 'Anak-anak beradu di lintasan' },
+  { tipe: 'foto',  kategori: 'Race',     src: '', caption: 'Anak-anak beradu di lintasan' },
   { tipe: 'video', kategori: 'Latihan',  src: '', youtubeId: '', caption: 'Tips latihan pertama' },
 ]
 
@@ -376,7 +384,7 @@ function galleryIcon(item) {
   if (item.tipe === 'video') return 'fa-solid fa-play'
   const map = {
     'Latihan': 'fa-solid fa-child-reaching',
-    'Lomba': 'fa-solid fa-flag-checkered',
+    'Race': 'fa-solid fa-flag-checkered',
     'Prestasi': 'fa-solid fa-trophy'
   }
   return map[item.kategori] || 'fa-solid fa-image'
@@ -385,7 +393,7 @@ function galleryIcon(item) {
 /**
  * renderGallery(filter)
  * Merender item galeri ke #galleryGrid.
- * @param {string} filter - 'all' | 'Latihan' | 'Lomba' | 'Prestasi'
+ * @param {string} filter - 'all' | 'Latihan' | 'Race' | 'Prestasi'
  */
 function renderGallery(filter = 'all') {
   const grid = document.getElementById('galleryGrid')

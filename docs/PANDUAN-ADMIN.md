@@ -112,8 +112,8 @@ membaca folder Drive tadi. Gratis, tidak perlu kartu kredit.
    klik **Agree and Continue**.
 3. Di bagian atas halaman ada tulisan **Select a project**. Klik itu,
    lalu klik **New Project** di kanan atas jendela yang muncul.
-4. Isi nama project: `website-pbj`, lalu klik **Create**. Tunggu sebentar,
-   lalu pastikan project `website-pbj` yang terpilih di bagian atas.
+4. Isi nama project: `website-pushbikejakarta`, lalu klik **Create**.
+   Tunggu sebentar, lalu pastikan project itu yang terpilih di bagian atas.
 5. Sekarang aktifkan izin Drive:
    - Di kotak pencarian paling atas, ketik: `Google Drive API`, tekan Enter.
    - Klik hasil bernama **Google Drive API**.
@@ -122,17 +122,34 @@ membaca folder Drive tadi. Gratis, tidak perlu kartu kredit.
    - Di kotak pencarian atas, ketik: `Credentials`, pilih
      **Credentials (APIs & Services)**.
    - Klik **+ Create Credentials** di bagian atas, pilih **API key**.
-   - Akan muncul jendela berisi kode panjang, contohnya:
-     `AIzaSyB1234567890abcdefghijklmnop`
-   - Salin kode itu, tempel di catatan dengan label **"KUNCI API"**.
-7. **(Sangat disarankan) Kunci supaya tidak disalahgunakan:**
-   - Masih di jendela yang sama, klik **Edit API key**
-     (atau klik nama key-nya di daftar).
-   - Di bagian **API restrictions**, pilih **Restrict key**, lalu centang
-     hanya **Google Drive API**.
-   - Di bagian **Application restrictions** pilih **Websites**, klik
-     **Add**, lalu isi alamat website PBJ (contoh: `https://pushbikejakarta.com/*`).
-   - Klik **Save**.
+   - Muncul jendela **"Create API key"**. Isi langsung di jendela ini
+     (jangan klik Create dulu sebelum 2 pembatasan di bawah diisi):
+     - **Name**: beri nama, misal `pushbikejakarta-web-drive`.
+     - **Select API restrictions**: pilih **hanya "Google Drive API"**.
+     - **"Authenticate API calls through a service account"**: JANGAN dicentang.
+     - **Application restrictions**: pilih **Websites**, klik **Add**,
+       isi persis: `pushbikejakarta.vercel.app/*`
+       (kalau mau tes lokal dulu, tambahkan juga `localhost:8000/*`).
+   - Klik **Create**. Muncul kode panjang, contohnya
+     `AIzaSyB1234567890abcdefghijklmnop`. Salin, simpan di catatan
+     dengan label **"KUNCI API"**.
+7. **(Sangat disarankan) Batasi kuota harian** supaya kalau kunci
+   disalahgunakan orang lain, dampaknya cuma "galeri berhenti sementara",
+   bukan tagihan: buka **APIs & Services → Google Drive API → Quotas**,
+   set batas request harian yang wajar.
+
+> **Sudah dikerjakan (27 Juli 2026).** Setup di atas sudah selesai untuk
+> project **`website-pushbikejakarta`** (project number `765706601825`).
+> Kunci API sudah terpasang di `config.js` dan pembatasan referrer-nya
+> sudah diverifikasi aktif (kunci hanya jalan dari domain website PBJ).
+> Bagian C ini disimpan sebagai rujukan bila kunci perlu dibuat ulang
+> atau pengurus berganti.
+
+> **PENTING soal referrer:** alamat di Application restrictions harus
+> PERSIS sama dengan domain website yang aktif (`pushbikejakarta.vercel.app`).
+> Kalau salah ketik atau domain berubah (mis. pindah ke `pushbikejakarta.org`),
+> galeri Drive akan kosong walau semua yang lain benar — perbarui daftar
+> referrer di Credentials.
 
 > **Perlu diketahui:** kunci API ini memang akan terlihat di kode website,
 > dan itu tidak apa-apa. Kunci ini hanya bisa dipakai untuk MEMBACA file

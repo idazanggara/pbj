@@ -1,3 +1,16 @@
 # File sistem macOS, tidak perlu masuk repository
 .DS_Store
 **/.DS_Store
+
+# ── Folder kerja internal PBJ (JANGAN di-push) ──────────────────────────
+# Semua artefak riset & rencana dikumpulkan di docs-hidden/ supaya mudah
+# dibersihkan: hapus repo = semua ikut hilang, tidak ada sisa di laptop.
+docs-hidden/
+
+# Snapshot sementara Playwright MCP (berisi data mentah DM, ada nama asli).
+# Dibuat ulang otomatis saat MCP dipakai; isi lama sudah dipindah ke
+# docs-hidden/research/.
+.playwright-mcp/
+
+# Data lokal Claude Code (rencana, setting lokal) — bukan untuk repo publik.
+.claude/

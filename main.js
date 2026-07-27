@@ -18,12 +18,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ================================================================
      STEP 1: Render Data dari schedule.js
-     Fungsi-fungsi ini ada di schedule.js yang di-load sebelum main.js
+     Fungsi-fungsi ini ada di schedule.js yang di-load sebelum main.js.
+     Dibungkus try/catch: data jadwal/pengurus/lokasi/galeri diisi manual
+     oleh admin non-dev di schedule.js, jadi satu typo di sana (mis. nama
+     dengan format aneh) bisa membuat salah satu fungsi render error.
+     Tanpa try/catch, error itu akan MENGHENTIKAN seluruh callback
+     DOMContentLoaded — navbar, peta, form pendaftaran ikut mati padahal
+     tidak ada hubungannya. Dengan try/catch, bagian lain situs tetap
+     jalan walau satu section render gagal.
      ================================================================ */
-  renderScheduleCards('all')   // Tampilkan semua kartu jadwal
-  renderPengurusCards()        // Render kartu pengurus
-  renderLocationList()         // Render list lokasi sidebar + opsi form
-  renderGallery('all')         // Render galeri foto & video
+  try {
+    renderScheduleCards('all')   // Tampilkan semua kartu jadwal
+    renderPengurusCards()        // Render kartu pengurus
+    renderLocationList()         // Render list lokasi sidebar + opsi form
+    renderGallery('all')         // Render galeri foto & video
+  } catch (error) {
+    console.warn('Render data awal (jadwal/pengurus/lokasi/galeri) gagal:', error)
+  }
 
   /* ================================================================
      STEP 2: Navbar — Efek glassmorphism saat scroll
@@ -282,13 +293,43 @@ document.addEventListener('DOMContentLoaded', () => {
      STEP 6: Form Pendaftaran — Validasi & Kirim ke WhatsApp Admin
      ================================================================ */
 
-  // ⬇️ GANTI NOMOR INI dengan nomor WhatsApp admin/sekretaris PBJ
-  // Format: kode negara + nomor tanpa 0 di depan (contoh: 628123456789)
-  const ADMIN_WA_NUMBER = '6285691530710'
+  // ADMIN_WA_NUMBER didefinisikan SATU KALI di config.js (dimuat sebelum
+  // main.js) — lihat komentar di sana untuk cara ganti nomornya. Blok di
+  // bawah ini menyebarkan nomor itu ke SEMUA tempat yang menampilkannya:
+  // link WhatsApp (footer, form) DAN teks (FAQ + JSON-LD). Dibungkus
+  // try/catch supaya kalau ada yang meleset di sini, bagian lain halaman
+  // (navbar, peta, form) tetap jalan normal.
+  try {
+    // Tombol WhatsApp di baris kontak footer
+    const waAdminLink = document.getElementById('waAdminLink')
+    if (waAdminLink) waAdminLink.href = `https://wa.me/${ADMIN_WA_NUMBER}`
 
-  // Auto-update semua link WA di halaman agar cukup ganti variabel di atas
-  const waAdminLink = document.getElementById('waAdminLink')
-  if (waAdminLink) waAdminLink.href = `https://wa.me/${ADMIN_WA_NUMBER}`
+    // Ikon WhatsApp di grup ikon sosial footer
+    const waSocialLink = document.getElementById('waSocialLink')
+    if (waSocialLink) waSocialLink.href = `https://wa.me/${ADMIN_WA_NUMBER}`
+
+    // Teks FAQ yang menampilkan nomor WA — HTML menandainya dengan
+    // <span data-wa-number>...</span>, isi aslinya di HTML cuma fallback
+    // (kalau JS gagal jalan, pengunjung masih lihat nomor, bukan kosong).
+    document.querySelectorAll('[data-wa-number]').forEach(el => {
+      el.textContent = ADMIN_WA_NUMBER
+    })
+
+    // JSON-LD FAQPage (di <head>) tidak bisa langsung baca variabel JS
+    // karena isinya harus tetap JSON murni. Trik: teks jawaban yang
+    // menyebut nomor WA ditulis dengan placeholder literal
+    // "__ADMIN_WA_NUMBER__" (tetap JSON valid, cuma potongan string),
+    // lalu di sini kita ganti jadi nomor sungguhan. Dicek dulu dengan
+    // .includes() supaya blok JSON-LD lain (WebSite, SportsClub) yang
+    // tidak punya placeholder ini tidak ikut ditulis ulang tanpa perlu.
+    document.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
+      if (script.textContent.includes('__ADMIN_WA_NUMBER__')) {
+        script.textContent = script.textContent.replaceAll('__ADMIN_WA_NUMBER__', ADMIN_WA_NUMBER)
+      }
+    })
+  } catch (error) {
+    console.warn('Gagal mengisi nomor WA admin di halaman:', error)
+  }
 
   const form = document.getElementById('registerForm')
   const submitBtn = document.getElementById('submitBtn')
@@ -523,6 +564,131 @@ document.addEventListener('DOMContentLoaded', () => {
   // Update tahun copyright footer otomatis (tidak pernah usang)
   const footerYear = document.getElementById('footerYear')
   if (footerYear) footerYear.textContent = new Date().getFullYear()
+
+  /* ================================================================
+     STEP 10: FAQ Kelompok A — Buka via Link (Hash) + Tombol Salin
+     Tujuan: admin bisa membalas DM WhatsApp/Instagram dengan SATU link
+     yang langsung membuka jawaban spesifik, tanpa orang tua harus
+     scroll & cari sendiri di antara 23 pertanyaan FAQ.
+
+     CARA KERJA:
+     1. Saat halaman dibuka dengan URL berakhiran '#faq-xxx' (atau saat
+        hash berubah tanpa reload, mis. diklik dari link internal), cari
+        <details> dengan id itu, buka otomatis, lalu scroll ke situ.
+     2. 'block: center' dipakai (bukan 'start') karena navbar melayang
+        tetap (position: fixed) setinggi ±75px — kalau elemen di-scroll
+        ke paling atas viewport, bagian atasnya akan ketutup navbar.
+     3. Hash dari URL SELALU divalidasi lewat whitelist FAQ_GROUP_A_IDS
+        dulu sebelum dipakai sebagai id pencarian — mencegah hash iseng
+        atau rusak dipakai langsung sebagai selector pencarian elemen.
+     4. Tiap FAQ Kelompok A punya tombol "Salin link jawaban ini" yang
+        menyalin URL halaman + hash id tersebut ke clipboard, supaya
+        admin tinggal klik-salin-tempel ke chat orang tua.
+     ================================================================ */
+  try {
+    // Whitelist id FAQ Kelompok A yang valid — HANYA id di daftar ini yang
+    // boleh dipakai untuk mencari elemen di halaman lewat location.hash.
+    const FAQ_GROUP_A_IDS = [
+      'faq-cara-daftar', 'faq-usia', 'faq-trial', 'faq-biaya', 'faq-syarat',
+      'faq-open-member', 'faq-lokasi-lain', 'faq-jadwal', 'faq-kontak',
+    ]
+
+    // openFaqFromHash()
+    // Baca hash yang berlaku saat ini: utamakan location.hash (kalau user
+    // baru saja klik link '#faq-xxx' di dalam halaman → hashchange), kalau
+    // kosong pakai window.__initialFaqHash (hash asli dari URL saat halaman
+    // pertama dibuka, sudah dibuang dari address bar oleh <script> pertama
+    // di <head> — lihat komentar di sana untuk alasannya). Kalau cocok
+    // salah satu id di whitelist: buka <details>-nya lalu scroll ke situ.
+    function openFaqFromHash() {
+      const rawHash = location.hash || window.__initialFaqHash || ''
+      const hashId = decodeURIComponent(rawHash.slice(1)) // buang '#' di depan
+      if (!FAQ_GROUP_A_IDS.includes(hashId)) return // hash tidak dikenali → diamkan saja
+
+      const target = document.getElementById(hashId)
+      if (!target) return // jaga-jaga kalau elemen belum/tidak ada di DOM
+
+      target.open = true
+      target.scrollIntoView({ block: 'center', behavior: 'smooth' })
+    }
+
+    openFaqFromHash() // Jalankan sekali saat halaman pertama dimuat
+
+    // Jalankan ULANG beberapa kali dengan jeda bertahap. Alasan: section DI
+    // ATAS FAQ (galeri Drive, event Sheets, feed Instagram) memuat datanya
+    // lewat fetch ASINKRON yang baru selesai setelah DOMContentLoaded —
+    // begitu section itu selesai render, tingginya berubah, dan itu
+    // MENGGESER posisi FAQ di halaman walau scrollY tidak berubah. Tanpa
+    // pengulangan ini, scroll pertama bisa "benar sesaat" lalu meleset
+    // begitu galeri/feed di atasnya selesai dimuat (terverifikasi lewat
+    // testing lokal — geser bisa terjadi lebih dari sekali, jadi dicoba
+    // ulang di beberapa titik waktu, bukan cuma sekali).
+    setTimeout(openFaqFromHash, 600)
+    setTimeout(openFaqFromHash, 1800)
+
+    // 'hashchange' terpicu kalau hash berubah TANPA reload halaman penuh
+    // (mis. pengguna klik link '#faq-usia' saat sudah berada di halaman ini)
+    window.addEventListener('hashchange', openFaqFromHash)
+
+    // fallbackCopyText(text)
+    // Cara salin teks ke clipboard untuk browser/konteks yang tidak
+    // mendukung navigator.clipboard (mis. dibuka lewat http:// biasa,
+    // atau WebView Instagram versi lama). Trik lama: taruh teks di
+    // <textarea> tersembunyi, seleksi semua isinya, lalu panggil
+    // document.execCommand('copy').
+    function fallbackCopyText(text) {
+      const textarea = document.createElement('textarea')
+      textarea.value = text
+      textarea.style.position = 'fixed' // supaya tidak menggeser scroll halaman
+      textarea.style.opacity = '0'
+      document.body.appendChild(textarea)
+      textarea.focus()
+      textarea.select()
+      try {
+        document.execCommand('copy')
+      } catch (copyError) {
+        console.warn('Gagal menyalin link FAQ:', copyError)
+      }
+      document.body.removeChild(textarea)
+    }
+
+    // showCopyFeedback(button)
+    // Ubah teks tombol sebentar jadi "Tersalin!" sebagai umpan balik visual,
+    // lalu kembalikan ke teks semula setelah 1.5 detik.
+    function showCopyFeedback(button) {
+      const originalHtml = button.innerHTML
+      button.innerHTML = '<i class="fa-solid fa-check"></i> Tersalin!'
+      setTimeout(() => {
+        button.innerHTML = originalHtml
+      }, 1500)
+    }
+
+    // Pasang listener klik ke semua tombol "Salin link jawaban ini"
+    document.querySelectorAll('.faq-copy-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const faqId = button.dataset.faqId
+        if (!FAQ_GROUP_A_IDS.includes(faqId)) return // jaga-jaga kalau id tombol typo
+
+        const shareUrl = `${location.origin}${location.pathname}#${faqId}`
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(shareUrl)
+            .then(() => showCopyFeedback(button))
+            .catch(() => {
+              fallbackCopyText(shareUrl)
+              showCopyFeedback(button)
+            })
+        } else {
+          fallbackCopyText(shareUrl)
+          showCopyFeedback(button)
+        }
+      })
+    })
+  } catch (error) {
+    // Kalau mekanik FAQ ini gagal karena sebab apa pun, jangan sampai
+    // mematikan seluruh halaman — FAQ tetap bisa dibuka manual dengan klik.
+    console.warn('Mekanik share-link FAQ gagal dimuat:', error)
+  }
 
   // (Pesan debug console dihapus: tidak ada console.log di kode production)
 })
