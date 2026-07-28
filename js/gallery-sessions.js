@@ -136,8 +136,19 @@ function groupSessionRows(rows) {
     groupMap.set(key, { tanggal: row.tanggal, sesi: row.sesi, links })
   })
 
-  // Urutkan dari tanggal terbaru dulu — format YYYY-MM-DD aman dibandingkan sebagai string
-  return Array.from(groupMap.values()).sort((a, b) => b.tanggal.localeCompare(a.tanggal))
+  // Urutkan dari tanggal terbaru dulu, paling kiri/atas. Dibaca lewat parseTanggalId
+  // (dari config.js, sama dengan events.js) karena teks Tanggal bisa ISO ("2026-07-06")
+  // MAUPUN sudah diformat ulang Google Sheets jadi teks Indonesia ("Senin, 6 Juli 2026")
+  // kalau kolomnya bertipe Date — membandingkan sebagai string mentah (localeCompare)
+  // salah untuk format Indonesia (mis. "26 Juli" < "6 Juli" secara alfabet).
+  return Array.from(groupMap.values())
+    .sort((a, b) => {
+      const ta = parseTanggalId(a.tanggal)
+      const tb = parseTanggalId(b.tanggal)
+      const ka = isNaN(ta) ? -Infinity : ta
+      const kb = isNaN(tb) ? -Infinity : tb
+      return kb - ka
+    })
 }
 
 /* ================================================================

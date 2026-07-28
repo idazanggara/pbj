@@ -104,6 +104,35 @@ const INSTAGRAM_FEED_URL = 'data/instagram-feed-sample.json'
    kosong saat koneksi ke Google/Behold macet */
 const FETCH_TIMEOUT_MS = 8000
 
+// Nama bulan Indonesia → indeks bulan JavaScript (0 = Januari), dipakai parseTanggalId
+const BULAN_ID = {
+  januari: 0, februari: 1, maret: 2, april: 3, mei: 4, juni: 5,
+  juli: 6, agustus: 7, september: 8, oktober: 9, november: 10, desember: 11
+}
+
+/**
+ * parseTanggalId(text) → timestamp (ms) atau NaN
+ * Kolom "Tanggal" di Sheet (event maupun galeri per latihan) bisa berisi teks ISO
+ * ("2026-07-12"), "12/07/2026", ATAU teks Indonesia ("12 Juli 2026" / "Senin, 6 Juli
+ * 2026" — muncul otomatis kalau kolom Sheet-nya bertipe Date, Google Sheets memformat
+ * ulang jadi teks lokal). Dipakai untuk MENGURUTKAN tanggal secara kronologis — JANGAN
+ * bandingkan teks tanggal sebagai string mentah (localeCompare), karena untuk format
+ * Indonesia hasilnya salah (mis. "26 Juli" < "6 Juli" secara alfabet padahal 6 lebih
+ * awal). Kalau tak dikenali → NaN (pemanggil menaruhnya paling belakang).
+ */
+function parseTanggalId(text) {
+  const s = String(text || '').toLowerCase()
+  const id = s.match(/(\d{1,2})\s+([a-z]+)\s+(\d{4})/)
+  if (id && BULAN_ID[id[2]] !== undefined) {
+    return new Date(Number(id[3]), BULAN_ID[id[2]], Number(id[1])).getTime()
+  }
+  const iso = s.match(/(\d{4})-(\d{1,2})-(\d{1,2})/)
+  if (iso) return new Date(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3])).getTime()
+  const dmy = s.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/)
+  if (dmy) return new Date(Number(dmy[3]), Number(dmy[2]) - 1, Number(dmy[1])).getTime()
+  return NaN
+}
+
 /**
  * fetchWithTimeout(url)
  * fetch dengan batas waktu; setelah lewat, promise ditolak sehingga

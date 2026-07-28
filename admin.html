@@ -101,6 +101,57 @@
       color: #e0433c;
       font-size: 0.88rem;
     }
+
+    /* Panduan isi data (tutorial di halaman, lihat #adminGuide) */
+    .admin-guide__title {
+      font-size: 1.1rem;
+      color: var(--clr-text);
+      margin-bottom: 6px;
+    }
+    .admin-guide__intro { color: var(--clr-text-muted); margin-bottom: 16px; font-size: 0.92rem; }
+    .admin-guide__item {
+      border: 1px solid rgba(255, 107, 0, 0.25);
+      border-radius: var(--radius-md, 14px);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .admin-guide__item summary {
+      padding: 14px 18px;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--clr-text);
+      background: rgba(255, 107, 0, 0.06);
+    }
+    .admin-guide__item summary:hover { background: rgba(255, 107, 0, 0.12); }
+    .admin-guide__item[open] summary { border-bottom: 1px solid rgba(255, 107, 0, 0.25); }
+    .admin-guide__body {
+      padding: 14px 18px 18px;
+      color: var(--clr-text-muted);
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+    .admin-guide__body h4 { color: var(--clr-text); font-size: 0.9rem; margin: 14px 0 6px; }
+    .admin-guide__body h4:first-child { margin-top: 0; }
+    .admin-guide__body table { width: 100%; border-collapse: collapse; margin: 8px 0 14px; font-size: 0.82rem; }
+    .admin-guide__body th, .admin-guide__body td { border: 1px solid rgba(255, 107, 0, 0.2); padding: 6px 8px; text-align: left; vertical-align: top; }
+    .admin-guide__body th { background: rgba(255, 107, 0, 0.06); color: var(--clr-text); }
+    .admin-guide__body code {
+      background: rgba(255, 107, 0, 0.1);
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: var(--clr-text);
+      font-size: 0.85em;
+    }
+    .admin-guide__example {
+      background: var(--clr-bg);
+      border-left: 3px solid var(--clr-orange);
+      padding: 10px 14px;
+      margin: 8px 0 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+    .admin-guide__body ul { padding-left: 20px; margin: 6px 0 14px; }
+    .admin-guide__body li { margin-bottom: 4px; }
   </style>
 </head>
 
@@ -144,17 +195,103 @@
           <!-- Kartu diisi oleh buildAdminCards() di script, berdasarkan config.js -->
         </div>
 
-        <p class="admin-note">
-          <strong>Cara kerja singkat:</strong><br />
-          • <strong>Galeri (Kategori)</strong>: upload foto/video ke subfolder kategori di folder
-          Drive (subfolder baru = kategori/filter baru di website).<br />
-          • <strong>Galeri (Per Latihan)</strong>: tambah/edit/hapus baris di Google Sheet
-          (kolom: Tanggal, Sesi, Fotografer, LinkDrive — satu baris per link fotografer).<br />
-          • <strong>Event</strong>: tambah/edit/hapus baris di Google Sheet
-          (kolom: Nama, Tanggal, Lokasi, Kategori, Deskripsi, LinkInfo, LinkMedia, Status).<br />
-          • Perubahan tampil otomatis di website tanpa menyentuh kode.<br />
-          • Panduan setup lengkap ada di komentar file <code>config.js</code>.
-        </p>
+        <div id="adminGuide">
+          <h2 class="admin-guide__title"><i class="fa-solid fa-graduation-cap"></i> Panduan Isi Data</h2>
+          <p class="admin-guide__intro">
+            Klik judul di bawah untuk buka petunjuknya. Semua bisa dikerjakan langsung di
+            Google Sheets / Drive lewat tombol di atas — tidak perlu ubah kode apa pun, dan
+            perubahan tampil otomatis di website (biasanya dalam hitungan detik sampai
+            beberapa menit, cukup refresh halaman).
+          </p>
+
+          <details class="admin-guide__item">
+            <summary><i class="fa-solid fa-table-list"></i> Cara isi data Event &amp; Race</summary>
+            <div class="admin-guide__body">
+              <p>
+                Buka lewat kartu <strong>"Kelola Event"</strong> di atas. Satu baris sheet
+                = satu kartu event di website. Baris pertama (judul kolom) JANGAN diubah/dihapus.
+              </p>
+              <table>
+                <tr><th>Kolom</th><th>Isi dengan</th></tr>
+                <tr><td><code>Nama</code></td><td>Nama event. WAJIB diisi — baris tanpa Nama dianggap kosong &amp; tidak tampil.</td></tr>
+                <tr><td><code>Tanggal</code></td><td>Bebas format asal jelas, mis. <code>Minggu, 20 September 2026</code> atau <code>2026-09-20</code>.</td></tr>
+                <tr><td><code>Lokasi</code></td><td>Nama tempat, mis. <code>JIEP Pulomas, Jakarta Timur</code>.</td></tr>
+                <tr><td><code>Kategori</code></td><td>Label bebas yang tampil di kartu, mis. <code>Race</code>, <code>Fun Race</code>, <code>Latber Akbar</code>.</td></tr>
+                <tr><td><code>Deskripsi</code></td><td>Kalimat singkat tentang event (boleh kosong).</td></tr>
+                <tr><td><code>LinkInfo</code></td><td>Link poster/pendaftaran (boleh kosong). Boleh tanpa <code>https://</code> asal berupa alamat web, mis. <code>bit.ly/daftar-funrace</code> — otomatis dilengkapi.</td></tr>
+                <tr><td><code>LinkMedia</code></td><td>Link foto/video event (boleh kosong): folder Drive, ATAU link postingan Instagram (<code>instagram.com/p/...</code>) supaya muncul sebagai popup foto langsung di website.</td></tr>
+                <tr><td><code>Status</code></td><td>Ketik persis <code>upcoming</code> (akan datang) atau <code>selesai</code>. Selain dua kata itu (mis. salah ketik) dianggap "akan datang" — besar/kecil huruf tidak masalah.</td></tr>
+              </table>
+              <p><strong>Urutan tampil otomatis:</strong> tanggal terbaru paling depan. Kalau ada beberapa event bertanggal SAMA, yang statusnya <code>upcoming</code> didahulukan dari yang <code>selesai</code> — jadi cukup ganti Status jadi <code>selesai</code> setelah event lewat, tidak perlu pindah-pindah baris.</p>
+              <div class="admin-guide__example">
+                Contoh satu baris: <code>Fun Race Pulomas Cup | Minggu, 20 September 2026 | JIEP Pulomas, Jakarta Timur | Fun Race | Race santai untuk semua member | bit.ly/daftar-funrace | https://drive.google.com/drive/folders/xxxxx | upcoming</code>
+              </div>
+              <p>Event sudah lewat? Cukup ubah kolom Status jadi <code>selesai</code> — tidak perlu dihapus. Mau menghapus event? Hapus barisnya langsung (klik kanan nomor baris → Delete row).</p>
+            </div>
+          </details>
+
+          <details class="admin-guide__item">
+            <summary><i class="fa-solid fa-calendar-week"></i> Cara isi data Galeri Per Latihan</summary>
+            <div class="admin-guide__body">
+              <p>
+                Buka lewat kartu <strong>"Kelola Galeri Per Latihan"</strong> di atas. Dipakai untuk
+                dokumentasi per sesi latihan yang fotonya ada di Drive PRIBADI tiap fotografer
+                (bukan Drive PBJ) — website hanya menautkan link-nya, bukan menampilkan fotonya
+                langsung.
+              </p>
+              <table>
+                <tr><th>Kolom</th><th>Isi dengan</th></tr>
+                <tr><td><code>Tanggal</code></td><td>Sebaiknya format <code>YYYY-MM-DD</code> (mis. <code>2026-07-14</code>) supaya rapi &amp; konsisten, tapi format Indonesia seperti <code>Minggu, 14 Juli 2026</code> juga tetap terbaca &amp; terurut dengan benar.</td></tr>
+                <tr><td><code>Sesi</code></td><td>Nama sesi bebas, mis. <code>Latihan Pagi</code>, <code>Latihan Minggu</code>, atau <code>Race Day</code>.</td></tr>
+                <tr><td><code>Fotografer</code></td><td>Nama fotografer/pemilik folder — jadi tulisan di tombol kartu.</td></tr>
+                <tr><td><code>LinkDrive</code></td><td>Link folder Drive fotografer tsb. WAJIB diawali <code>https://</code> persis (beda dari LinkInfo/LinkMedia di sheet Event) — biasanya sudah otomatis begitu kalau disalin lewat tombol "Bagikan / Share" di Drive.</td></tr>
+              </table>
+              <p><strong>Satu sesi, banyak fotografer?</strong> Isi beberapa baris dengan Tanggal + Sesi yang SAMA PERSIS (termasuk besar/kecil huruf &amp; spasi), beda hanya di Fotografer &amp; LinkDrive — website otomatis menggabungkannya jadi satu kartu berisi satu tombol per fotografer.</p>
+              <p><strong>Urutan tampil otomatis:</strong> tanggal terbaru paling kiri/atas — tidak perlu diurutkan manual di sheet.</p>
+              <div class="admin-guide__example">
+                Contoh 2 baris untuk sesi yang sama (2 fotografer):<br />
+                <code>2026-07-14 | Latihan Pagi | Ayah Zeryl | https://drive.google.com/drive/folders/aaaa</code><br />
+                <code>2026-07-14 | Latihan Pagi | Yudaavrian | https://drive.google.com/drive/folders/bbbb</code>
+              </div>
+              <p>Pastikan folder Drive fotografer sudah dibagikan minimal "Siapa saja yang memiliki link: Pelihat" — kalau masih dibatasi, orang yang klik tombolnya di website akan diminta izin akses.</p>
+            </div>
+          </details>
+
+          <details class="admin-guide__item">
+            <summary><i class="fa-brands fa-google-drive"></i> Cara upload &amp; kasih nama foto/video (Galeri Kategori)</summary>
+            <div class="admin-guide__body">
+              <p>
+                Buka lewat kartu <strong>"Kelola Galeri Kategori"</strong> di atas. Masuk ke
+                subfolder yang sesuai (mis. <code>Latihan</code>, <code>Race</code>,
+                <code>Prestasi</code>), lalu upload foto/video ke situ. Mau bikin kategori
+                baru? Buat subfolder baru dengan nama kategorinya — otomatis jadi tombol
+                filter baru di website, tidak perlu lapor developer.
+              </p>
+              <h4>Cara kasih nama file yang bagus</h4>
+              <p>
+                Nama file OTOMATIS jadi tulisan caption di bawah foto di website (tanda
+                <code>-</code> dan <code>_</code> berubah jadi spasi, huruf besar/kecil ikut
+                nama file apa adanya). Jadi:
+              </p>
+              <ul>
+                <li>Pakai nama yang jelas &amp; deskriptif, tanda hubung <code>-</code> sebagai pemisah kata: <code>latihan-minggu-start-gate.jpg</code> → tampil sebagai "latihan minggu start gate".</li>
+                <li>Hindari nama bawaan kamera/HP seperti <code>IMG_1234.jpg</code> atau <code>VID_5678.mp4</code> — captionnya jadi tidak enak dibaca ("img 1234").</li>
+                <li>Tidak perlu kasih angka urutan di depan nama file untuk mengatur urutan tampil — website otomatis mengurutkan dari yang PALING BARU DI-UPLOAD, bukan dari nama file.</li>
+                <li>Mau caption khusus TANPA mengubah nama file aslinya? Klik kanan file di Drive → <strong>Info file</strong> → isi kolom <strong>Deskripsi</strong>. Kalau kolom ini diisi, dipakai duluan (nama file diabaikan).</li>
+              </ul>
+              <div class="admin-guide__example">
+                Contoh nama file bagus: <code>fun-race-jis-4-podium-kelas-2021.jpg</code><br />
+                Contoh nama file kurang bagus: <code>IMG_20260712_0931.jpg</code>
+              </div>
+            </div>
+          </details>
+
+          <p class="admin-note" style="margin-top: 20px;">
+            Panduan setup awal (bikin folder Drive, API key, dsb.) ada di
+            <code>docs/PANDUAN-ADMIN.md</code> dan komentar file <code>config.js</code> —
+            biasanya sudah tidak perlu disentuh lagi sehari-hari.
+          </p>
+        </div>
 
         <a class="admin-back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Kembali ke website</a>
       </div>
@@ -163,7 +300,7 @@
 
   <!-- Versi ?v= HARUS sama dengan yang di index.html supaya kedua halaman
        membaca config.js dari cache entry yang sama (tidak ada yang stale) -->
-  <script src="js/config.js?v=6"></script>
+  <script src="js/config.js?v=7"></script>
   <script>
     /* ================================================================
        GERBANG LOGIN ADMIN (client-side)

@@ -103,33 +103,9 @@ function rowToEvent(row, cols) {
 
 /* ================================================================
    PENGURUTAN — event dengan tanggal TERBARU tampil paling depan (DESC)
+   (parseTanggalId dipakai dari config.js — helper bersama dengan
+   gallery-sessions.js, sama-sama butuh mengurai kolom "Tanggal" Sheet)
    ================================================================ */
-
-// Nama bulan Indonesia → indeks bulan JavaScript (0 = Januari)
-const BULAN_ID = {
-  januari: 0, februari: 1, maret: 2, april: 3, mei: 4, juni: 5,
-  juli: 6, agustus: 7, september: 8, oktober: 9, november: 10, desember: 11
-}
-
-/**
- * parseTanggalId(text) → timestamp (ms) atau NaN
- * Kolom "Tanggal" event adalah teks bebas (mis. "Minggu, 12 Juli 2026"), jadi
- * untuk mengurutkan kita ekstrak tanggalnya. Mendukung format Indonesia
- * ("12 Juli 2026"), ISO ("2026-07-12"), dan "12/07/2026". Kalau tak dikenali
- * → NaN (event itu ditaruh paling belakang, urutan asli sheet dipertahankan).
- */
-function parseTanggalId(text) {
-  const s = String(text || '').toLowerCase()
-  const id = s.match(/(\d{1,2})\s+([a-z]+)\s+(\d{4})/)
-  if (id && BULAN_ID[id[2]] !== undefined) {
-    return new Date(Number(id[3]), BULAN_ID[id[2]], Number(id[1])).getTime()
-  }
-  const iso = s.match(/(\d{4})-(\d{1,2})-(\d{1,2})/)
-  if (iso) return new Date(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3])).getTime()
-  const dmy = s.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/)
-  if (dmy) return new Date(Number(dmy[3]), Number(dmy[2]) - 1, Number(dmy[1])).getTime()
-  return NaN
-}
 
 /**
  * sortEventsByTanggalDesc(events) → array BARU terurut
