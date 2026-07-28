@@ -2270,11 +2270,12 @@ body::after {
   margin-bottom: 40px;
 }
 
-/* Kartu postingan: rasio persegi seperti feed Instagram, 4 kolom di desktop */
+/* Kartu postingan: rasio persegi seperti feed Instagram, 3 kolom di desktop
+   (6 post dari Behold → tersusun rapi 3×2). */
 .instagram-card {
   position: relative;
   display: block;
-  width: calc((100% - 3 * var(--ig-gap)) / 4);
+  width: calc((100% - 2 * var(--ig-gap)) / 3);
   aspect-ratio: 1 / 1;
   border-radius: var(--radius-md, 14px);
   overflow: hidden;
@@ -2344,11 +2345,6 @@ body::after {
 .instagram-fallback__handle { color: var(--clr-orange); font-weight: 700; letter-spacing: 0.04em; }
 
 .instagram-cta { text-align: center; }
-
-/* Tablet: 3 kolom */
-@media (max-width: 1023px) {
-  .instagram-card { width: calc((100% - 2 * var(--ig-gap)) / 3); }
-}
 
 /* HP: 2 kolom dengan jarak lebih rapat */
 @media (max-width: 768px) {

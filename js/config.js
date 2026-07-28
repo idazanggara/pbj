@@ -88,12 +88,14 @@ const EVENTS_SHEET_ID = '140ah0IgNFHR05216BuHFrVH90OWEX-_mK5S6S9H0ql8'
 const GALLERY_SESSIONS_SHEET_ID = '1LOVfycAscUlDoIo9OUABnhhRYBYQr1_M_kjux6oESn8'
 
 /* ---------------- INSTAGRAM (feed Behold) ----------------
-   Isi dengan URL feed JSON dari behold.so milik akun @pushbikejakarta
-   (panduan di docs/PANDUAN-ADMIN.md, bagian Lampiran).
-   SEMENTARA (TESTING): memakai file sample lokal berisi feed percobaan.
-   Ganti dengan 'https://feeds.behold.so/...' saat siap production,
-   atau kosongkan ('') untuk menampilkan kartu ajakan follow. */
-const INSTAGRAM_FEED_URL = 'data/instagram-feed-sample.json'
+   URL feed JSON LIVE dari behold.so untuk akun @pushbikejakarta.
+   Behold menarik postingan dari Instagram & memperbarui feed ini otomatis
+   sesuai jadwal refresh-nya — jadi postingan baru muncul di website TANPA
+   perlu ubah kode / deploy ulang. Endpoint ber-CORS ('*') & di-cache CDN.
+   Kalau feed gagal dimuat, instagram.js otomatis fallback ke kartu follow.
+   Untuk menonaktifkan sementara, kosongkan (''). Sample lokal lama tetap
+   ada di data/instagram-feed-sample.json sebagai referensi (tidak dipakai). */
+const INSTAGRAM_FEED_URL = 'https://feeds.behold.so/Mi3fM4qqyz3HTuV4V2R2'
 
 /* ================================================================
    HELPER BERSAMA

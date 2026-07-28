@@ -25,8 +25,10 @@
 const INSTAGRAM_PROFILE_URL = 'https://www.instagram.com/pushbikejakarta/'
 const INSTAGRAM_USERNAME = '@pushbikejakarta'
 
-// Jumlah maksimal postingan yang ditampilkan di grid
-const INSTAGRAM_MAX_POSTS = 8
+// Jumlah maksimal postingan yang ditampilkan di grid.
+// Behold (paket gratis) mengirim maksimal 6 postingan, jadi 6 = pas mengisi
+// grid tanpa slot kosong. Naikkan bila paket Behold menyediakan lebih banyak.
+const INSTAGRAM_MAX_POSTS = 6
 
 /* ================================================================
    RENDER GRID
