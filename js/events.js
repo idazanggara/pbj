@@ -133,9 +133,12 @@ function parseTanggalId(text) {
 
 /**
  * sortEventsByTanggalDesc(events) → array BARU terurut
- * Tanggal terbaru paling depan (DESC). Untuk event bertanggal SAMA — atau
- * tanggal yang tak terbaca — yang barisnya paling BAWAH di sheet (paling baru
- * ditambahkan admin) tampil lebih dulu. Immutable: input tidak diubah.
+ * Tanggal terbaru paling depan (DESC). Untuk event bertanggal SAMA: event
+ * yang masih "upcoming" didahulukan dari yang berstatus "selesai" (supaya
+ * event yang akan datang tidak tenggelam di bawah event lama bertanggal
+ * sama yang sudah lewat) — baru kalau tanggal & status SAMA-SAMA sama,
+ * yang barisnya paling BAWAH di sheet (paling baru ditambahkan admin)
+ * tampil lebih dulu. Immutable: input tidak diubah.
  */
 function sortEventsByTanggalDesc(events) {
   return events
@@ -146,7 +149,12 @@ function sortEventsByTanggalDesc(events) {
       const ka = isNaN(ta) ? -Infinity : ta
       const kb = isNaN(tb) ? -Infinity : tb
       if (ka !== kb) return kb - ka // tanggal terbaru dulu
-      return b.index - a.index      // tanggal sama → baris terbawah (terbaru) dulu
+
+      const isDoneA = a.event.status === 'selesai'
+      const isDoneB = b.event.status === 'selesai'
+      if (isDoneA !== isDoneB) return isDoneA ? 1 : -1 // upcoming dulu, selesai di akhir
+
+      return b.index - a.index      // tanggal & status sama → baris terbawah (terbaru) dulu
     })
     .map(entry => entry.event)
 }

@@ -8,7 +8,7 @@
   <!-- Halaman internal pengurus: JANGAN diindeks mesin pencari -->
   <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" href="assets/favicon_io/favicon.ico" />
-  <link rel="stylesheet" href="css/style.css?v=10" />
+  <link rel="stylesheet" href="css/style.css?v=12" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
     /* Gaya khusus halaman admin (sederhana, satu halaman) */
@@ -49,84 +49,261 @@
     }
     .admin-back { display: inline-block; margin-top: 24px; color: var(--clr-orange); text-decoration: none; font-weight: 600; }
     .admin-back:hover { text-decoration: underline; }
+
+    /* Gerbang login (client-side, lihat penjelasan di komentar script) */
+    .admin-login__label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--clr-text);
+      margin: 16px 0 6px;
+    }
+    .admin-login__input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: var(--radius-md, 14px);
+      border: 1px solid rgba(255, 107, 0, 0.35);
+      background: var(--clr-bg);
+      color: var(--clr-text);
+      font-size: 1rem;
+    }
+    .admin-login__password-wrap { position: relative; }
+    .admin-login__password-wrap .admin-login__input { padding-right: 46px; }
+    .admin-login__toggle {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 44px;
+      border: none;
+      background: transparent;
+      color: var(--clr-text-muted);
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .admin-login__toggle:hover { color: var(--clr-orange); }
+    .admin-login__submit {
+      margin-top: 22px;
+      width: 100%;
+      padding: 12px 14px;
+      border: none;
+      border-radius: var(--radius-md, 14px);
+      background: var(--clr-orange);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+    .admin-login__submit:hover { opacity: 0.9; }
+    .admin-login__error {
+      margin-top: 14px;
+      color: #e0433c;
+      font-size: 0.88rem;
+    }
   </style>
 </head>
 
 <body>
   <main class="admin-page">
     <div class="admin-box">
-      <h1 class="admin-title"><i class="fa-solid fa-user-gear"></i> Admin Pushbike Jakarta</h1>
-      <p class="admin-subtitle">
-        Pengelolaan konten dilakukan lewat Google Drive &amp; Google Sheets memakai
-        <strong>akun Google resmi PBJ</strong>, tanpa server dan tanpa login tambahan.
-        Keamanannya mengikuti akun Google itu sendiri: hanya yang punya akses edit yang bisa mengubah konten.
-      </p>
+      <!-- Gerbang login: konten pengelolaan di bawah BARU dirender ke DOM
+           setelah login berhasil (lihat buildAdminCards() di script) -->
+      <div id="adminLogin">
+        <h1 class="admin-title"><i class="fa-solid fa-lock"></i> Login Admin</h1>
+        <p class="admin-subtitle">
+          Masukkan username &amp; password admin untuk membuka halaman pengelolaan
+          Pushbike Jakarta.
+        </p>
+        <form id="adminLoginForm" autocomplete="off">
+          <label class="admin-login__label" for="adminUsername">Username</label>
+          <input class="admin-login__input" type="text" id="adminUsername" name="username" autocomplete="username" required />
 
-      <div class="admin-cards" id="adminCards">
-        <!-- Kartu diisi oleh script di bawah, berdasarkan config.js -->
+          <label class="admin-login__label" for="adminPassword">Password</label>
+          <div class="admin-login__password-wrap">
+            <input class="admin-login__input" type="password" id="adminPassword" name="password" autocomplete="current-password" required />
+            <button class="admin-login__toggle" type="button" id="adminPasswordToggle" aria-label="Tampilkan password" aria-pressed="false">
+              <i class="fa-solid fa-eye" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <button class="admin-login__submit" type="submit">Masuk</button>
+          <p class="admin-login__error" id="adminLoginError" hidden>Username atau password salah.</p>
+        </form>
       </div>
 
-      <p class="admin-note">
-        <strong>Cara kerja singkat:</strong><br />
-        • <strong>Galeri</strong>: upload foto/video ke subfolder kategori di folder Drive
-        (subfolder baru = kategori/filter baru di website).<br />
-        • <strong>Event</strong>: tambah/edit/hapus baris di Google Sheet
-        (kolom: Nama, Tanggal, Lokasi, Kategori, Deskripsi, LinkInfo, LinkMedia, Status).<br />
-        • Perubahan tampil otomatis di website tanpa menyentuh kode.<br />
-        • Panduan setup lengkap ada di komentar file <code>config.js</code>.
-      </p>
+      <div id="adminProtected" hidden>
+        <h1 class="admin-title"><i class="fa-solid fa-user-gear"></i> Admin Pushbike Jakarta</h1>
+        <p class="admin-subtitle">
+          Pengelolaan konten dilakukan lewat Google Drive &amp; Google Sheets memakai
+          <strong>akun Google resmi PBJ</strong>, tanpa server dan tanpa login tambahan.
+          Keamanannya mengikuti akun Google itu sendiri: hanya yang punya akses edit yang bisa mengubah konten.
+        </p>
 
-      <a class="admin-back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Kembali ke website</a>
+        <div class="admin-cards" id="adminCards">
+          <!-- Kartu diisi oleh buildAdminCards() di script, berdasarkan config.js -->
+        </div>
+
+        <p class="admin-note">
+          <strong>Cara kerja singkat:</strong><br />
+          • <strong>Galeri (Kategori)</strong>: upload foto/video ke subfolder kategori di folder
+          Drive (subfolder baru = kategori/filter baru di website).<br />
+          • <strong>Galeri (Per Latihan)</strong>: tambah/edit/hapus baris di Google Sheet
+          (kolom: Tanggal, Sesi, Fotografer, LinkDrive — satu baris per link fotografer).<br />
+          • <strong>Event</strong>: tambah/edit/hapus baris di Google Sheet
+          (kolom: Nama, Tanggal, Lokasi, Kategori, Deskripsi, LinkInfo, LinkMedia, Status).<br />
+          • Perubahan tampil otomatis di website tanpa menyentuh kode.<br />
+          • Panduan setup lengkap ada di komentar file <code>config.js</code>.
+        </p>
+
+        <a class="admin-back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Kembali ke website</a>
+      </div>
     </div>
   </main>
 
   <!-- Versi ?v= HARUS sama dengan yang di index.html supaya kedua halaman
        membaca config.js dari cache entry yang sama (tidak ada yang stale) -->
-  <script src="js/config.js?v=3"></script>
+  <script src="js/config.js?v=6"></script>
   <script>
-    // Bangun kartu link pengelolaan dari config.js.
-    // Bila ID belum diisi, kartu tampil nonaktif dengan petunjuk setup.
-    const cardsEl = document.getElementById('adminCards')
+    /* ================================================================
+       GERBANG LOGIN ADMIN (client-side)
+       ================================================================
+       PERINGATAN JUJUR: ini BUKAN keamanan sungguhan. Halaman ini file
+       statis biasa — siapa pun yang buka DevTools bisa membaca kode di
+       bawah, atau langsung memanggil adminDriveUrl()/adminSheetUrl() dari
+       Console tanpa login sama sekali. Password di sini hanya penghalang
+       orang iseng yang nyasar ke halaman ini, BUKAN pengganti keamanan.
+       Perlindungan SUNGGUHAN tetap ada di izin edit akun Google Drive/
+       Sheets PBJ sendiri (folder & sheet cuma bisa DIUBAH oleh akun yang
+       diberi akses editor oleh PBJ — lihat admin-subtitle di atas).
 
-    // Guard: kalau config.js gagal dimuat, tampilkan kartu nonaktif
-    // dengan petunjuk, bukan halaman kosong karena ReferenceError
-    const isConfigLoaded = typeof adminDriveUrl === 'function'
-    const driveUrl = isConfigLoaded ? adminDriveUrl() : ''
-    const sheetUrl = isConfigLoaded ? adminSheetUrl() : ''
+       GANTI USERNAME & PASSWORD (lakukan segera, nilai di bawah cuma
+       contoh):
+       1. Ganti ADMIN_USERNAME bebas.
+       2. Buat hash SHA-256 dari password baru — buka DevTools Console di
+          halaman mana pun, jalankan (ganti "password-baru-anda"):
+            crypto.subtle.digest('SHA-256', new TextEncoder().encode('password-baru-anda'))
+              .then(buf => console.log([...new Uint8Array(buf)]
+                .map(b => b.toString(16).padStart(2, '0')).join('')))
+       3. Salin hasilnya (64 karakter heksadesimal), tempel ke
+          ADMIN_PASSWORD_HASH menggantikan nilai contoh. */
+    const ADMIN_USERNAME = 'indonesia'
+    const ADMIN_PASSWORD_HASH =
+      '2523a254becffae0ca70eaac8a6b2e23fa80ff20c49192f5cedb9e098cb6781c'
 
-    function cardHtml(href, icon, title, desc, isEnabled) {
-      const disabledClass = isEnabled ? '' : ' admin-card--disabled'
-      const target = isEnabled ? `href="${href}" target="_blank" rel="noopener"` : ''
-      return `
-        <a class="admin-card${disabledClass}" ${target}>
-          <span class="admin-card__icon"><i class="${icon}"></i></span>
-          <span>
-            <span class="admin-card__title">${title}</span>
-            <span class="admin-card__desc">${desc}</span>
-          </span>
-        </a>`
+    const ADMIN_AUTH_SESSION_KEY = 'pbjAdminAuthed'
+
+    async function sha256Hex(text) {
+      const bytes = new TextEncoder().encode(text)
+      const digest = await crypto.subtle.digest('SHA-256', bytes)
+      return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('')
     }
 
-    cardsEl.innerHTML = [
-      cardHtml(
-        driveUrl,
-        'fa-brands fa-google-drive',
-        'Kelola Galeri (Google Drive)',
-        driveUrl
-          ? 'Buka folder galeri: upload / hapus foto & video, atur subfolder kategori.'
-          : 'Belum dikonfigurasi: isi DRIVE_GALLERY_FOLDER_ID di config.js.',
-        Boolean(driveUrl)
-      ),
-      cardHtml(
-        sheetUrl,
-        'fa-solid fa-table-list',
-        'Kelola Event (Google Sheets)',
-        sheetUrl
-          ? 'Buka sheet event: tambah / edit / hapus baris event & race.'
-          : 'Belum dikonfigurasi: isi EVENTS_SHEET_ID di config.js.',
-        Boolean(sheetUrl)
-      )
-    ].join('')
+    // Bangun kartu link pengelolaan dari config.js — dipanggil HANYA
+    // setelah login berhasil, supaya link tidak ikut ter-render ke DOM
+    // sebelum password benar dimasukkan.
+    function buildAdminCards() {
+      const cardsEl = document.getElementById('adminCards')
+
+      // Guard: kalau config.js gagal dimuat, tampilkan kartu nonaktif
+      // dengan petunjuk, bukan halaman kosong karena ReferenceError
+      const isConfigLoaded = typeof adminDriveUrl === 'function'
+      const driveUrl = isConfigLoaded ? adminDriveUrl() : ''
+      const gallerySessionsSheetUrl = isConfigLoaded ? adminGallerySessionsSheetUrl() : ''
+      const sheetUrl = isConfigLoaded ? adminSheetUrl() : ''
+
+      function cardHtml(href, icon, title, desc, isEnabled) {
+        const disabledClass = isEnabled ? '' : ' admin-card--disabled'
+        const target = isEnabled ? `href="${href}" target="_blank" rel="noopener"` : ''
+        return `
+          <a class="admin-card${disabledClass}" ${target}>
+            <span class="admin-card__icon"><i class="${icon}"></i></span>
+            <span>
+              <span class="admin-card__title">${title}</span>
+              <span class="admin-card__desc">${desc}</span>
+            </span>
+          </a>`
+      }
+
+      cardsEl.innerHTML = [
+        cardHtml(
+          driveUrl,
+          'fa-brands fa-google-drive',
+          'Kelola Galeri Kategori (Google Drive)',
+          driveUrl
+            ? 'Buka folder galeri: upload / hapus foto & video, atur subfolder kategori.'
+            : 'Belum dikonfigurasi: isi DRIVE_GALLERY_FOLDER_ID di config.js.',
+          Boolean(driveUrl)
+        ),
+        cardHtml(
+          gallerySessionsSheetUrl,
+          'fa-solid fa-calendar-week',
+          'Kelola Galeri Per Latihan (Google Sheets)',
+          gallerySessionsSheetUrl
+            ? 'Buka sheet sesi: tambah / edit / hapus baris tanggal, sesi & link folder fotografer.'
+            : 'Belum dikonfigurasi: isi GALLERY_SESSIONS_SHEET_ID di config.js.',
+          Boolean(gallerySessionsSheetUrl)
+        ),
+        cardHtml(
+          sheetUrl,
+          'fa-solid fa-table-list',
+          'Kelola Event (Google Sheets)',
+          sheetUrl
+            ? 'Buka sheet event: tambah / edit / hapus baris event & race.'
+            : 'Belum dikonfigurasi: isi EVENTS_SHEET_ID di config.js.',
+          Boolean(sheetUrl)
+        )
+      ].join('')
+    }
+
+    function unlockAdminPage() {
+      document.getElementById('adminLogin').hidden = true
+      document.getElementById('adminProtected').hidden = false
+      buildAdminCards()
+    }
+
+    // Sudah login di tab ini sebelumnya (sessionStorage hilang otomatis
+    // saat tab ditutup) → langsung buka, tak perlu login ulang tiap klik.
+    if (sessionStorage.getItem(ADMIN_AUTH_SESSION_KEY) === '1') {
+      unlockAdminPage()
+    }
+
+    // Tombol mata: tampilkan/sembunyikan ketikan password, supaya admin
+    // bisa memastikan tidak salah ketik sebelum menekan "Masuk".
+    const adminPasswordInput = document.getElementById('adminPassword')
+    const adminPasswordToggle = document.getElementById('adminPasswordToggle')
+    adminPasswordToggle.addEventListener('click', () => {
+      const isShown = adminPasswordInput.type === 'text'
+      adminPasswordInput.type = isShown ? 'password' : 'text'
+      adminPasswordToggle.setAttribute('aria-pressed', String(!isShown))
+      adminPasswordToggle.setAttribute('aria-label', isShown ? 'Tampilkan password' : 'Sembunyikan password')
+      adminPasswordToggle.querySelector('i').className = isShown ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'
+    })
+
+    const adminLoginForm = document.getElementById('adminLoginForm')
+    const adminLoginError = document.getElementById('adminLoginError')
+
+    adminLoginForm.addEventListener('submit', async (event) => {
+      event.preventDefault()
+      adminLoginError.hidden = true
+
+      const username = document.getElementById('adminUsername').value.trim()
+      const password = document.getElementById('adminPassword').value
+
+      try {
+        const passwordHash = await sha256Hex(password)
+        const isMatch = username === ADMIN_USERNAME && passwordHash === ADMIN_PASSWORD_HASH
+        if (isMatch) {
+          sessionStorage.setItem(ADMIN_AUTH_SESSION_KEY, '1')
+          unlockAdminPage()
+        } else {
+          adminLoginError.hidden = false
+        }
+      } catch (error) {
+        console.warn('Gagal memverifikasi login admin:', error)
+        adminLoginError.hidden = false
+      }
+    })
   </script>
 </body>
 

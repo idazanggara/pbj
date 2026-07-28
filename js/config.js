@@ -184,3 +184,8 @@ function adminSheetUrl() {
     ? `https://docs.google.com/spreadsheets/d/${EVENTS_SHEET_ID}/edit`
     : ''
 }
+function adminGallerySessionsSheetUrl() {
+  return GALLERY_SESSIONS_SHEET_ID
+    ? `https://docs.google.com/spreadsheets/d/${GALLERY_SESSIONS_SHEET_ID}/edit`
+    : ''
+}
