@@ -426,7 +426,7 @@ body::after {
   padding-top: 75px;
   /* Background utama hero: banner branded PBJ (anak balance bike + skyline Jakarta) */
   background-color: var(--clr-bg);            /* Fallback saat gambar belum termuat */
-  background-image: url('assets/bg/PBJ-bg-1.webp');
+  background-image: url('../assets/bg/PBJ-bg-1.webp');
   background-size: cover;                      /* Isi penuh area hero, jaga aspek rasio */
   background-position: center center;          /* Fokus ke tengah komposisi gambar */
   background-repeat: no-repeat;
@@ -1300,7 +1300,7 @@ body::after {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url('assets/logo_PBJ.jpg');
+  background-image: url('../assets/logo_PBJ.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: min(1300px, 105%);
@@ -1868,7 +1868,7 @@ body::after {
      tengah lapang) — lebih pas untuk layar sempit/vertikal dan menghindari
      tabrakan judul dengan logo yang di versi landscape berada di tengah. */
   .hero {
-    background-image: url('assets/bg/PBJ-bg-1-mobile.webp');
+    background-image: url('../assets/bg/PBJ-bg-1-mobile.webp');
     background-position: center top;
     /* Konten di-top-align (bukan center) supaya badge & judul menempel dekat
        header, tak turun ke tengah viewport di layar sempit. */
