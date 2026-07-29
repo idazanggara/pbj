@@ -58,7 +58,7 @@
    admin berganti tiap tahun) — main.js otomatis menyebarkannya ke semua
    link & teks di atas saat halaman dimuat. TIDAK PERLU cari-ganti manual
    di index.html. */
-const ADMIN_WA_NUMBER = '6285691530710'
+const ADMIN_WA_NUMBER = '6285647357997'
 
 /* ---------------- GOOGLE DRIVE (Galeri) ---------------- */
 const DRIVE_API_KEY = 'AIzaSyBtHNF8yJw7cMN6rjKslp6-Wvj_QXJGz5E'
@@ -86,6 +86,32 @@ const EVENTS_SHEET_ID = '140ah0IgNFHR05216BuHFrVH90OWEX-_mK5S6S9H0ql8'
    Drive milik fotografer yang berbeda-beda (di luar Drive PBJ), jadi
    tidak bisa dipindai otomatis lewat query "'{id}' in parents". */
 const GALLERY_SESSIONS_SHEET_ID = '1LOVfycAscUlDoIo9OUABnhhRYBYQr1_M_kjux6oESn8'
+
+/* ---------------- GOOGLE SHEETS (Pengaturan Situs: toggle + link Form) ----------------
+   Dibaca oleh site-settings.js. Kolom sheet (baris pertama = judul kolom):
+   Key | Value — DUA baris data:
+     REGISTRATION_OPEN     | TRUE/FALSE  → buka/tutup pendaftaran member baru,
+                                            ubah tombol "Daftar Sekarang" + FAQ
+     REGISTRATION_FORM_URL | https://docs.google.com/forms/d/e/xxxxx/viewform
+                                          → link publik Form yang di-iframe di
+                                            daftar-member-baru.html. Ganti sel
+                                            ini kapan pun form diganti/dibuat
+                                            ulang — TIDAK butuh redeploy.
+   1. Buat Google Sheet baru, isi 2 kolom + 2 baris di atas.
+   2. File → Share → "Anyone with the link: Viewer".
+   3. Salin ID sheet dari URL-nya (sama seperti EVENTS_SHEET_ID di atas)
+      → tempel ke SETTINGS_SHEET_ID.
+   Selama nilai ini kosong, situs tetap tampil default "tutup" (fallback aman). */
+const SETTINGS_SHEET_ID = '1cm0iEcJnBNxUYto7mpyMz05SfDh_NwjW2KTUka6SO_o'
+
+/* ---------------- GOOGLE FORM (Pendaftaran Member Baru) — FALLBACK ----------------
+   Dipakai HANYA kalau baris REGISTRATION_FORM_URL di sheet di atas kosong /
+   sheet belum dikonfigurasi / fetch ke sheet gagal (mis. Sheets sedang
+   down) — supaya iframe di daftar-member-baru.html tidak pernah kosong.
+   Sumber utama tetap sheet Pengaturan Situs (ganti form = edit sel Sheet,
+   TANPA redeploy); nilai di sini cukup diselaraskan sesekali sebagai jaring
+   pengaman, bukan tempat utama untuk update rutin. */
+const REGISTRATION_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSeQ7Ktjtp1oMo9ac7IsDKcsDXs0NopXxQmBy9VQGMEJsBzPIQ/viewform'
 
 /* ---------------- INSTAGRAM (feed Behold) ----------------
    URL feed JSON LIVE dari behold.so untuk akun @pushbikejakarta.
@@ -219,4 +245,28 @@ function adminGallerySessionsSheetUrl() {
   return GALLERY_SESSIONS_SHEET_ID
     ? `https://docs.google.com/spreadsheets/d/${GALLERY_SESSIONS_SHEET_ID}/edit`
     : ''
+}
+function adminSettingsSheetUrl() {
+  return SETTINGS_SHEET_ID
+    ? `https://docs.google.com/spreadsheets/d/${SETTINGS_SHEET_ID}/edit`
+    : ''
+}
+
+/* ---------------- SIKLUS PENDAFTARAN MEMBER BARU ----------------
+   Open member PBJ hanya berlangsung DUA KALI setahun: Periode I (Jan–Jun,
+   dibuka akhir Desember tahun sebelumnya) dan Periode II (Jul–Des, dibuka
+   akhir Juni). Kedua fungsi di bawah MENGHITUNG label dari tanggal SEKARANG
+   (bukan hardcode tahun) supaya teks FAQ soal "kapan dibuka lagi" tidak
+   pernah basi/butuh redeploy manual tiap semester. */
+function getNextRegistrationOpeningLabel(now) {
+  const date = now || new Date()
+  const month = date.getMonth() + 1
+  const year = date.getFullYear()
+  return month <= 6 ? `akhir Juni ${year}` : `akhir Desember ${year}`
+}
+function getActiveRegistrationPeriodLabel(now) {
+  const date = now || new Date()
+  const month = date.getMonth() + 1
+  const year = date.getFullYear()
+  return month <= 6 ? `Periode I ${year} (Januari–Juni)` : `Periode II ${year} (Juli–Desember)`
 }

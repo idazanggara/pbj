@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Daftar Member Baru — Pushbike Jakarta</title>
+  <meta name="description"
+    content="Formulir resmi pendaftaran member baru Pushbike Jakarta (PBJ) — komunitas balance bike anak Jakarta sejak 2018. Isi data si kecil untuk bergabung." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pushbikejakarta.vercel.app/daftar-member-baru.html" />
+
+  <link rel="icon" type="image/x-icon" href="assets/favicon_io/favicon.ico" />
+  <link rel="apple-touch-icon" href="assets/favicon_io/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon_io/android-chrome-192x192.png" />
+  <link rel="manifest" href="assets/favicon_io/site.webmanifest" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+
+  <!-- ?v= = cache-busting, HARUS sama dengan versi terbaru di index.html/admin.html -->
+  <link rel="stylesheet" href="css/style.css?v=20" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+  <!-- Header/nav sengaja meniru markup index.html persis (kelas & struktur sama)
+       supaya tampilan navbar konsisten, tapi TIDAK memuat main.js/schedule.js/dst
+       (logika peta, galeri, form register) yang tidak relevan di halaman ini —
+       cukup config.js + script kecil inline di bawah, pola yang sama seperti
+       admin.html. -->
+  <header class="navbar" id="navbar">
+    <div class="navbar__container">
+      <a href="index.html" class="navbar__logo">
+        <img src="assets/logo_PBJ.jpg" alt="Logo Pushbike Jakarta" class="logo-img" width="40" height="40" />
+        <span class="logo-text">PUSHBIKE JAKARTA</span>
+      </a>
+
+      <nav class="navbar__nav" aria-label="Navigasi utama">
+        <a href="index.html#schedule" class="nav-link">Jadwal</a>
+        <a href="index.html#map" class="nav-link">Lokasi</a>
+        <a href="index.html#info" class="nav-link">Info</a>
+        <a href="index.html#manfaat" class="nav-link">Manfaat</a>
+        <a href="index.html#pengurus" class="nav-link">Pengurus</a>
+        <a href="index.html#galeri" class="nav-link">Galeri</a>
+        <a href="index.html#events" class="nav-link">Event</a>
+        <a href="index.html" class="nav-link">&larr; Kembali ke Beranda</a>
+      </nav>
+
+      <button class="navbar__hamburger" id="hamburgerBtn" aria-label="Buka menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true">
+      <a href="index.html#schedule" class="mobile-nav-link">Jadwal</a>
+      <a href="index.html#map" class="mobile-nav-link">Lokasi</a>
+      <a href="index.html#info" class="mobile-nav-link">Info</a>
+      <a href="index.html#manfaat" class="mobile-nav-link">Manfaat</a>
+      <a href="index.html#pengurus" class="mobile-nav-link">Pengurus</a>
+      <a href="index.html#galeri" class="mobile-nav-link">Galeri</a>
+      <a href="index.html#events" class="mobile-nav-link">Event</a>
+      <a href="index.html" class="mobile-nav-link">&larr; Kembali ke Beranda</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============================================================
+         JUDUL HALAMAN
+         ============================================================ -->
+    <section class="section has-watermark">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge">
+            <i class="fa-solid fa-user-plus"></i> Pembukaan Member Baru
+          </div>
+          <h1 class="section-title">Daftar Member Baru<br />Pushbike Jakarta</h1>
+          <p class="section-subtitle">
+            Isi formulir resmi di bawah untuk mendaftarkan si kecil sebagai member Pushbike
+            Jakarta. Formulir ini sama persis dengan yang dibagikan lewat bio Instagram
+            <a href="https://instagram.com/pushbikejakarta" target="_blank" rel="noopener">@pushbikejakarta</a>
+            — hanya ditampilkan langsung di halaman ini agar lebih mudah diakses.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         EMBED GOOGLE FORM
+         Iframe + wrapper custom (bukan rebuild form) — hasil riset:
+         cara paling tahan lama karena tidak bergantung struktur field
+         form yang bisa berubah sewaktu-waktu. Isi form (di DALAM
+         iframe) tetap tampak seperti Google Forms — keterbatasan
+         cross-origin, tidak bisa di-custom penuh dari sisi kita.
+         ============================================================ -->
+    <section class="registration-embed-section">
+      <div class="container">
+        <div class="registration-embed-card">
+          <p class="registration-embed-loading" id="regEmbedLoading">
+            <i class="fa-solid fa-spinner fa-spin"></i> Memuat formulir…
+          </p>
+          <div class="registration-embed-frame">
+            <iframe id="regEmbedIframe" title="Formulir Pendaftaran Member Baru Pushbike Jakarta"></iframe>
+          </div>
+          <p class="registration-embed-fallback">
+            Form tidak muncul? <a id="regEmbedFallbackLink" href="#" target="_blank" rel="noopener">Buka di tab
+              baru</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         BANTUAN — fallback WhatsApp kalau ada kendala isi form
+         ============================================================ -->
+    <section class="registration-help">
+      <div class="container">
+        <p class="registration-help__text">Butuh bantuan mengisi formulir atau ada pertanyaan?</p>
+        <a id="waHelpLink" class="btn btn--ghost" target="_blank" rel="noopener">
+          <i class="fa-brands fa-whatsapp"></i> Chat Admin PBJ
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer — markup sama persis dengan index.html untuk konsistensi -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="assets/logo_PBJ.jpg" alt="Logo PBJ" class="logo-img logo-img--sm" width="36" height="36" />
+            <div>
+              <span class="footer-logo-text">PUSHBIKE JAKARTA</span>
+            </div>
+          </div>
+          <p class="footer-tagline">
+            Komunitas balance bike non-profit untuk anak-anak Jakarta sejak 2018.
+            Dibuat dengan &#10084;&#65039; oleh tim Tech Pushbike Jakarta.
+          </p>
+          <div class="footer-social">
+            <a href="https://instagram.com/pushbikejakarta" class="social-link"
+              aria-label="Instagram Pushbike Jakarta" target="_blank" rel="noopener">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a id="waSocialLink" class="social-link" aria-label="WhatsApp Admin Pushbike Jakarta" target="_blank"
+              rel="noopener">
+              <i class="fa-brands fa-whatsapp"></i>
+            </a>
+            <a href="https://www.youtube.com/@pushbikejakarta6288" class="social-link"
+              aria-label="YouTube Pushbike Jakarta" target="_blank" rel="noopener">
+              <i class="fa-brands fa-youtube"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <h4 class="footer-links__title">Navigasi</h4>
+          <ul>
+            <li><a href="index.html#schedule">Jadwal Latihan</a></li>
+            <li><a href="index.html#map">Peta Lokasi</a></li>
+            <li><a href="index.html#info">Tentang Pushbike Jakarta</a></li>
+            <li><a href="index.html#pengurus">Pengurus</a></li>
+            <li><a href="daftar-member-baru.html">Daftar Member Baru</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-contact">
+          <h4 class="footer-links__title">Kontak</h4>
+          <ul>
+            <li>
+              <i class="fa-brands fa-whatsapp"></i>
+              <a id="waAdminLink">WhatsApp Sekretaris</a>
+            </li>
+            <li>
+              <i class="fa-brands fa-instagram"></i>
+              <a href="https://instagram.com/pushbikejakarta">@pushbikejakarta</a>
+            </li>
+            <li>
+              <i class="fa-solid fa-location-dot"></i>
+              <span>Jabodetabek, Indonesia</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <hr class="footer-divider" />
+        <p class="footer-copy">
+          &copy; <span id="footerYear">2026</span> Pushbike Jakarta (PBJ). All rights reserved.
+          Dibuat oleh <a href="https://www.instagram.com/idazanggara/" target="_blank"
+            rel="noopener"><strong>Idaz Anggara</strong></a>, Tech PBJ.
+          <a href="admin.html" class="footer-admin-link" aria-label="Halaman admin pengurus">Admin</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Versi ?v= HARUS sama dengan index.html/admin.html supaya membaca
+       config.js dari cache entry yang sama (tidak ada yang stale) -->
+  <script src="js/config.js?v=10"></script>
+  <!-- site-settings.js = isi iframe Google Form dari Sheet (fallback ke config.js) -->
+  <script src="js/site-settings.js?v=2"></script>
+  <script>
+    /* ================================================================
+       Script khusus halaman ini (pola sama seperti admin.html — cuma
+       config.js + inline script, TIDAK memuat main.js penuh)
+       ================================================================ */
+
+    // Navbar glassmorphism saat scroll — replikasi ringkas dari js/main.js:42-53
+    // (navbar transparan di atas, jadi solid begitu di-scroll biar teks
+    // konten di bawahnya tidak "tembus" di balik navbar)
+    const navbar = document.getElementById('navbar')
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        navbar.classList.add('navbar--scrolled')
+      } else {
+        navbar.classList.remove('navbar--scrolled')
+      }
+    })
+
+    // Toggle hamburger mobile menu — replikasi ringkas dari js/main.js:58-79
+    const hamburgerBtn = document.getElementById('hamburgerBtn')
+    const mobileMenu = document.getElementById('mobileMenu')
+    hamburgerBtn.addEventListener('click', () => {
+      const menuOpen = !hamburgerBtn.classList.contains('active')
+      hamburgerBtn.classList.toggle('active')
+      mobileMenu.classList.toggle('open')
+      hamburgerBtn.setAttribute('aria-expanded', menuOpen.toString())
+    })
+    mobileMenu.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburgerBtn.classList.remove('active')
+        mobileMenu.classList.remove('open')
+        hamburgerBtn.setAttribute('aria-expanded', 'false')
+      })
+    })
+
+    // Tahun copyright footer otomatis
+    const footerYear = document.getElementById('footerYear')
+    if (footerYear) footerYear.textContent = new Date().getFullYear()
+
+    // Link WhatsApp — ADMIN_WA_NUMBER dari config.js (satu-satunya sumber nomor WA)
+    if (typeof ADMIN_WA_NUMBER !== 'undefined') {
+      const waSocialLink = document.getElementById('waSocialLink')
+      if (waSocialLink) waSocialLink.href = `https://wa.me/${ADMIN_WA_NUMBER}`
+
+      const waAdminLink = document.getElementById('waAdminLink')
+      if (waAdminLink) waAdminLink.href = `https://wa.me/${ADMIN_WA_NUMBER}`
+
+      const waHelpLink = document.getElementById('waHelpLink')
+      if (waHelpLink) {
+        const pesan = 'Halo Admin PBJ, saya butuh bantuan mengisi formulir pendaftaran member baru.'
+        waHelpLink.href = `https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(pesan)}`
+      }
+    }
+
+    // Iframe Google Form diisi oleh site-settings.js (baca REGISTRATION_FORM_URL
+    // dari Sheet dulu, fallback ke konstanta REGISTRATION_FORM_URL di config.js)
+  </script>
+</body>
+
+</html>

@@ -269,6 +269,8 @@ gulir paling bawah, klik tulisan kecil **Admin** di baris copyright.
 | Menambah event baru | Tambah satu baris baru di sheet `Event PBJ` |
 | Event sudah lewat | Ubah kolom Status menjadi `selesai` |
 | Menghapus event | Hapus barisnya di sheet |
+| Membuka pendaftaran member baru | Ubah kolom Value di sheet `PBJ - Pengaturan Situs` jadi `TRUE` (lihat Bagian I) |
+| Menutup pendaftaran member baru | Ubah kolom Value di sheet yang sama jadi `FALSE` |
 
 Perubahan biasanya tampil di website dalam hitungan detik sampai beberapa
 menit (refresh halamannya).
@@ -341,6 +343,70 @@ ganti alamat. Minta tim tech mengganti semua URL di `index.html` (canonical,
 og:url, schema), `robots.txt`, dan `sitemap.xml`, memasang redirect dari
 domain lama, lalu daftarkan domain baru di Search Console dengan cara yang
 sama.
+
+---
+
+## Bagian I. Membuat Toggle Buka/Tutup Pendaftaran Member Baru (opsional)
+
+Fitur ini membuat tombol **"Daftar Sekarang"** di website berubah otomatis
+mengarah ke halaman formulir pendaftaran member baru (`daftar-member-baru.html`,
+berisi Google Form resmi), HANYA saat masa pembukaan sedang aktif — tanpa
+perlu tim tech redeploy setiap kali dibuka/ditutup. Setup di bawah cukup
+dilakukan **SEKALI**; pemakaian sehari-hari setelahnya lihat Bagian F.
+
+### I1. Buat sheet toggle
+
+1. Buka [sheets.google.com](https://sheets.google.com), buat spreadsheet
+   baru, beri nama misalnya `PBJ - Pengaturan Situs`.
+2. Di **baris 1**, isi 2 kolom persis:
+
+   | A | B |
+   |---|---|
+   | Key | Value |
+
+3. Di **baris 2 dan 3**, isi:
+
+   | Key | Value |
+   |---|---|
+   | REGISTRATION_OPEN | FALSE |
+   | REGISTRATION_FORM_URL | https://docs.google.com/forms/d/e/xxxxx/viewform |
+
+   - `REGISTRATION_OPEN`: mulai dari `FALSE` (tutup) — aman, tidak
+     tiba-tiba "membuka" pendaftaran begitu sheet ini dibuat.
+   - `REGISTRATION_FORM_URL`: link **publik** Google Form (tombol **Send /
+     Kirim** di Form → ikon link 🔗 → Salin) — BUKAN link edit (`.../edit`).
+     Baris ini yang membuat ganti-Google-Form-di-kemudian-hari jadi gampang:
+     cukup edit sel ini, TIDAK perlu redeploy/hubungi tim tech.
+
+### I2. Bagikan sheet
+
+Sama seperti Bagian D3: klik **Share / Bagikan** → ubah Akses umum menjadi
+**"Siapa saja yang memiliki link"**, peran **Pelihat / Viewer**.
+
+### I3. Salin ID sheet
+
+Sama seperti Bagian D4: dari alamat browser, ambil bagian antara `/d/` dan
+`/edit`. Kirim ke tim tech dengan label **"ID SHEET PENGATURAN"**.
+
+### I4. Sambungkan ke website (dikerjakan tim tech, sekali saja)
+
+Di `config.js`, isi baris ini:
+
+```js
+const SETTINGS_SHEET_ID = ''
+```
+
+menjadi:
+
+```js
+const SETTINGS_SHEET_ID = '1XyZaBcDeFgHiJkLmNo_ID_SHEET_PENGATURAN'
+```
+
+Baris `REGISTRATION_FORM_URL` di `config.js` TIDAK perlu diisi ulang setiap
+ganti form — nilai itu sekarang cuma **cadangan darurat** (dipakai kalau
+sheet gagal dimuat). Sumber utama link Form yang dipakai sehari-hari
+adalah baris `REGISTRATION_FORM_URL` di sheet `PBJ - Pengaturan Situs`
+(lihat I1) — ganti di situ, TIDAK butuh redeploy.
 
 ---
 

@@ -8,7 +8,7 @@
   <!-- Halaman internal pengurus: JANGAN diindeks mesin pencari -->
   <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" href="assets/favicon_io/favicon.ico" />
-  <link rel="stylesheet" href="css/style.css?v=14" />
+  <link rel="stylesheet" href="css/style.css?v=20" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
     /* Gaya khusus halaman admin (sederhana, satu halaman) */
@@ -286,6 +286,42 @@
             </div>
           </details>
 
+          <details class="admin-guide__item">
+            <summary><i class="fa-solid fa-toggle-on"></i> Cara buka/tutup Pendaftaran Member Baru</summary>
+            <div class="admin-guide__body">
+              <p>
+                Buka lewat kartu <strong>"Buka/Tutup Pendaftaran Member Baru"</strong> di atas.
+                Sheet ini berisi DUA baris pengaturan (bukan daftar seperti Event/Galeri):
+              </p>
+              <table>
+                <tr><th>Key (JANGAN diubah)</th><th>Isi Value dengan</th></tr>
+                <tr><td><code>REGISTRATION_OPEN</code></td><td>Ketik persis <code>TRUE</code> untuk BUKA pendaftaran, atau <code>FALSE</code> untuk TUTUP.</td></tr>
+                <tr><td><code>REGISTRATION_FORM_URL</code></td><td>Link publik Google Form (tombol <strong>Send/Kirim</strong> di Form &rarr; ikon link &rarr; Salin). Ganti sel ini kapan pun form diganti/dibuat ulang.</td></tr>
+              </table>
+              <div class="admin-guide__example">
+                Contoh 2 baris:<br />
+                <code>REGISTRATION_OPEN | TRUE</code><br />
+                <code>REGISTRATION_FORM_URL | https://docs.google.com/forms/d/e/xxxxx/viewform</code>
+              </div>
+              <p>
+                Begitu <code>REGISTRATION_OPEN</code> diubah jadi <code>TRUE</code>, dalam
+                beberapa menit (cukup refresh halaman) tombol <strong>"Daftar Sekarang"</strong>
+                di navbar, link footer &amp; jawaban FAQ <em>"Masih open member?"</em> otomatis
+                berubah jadi mengarahkan calon member ke halaman <strong>Daftar Member
+                Baru</strong> (isi Google Form dari <code>REGISTRATION_FORM_URL</code>). Ubah
+                lagi jadi <code>FALSE</code> setelah kuota penuh / masa pembukaan selesai —
+                situs otomatis kembali ke tampilan "tutup" seperti semula. Mengganti
+                <code>REGISTRATION_FORM_URL</code> TIDAK perlu redeploy, dan TIDAK perlu
+                menunggu <code>REGISTRATION_OPEN</code> = TRUE dulu.
+              </p>
+              <p>
+                Belum pernah setup sama sekali? Sheet-nya perlu dibuat dulu satu kali (lihat
+                komentar <code>SETTINGS_SHEET_ID</code> di <code>config.js</code>) — hubungi
+                Tech PBJ kalau kartu di atas masih tampak nonaktif/abu-abu.
+              </p>
+            </div>
+          </details>
+
           <p class="admin-note" style="margin-top: 20px;">
             Panduan setup awal (bikin folder Drive, API key, dsb.) ada di
             <code>docs/PANDUAN-ADMIN.md</code> dan komentar file <code>config.js</code> —
@@ -300,7 +336,7 @@
 
   <!-- Versi ?v= HARUS sama dengan yang di index.html supaya kedua halaman
        membaca config.js dari cache entry yang sama (tidak ada yang stale) -->
-  <script src="js/config.js?v=8"></script>
+  <script src="js/config.js?v=10"></script>
   <script>
     /* ================================================================
        GERBANG LOGIN ADMIN (client-side)
@@ -348,6 +384,7 @@
       const driveUrl = isConfigLoaded ? adminDriveUrl() : ''
       const gallerySessionsSheetUrl = isConfigLoaded ? adminGallerySessionsSheetUrl() : ''
       const sheetUrl = isConfigLoaded ? adminSheetUrl() : ''
+      const settingsSheetUrl = isConfigLoaded ? adminSettingsSheetUrl() : ''
 
       function cardHtml(href, icon, title, desc, isEnabled) {
         const disabledClass = isEnabled ? '' : ' admin-card--disabled'
@@ -389,6 +426,15 @@
             ? 'Buka sheet event: tambah / edit / hapus baris event & race.'
             : 'Belum dikonfigurasi: isi EVENTS_SHEET_ID di config.js.',
           Boolean(sheetUrl)
+        ),
+        cardHtml(
+          settingsSheetUrl,
+          'fa-solid fa-toggle-on',
+          'Buka/Tutup Pendaftaran Member Baru (Google Sheets)',
+          settingsSheetUrl
+            ? 'Ubah REGISTRATION_OPEN jadi TRUE untuk buka pendaftaran, FALSE untuk tutup.'
+            : 'Belum dikonfigurasi: isi SETTINGS_SHEET_ID di config.js.',
+          Boolean(settingsSheetUrl)
         )
       ].join('')
     }

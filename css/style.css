@@ -1566,6 +1566,67 @@ body::after {
 }
 
 /* ----------------------------------------------------------------
+   HALAMAN DAFTAR MEMBER BARU (daftar-member-baru.html)
+   Iframe Google Form TIDAK bisa lapor tinggi kontennya ke halaman ini
+   (cross-origin) sehingga tidak ada auto-resize sejati — dipakai
+   min-height perkiraan (beda mobile/desktop) + overflow:auto di
+   wrapper sebagai jaring pengaman kalau form ternyata lebih panjang.
+   ---------------------------------------------------------------- */
+.registration-embed-section { padding-bottom: var(--section-py); }
+
+.registration-embed-card {
+  max-width: 760px;
+  margin-inline: auto;
+  background: var(--clr-bg-card);
+  border-radius: var(--radius-md);
+  padding: clamp(16px, 3vw, 32px);
+  box-shadow: 0 8px 32px rgba(38,50,74,0.08);
+}
+
+.registration-embed-loading {
+  text-align: center;
+  color: var(--clr-text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+.registration-embed-loading i { color: var(--clr-orange); margin-right: 6px; }
+
+.registration-embed-frame {
+  width: 100%;
+  overflow: auto;
+  border-radius: calc(var(--radius-md) - 4px);
+}
+.registration-embed-frame iframe {
+  width: 100%;
+  /* Google Form tidak bisa lapor tinggi konten asli ke halaman ini
+     (cross-origin) — angka ini perkiraan tampilan AWAL form (judul +
+     deskripsi + tombol "Isi formulir"), bukan seluruh pertanyaan.
+     overflow:auto di .registration-embed-frame jadi jaring pengaman
+     kalau kontennya ternyata lebih panjang (form discroll di dalam kartu).
+     CATATAN: tombol "?" (Help bawaan Google) posisinya fixed ke bawah
+     viewport iframe, sedangkan footer "Google Formulir" ikut alur konten
+     — keduanya sejajar hanya "kebetulan" di tinggi tertentu, bukan hal
+     yang bisa diatur presisi dari sisi kita (isi iframe cross-origin). */
+  height: 391px;
+  border: 0;
+  display: block;
+}
+
+.registration-embed-fallback {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--clr-text-muted);
+  margin-top: 14px;
+}
+.registration-embed-fallback a { color: var(--clr-orange-lt); font-weight: 600; }
+
+.registration-help {
+  text-align: center;
+  padding-bottom: clamp(32px, 6vw, 64px);
+}
+.registration-help__text { color: var(--clr-text-muted); margin-bottom: 14px; }
+
+/* ----------------------------------------------------------------
    FOOTER
    ---------------------------------------------------------------- */
 .footer {

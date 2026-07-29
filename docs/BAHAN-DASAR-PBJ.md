@@ -148,7 +148,7 @@ Melatih **kemampuan sosial** anak lewat interaksi teman sebaya, mengembangkan **
 | Open member | Dibuka **2× setahun**, kuota terbatas, daftar via link di bio Instagram (linktr.ee). **Saat ini tutup sampai awal 2027.** |
 | Di luar masa open | Tetap boleh ikut latihan sebagai **non-member** Rp50.000/kedatangan |
 | Nominal biaya member | Sengaja **tidak ditulis** di web (berubah tiap sesi) → arahkan ke WhatsApp |
-| WA admin | `6285691530710` |
+| WA admin | `6285647357997` |
 
 **Skema member:** member baru & yang perpanjang di awal tahun mendapat jersey lengan panjang +
 celana panjang + baselayer (lebih mahal); yang perpanjang di tengah tahun mendapat baselayer

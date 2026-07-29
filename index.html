@@ -139,7 +139,7 @@
   <!-- ===== STYLESHEET UTAMA ===== -->
   <!-- ?v= = cache-busting: naikkan angkanya tiap kali style.css diubah
        supaya browser pengunjung tidak memakai versi lama dari cache -->
-  <link rel="stylesheet" href="css/style.css?v=14" />
+  <link rel="stylesheet" href="css/style.css?v=20" />
   <!-- Menghubungkan file CSS eksternal yang mengatur tampilan/design halaman ini -->
 
   <!-- ===== LEAFLET.JS (Library Peta Interaktif Open Source) ===== -->
@@ -1274,11 +1274,12 @@
               <strong>non-member</strong> dengan biaya <strong>Rp50.000 per kedatangan</strong>
               (sudah termasuk susu), tanpa perlu mendaftar dulu. Untuk jadi member resmi,
               pendaftaran open member hanya dibuka dua kali setahun lewat link di bio Instagram
-              @pushbikejakarta, dan saat ini sedang <strong>tutup sampai awal 2027</strong>.</p>
+              @pushbikejakarta, dan saat ini sedang <strong>tutup sampai
+              <span id="faqCaraDaftarDate">awal 2027</span></strong>.</p>
             <p>Cukup bawa sepeda 12 inci sendiri dan perlengkapan wajib (helm, pelindung lutut
               &amp; siku, sepatu tertutup), lalu langsung ikut latihan Selasa, Jumat, atau Minggu
               di JIEP Pulomas. Masih ragu? Tanya langsung ke WhatsApp admin di
-              <span data-wa-number>6285691530710</span>.</p>
+              <span data-wa-number>6285647357997</span>.</p>
             <button type="button" class="faq-copy-btn" data-faq-id="faq-cara-daftar">
               <i class="fa-solid fa-link"></i> Salin link jawaban ini
             </button>
@@ -1335,7 +1336,7 @@
               persediaan hari itu masih ada. Tidak ada biaya pendaftaran atau formulir sama
               sekali hanya untuk bisa datang latihan.</p>
             <p>Nominal biaya member bisa berubah dari sesi ke sesi, jadi untuk info terbaru
-              langsung tanyakan ke WhatsApp admin di <span data-wa-number>6285691530710</span>.</p>
+              langsung tanyakan ke WhatsApp admin di <span data-wa-number>6285647357997</span>.</p>
             <button type="button" class="faq-copy-btn" data-faq-id="faq-biaya">
               <i class="fa-solid fa-link"></i> Salin link jawaban ini
             </button>
@@ -1367,14 +1368,31 @@
             Masih open member?
           </summary>
           <div class="faq-answer">
-            <p>Saat ini pendaftaran member baru sedang <strong>tutup dan baru dibuka lagi awal
-              2027</strong>, karena open member PBJ hanya berlangsung <strong>dua kali
-              setahun</strong> dengan kuota terbatas lewat link di bio Instagram
-              @pushbikejakarta. Di luar masa open ini, anak tetap boleh ikut latihan rutin
-              sebagai <strong>non-member</strong>.</p>
-            <p>Biayanya Rp50.000 per kedatangan (termasuk susu), jadi tidak perlu menunggu open
-              member untuk mulai. Pantau bio Instagram @pushbikejakarta menjelang awal 2027
-              untuk info pembukaan pendaftaran.</p>
+            <!-- data-faq-state="closed" = default (tampil apa adanya kalau JS gagal load).
+                 site-settings.js akan menyembunyikan blok ini & menampilkan blok
+                 data-faq-state="open" begitu toggle REGISTRATION_OPEN di Google Sheets
+                 bernilai TRUE. Tanggal di bawah dihitung otomatis dari tanggal sekarang
+                 (bukan hardcode) — lihat getNextRegistrationOpeningLabel() di config.js. -->
+            <div data-faq-state="closed">
+              <p>Saat ini pendaftaran member baru sedang <strong>tutup dan baru dibuka lagi
+                <span id="faqOpenMemberDate">awal 2027</span></strong>, karena open member PBJ
+                hanya berlangsung <strong>dua kali setahun</strong> dengan kuota terbatas lewat
+                link di bio Instagram @pushbikejakarta. Di luar masa open ini, anak tetap boleh
+                ikut latihan rutin sebagai <strong>non-member</strong>.</p>
+              <p>Biayanya Rp50.000 per kedatangan (termasuk susu), jadi tidak perlu menunggu open
+                member untuk mulai. Pantau bio Instagram @pushbikejakarta menjelang waktu itu
+                untuk info pembukaan pendaftaran.</p>
+            </div>
+            <div data-faq-state="open" hidden>
+              <p>Kabar baik — pendaftaran member baru <strong>SEDANG DIBUKA</strong> untuk
+                <strong><span id="faqOpenMemberPeriod">Periode berjalan</span></strong>! Isi
+                formulir pendaftaran resmi PBJ untuk mengamankan kuota si kecil.</p>
+              <p>
+                <a class="btn btn--primary" href="daftar-member-baru.html">
+                  <i class="fa-solid fa-user-plus"></i> Isi Formulir Pendaftaran Member Baru
+                </a>
+              </p>
+            </div>
             <button type="button" class="faq-copy-btn" data-faq-id="faq-open-member">
               <i class="fa-solid fa-link"></i> Salin link jawaban ini
             </button>
@@ -1426,7 +1444,7 @@
             Nomor WA admin?
           </summary>
           <div class="faq-answer">
-            <p>Nomor WhatsApp admin/sekretaris PBJ adalah <strong><span data-wa-number>6285691530710</span></strong> — bisa
+            <p>Nomor WhatsApp admin/sekretaris PBJ adalah <strong><span data-wa-number>6285647357997</span></strong> — bisa
               dihubungi langsung untuk tanya jadwal, biaya member terbaru, status open member,
               atau pertanyaan lain seputar latihan dan pendaftaran. Tombol WhatsApp di footer
               serta form pendaftaran situs ini juga otomatis terhubung ke nomor yang sama.</p>
@@ -1678,7 +1696,7 @@
             <li><a href="#map">Peta Lokasi</a></li>
             <li><a href="#info">Tentang Pushbike Jakarta</a></li>
             <li><a href="#pengurus">Pengurus</a></li>
-            <li><a href="#register">Daftar Member</a></li>
+            <li><a href="#register" id="footerRegisterLink">Daftar Member</a></li>
           </ul>
         </div>
 
@@ -1761,7 +1779,9 @@
        ============================================================ -->
   <!-- ?v= = cache-busting, naikkan angkanya tiap file JS diubah -->
   <!-- config.js = pusat konfigurasi Google Drive & Sheets (dimuat paling awal) -->
-  <script src="js/config.js?v=8"></script>
+  <script src="js/config.js?v=10"></script>
+  <!-- site-settings.js = toggle Pendaftaran Member Baru + tanggal FAQ dinamis -->
+  <script src="js/site-settings.js?v=2"></script>
   <script src="js/schedule.js?v=8"></script>
   <!-- gdrive-gallery.js = galeri dari Google Drive (mode Kategori & Per Latihan) -->
   <script src="js/gdrive-gallery.js?v=4"></script>
