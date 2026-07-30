@@ -232,7 +232,7 @@
         "name": "Bagaimana cara gabung PBJ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Cara paling cepat gabung PBJ adalah datang langsung ke sesi latihan sebagai non-member dengan biaya Rp50.000 per kedatangan (sudah termasuk susu), tanpa perlu mendaftar dulu. Untuk jadi member resmi, pendaftaran open member hanya dibuka dua kali setahun lewat link di bio Instagram @pushbikejakarta, dan saat ini sedang tutup sampai awal 2027. Cukup bawa sepeda 12 inci sendiri dan perlengkapan wajib (helm, pelindung lutut & siku, sepatu tertutup), lalu langsung ikut latihan Selasa, Jumat, atau Minggu di JIEP Pulomas. Masih ragu? Tanya langsung ke WhatsApp admin di __ADMIN_WA_NUMBER__."
+          "text": "Cara paling cepat gabung PBJ adalah datang langsung ke sesi latihan sebagai non-member dengan biaya Rp50.000 per kedatangan (sudah termasuk susu), tanpa perlu mendaftar dulu. Untuk jadi member resmi, pendaftaran open member hanya dibuka dua kali setahun lewat link di bio Instagram @pushbikejakarta, dan saat ini sedang tutup sampai awal 2027. Cukup bawa sepeda 12 inci sendiri dan perlengkapan wajib (helm, pelindung lutut & siku, sepatu tertutup), lalu langsung ikut latihan Selasa, Jumat, atau Minggu di JIEP Pulomas. Masih ragu? Tanya langsung ke WhatsApp admin di 6285167017848."
         }
       },
       {
@@ -256,7 +256,7 @@
         "name": "Berapa biayanya?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Biaya latihan dihitung per kedatangan, bukan iuran bulanan tetap: Rp35.000 untuk member dan Rp50.000 untuk non-member, dan keduanya sudah termasuk susu selama persediaan hari itu masih ada. Tidak ada biaya pendaftaran atau formulir sama sekali hanya untuk bisa datang latihan. Nominal biaya member bisa berubah dari sesi ke sesi, jadi untuk info terbaru langsung tanyakan ke WhatsApp admin di __ADMIN_WA_NUMBER__."
+          "text": "Biaya latihan dihitung per kedatangan, bukan iuran bulanan tetap: Rp35.000 untuk member dan Rp50.000 untuk non-member, dan keduanya sudah termasuk susu selama persediaan hari itu masih ada. Tidak ada biaya pendaftaran atau formulir sama sekali hanya untuk bisa datang latihan. Nominal biaya member bisa berubah dari sesi ke sesi, jadi untuk info terbaru langsung tanyakan ke WhatsApp admin di 6285167017848."
         }
       },
       {
@@ -296,7 +296,7 @@
         "name": "Nomor WA admin?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Ada dua admin PBJ yang bisa dihubungi lewat WhatsApp: __ADMIN_WA_CONTACT_1__ dan __ADMIN_WA_CONTACT_2__ — bisa dihubungi langsung untuk tanya jadwal, biaya member terbaru, status open member, atau pertanyaan lain seputar latihan dan pendaftaran. Tombol WhatsApp di footer serta halaman bantuan pendaftaran situs ini juga otomatis terhubung ke kedua nomor ini. Simpan nomor ini untuk bertanya kapan saja seputar jadwal latihan, biaya, syarat, atau status open member — semua pertanyaan operasional PBJ dikelola lewat WhatsApp yang sama."
+          "text": "Ada dua admin PBJ yang bisa dihubungi lewat WhatsApp: Arif (6285167017848) dan Bastian (6287895701681) — bisa dihubungi langsung untuk tanya jadwal, biaya member terbaru, status open member, atau pertanyaan lain seputar latihan dan pendaftaran. Tombol WhatsApp di footer serta halaman bantuan pendaftaran situs ini juga otomatis terhubung ke kedua nomor ini. Simpan nomor ini untuk bertanya kapan saja seputar jadwal latihan, biaya, syarat, atau status open member — semua pertanyaan operasional PBJ dikelola lewat WhatsApp yang sama."
         }
       },
       {
@@ -616,8 +616,15 @@
 
       <!-- Grid Kartu Jadwal -->
       <div class="schedule-grid" id="scheduleGrid">
-        <!-- Kartu akan di-render oleh JavaScript (scheduleData dari schedule.js) -->
-        <!-- Struktur kartu dihasilkan dinamis agar mudah diubah data tanpa edit HTML -->
+        <!-- Kartu di-render oleh JavaScript (jadwalData dari schedule.js). Isi di bawah
+             adalah FALLBACK STATIS untuk mesin pencari & pengunjung tanpa JavaScript —
+             digantikan kartu dinamis (grid.innerHTML) saat JS berjalan. -->
+        <ul class="schedule-fallback">
+          <li><strong>Selasa</strong>, 20:00–22:00 WIB — JIEP Pulomas (khusus member)</li>
+          <li><strong>Jumat</strong>, 20:00–22:00 WIB — JIEP Pulomas (dibuka untuk umum)</li>
+          <li><strong>Minggu</strong>, 09:00–11:00 WIB — JIEP Pulomas (dibuka untuk umum)</li>
+          <li><strong>Event / Race</strong> — Jakarta International Stadium (JIS), jadwal menyesuaikan</li>
+        </ul>
       </div>
     </div>
   </section>
@@ -656,7 +663,13 @@
             <i class="fa-solid fa-list-check"></i> Lokasi Latihan
           </h3>
           <div class="location-list" id="locationList">
-            <!-- Daftar lokasi di-render oleh JavaScript dari data schedule.js -->
+            <!-- Daftar lokasi di-render JavaScript (lokasiData dari schedule.js). Isi di
+                 bawah adalah FALLBACK STATIS untuk mesin pencari & pengunjung tanpa
+                 JavaScript — digantikan daftar dinamis (list.innerHTML) saat JS berjalan. -->
+            <ul class="location-fallback">
+              <li><strong>Jakarta International Equestrian Park (JIEP)</strong> — Area Parkir Tengah, Jl. Pulomas, Pulo Gadung, Jakarta Timur (latihan rutin Selasa, Jumat, Minggu)</li>
+              <li><strong>Jakarta International Stadium (JIS)</strong> — Jl. Sunter Jaya No.1, Tanjung Priok, Jakarta Utara (venue event &amp; kompetisi)</li>
+            </ul>
           </div>
         </aside>
       </div>
