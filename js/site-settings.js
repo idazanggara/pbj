@@ -1,7 +1,7 @@
 /**
  * site-settings.js — Pengaturan Situs dari Google Sheets (toggle + link form + WA)
  *
- * Dipakai di index.html DAN daftar-member-baru.html (keduanya load file ini
+ * Dipakai di index.html DAN register.html (keduanya load file ini
  * setelah config.js, SEBELUM main.js). Baca DUA tab berbeda di spreadsheet
  * yang sama (SETTINGS_SHEET_ID):
  *   - Tab "Registration" (gid=0, default): Key/Value berisi
@@ -22,7 +22,7 @@
  * 3. Kalau REGISTRATION_OPEN di sheet bernilai TRUE: ubah tombol CTA
  *    "Daftar Sekarang" + link footer + FAQ jadi versi "sedang dibuka".
  * 4. Expose resolveAdminWaNumber() ke window — dipanggil (await) oleh
- *    main.js & daftar-member-baru.html sebelum memakai nomor WA, supaya
+ *    main.js & register.html sebelum memakai nomor WA, supaya
  *    nomor dari tab Config sempat termuat dulu sebelum dipakai.
  *
  * Fail-safe: selama SETTINGS_SHEET_ID kosong / fetch gagal / value bukan TRUE,
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return
   }
 
-  fetchSiteSettings()
+  fetchSiteSettings(typeof SETTINGS_SHEET_GID !== 'undefined' ? SETTINGS_SHEET_GID : undefined)
     .then(settings => {
       const isOpen = (settings.REGISTRATION_OPEN || '').toUpperCase() === 'TRUE'
       const formUrl = settings.REGISTRATION_FORM_URL || fallbackFormUrl
@@ -136,13 +136,13 @@ async function fetchSiteSettings(gid) {
 function applyRegistrationOpenState() {
   document.querySelectorAll('.nav-link--cta, .mobile-nav-link--cta').forEach(link => {
     link.textContent = 'Daftar Member Baru'
-    link.href = 'daftar-member-baru.html'
+    link.href = 'register.html'
   })
 
   const footerLink = document.getElementById('footerRegisterLink')
   if (footerLink) {
     footerLink.textContent = 'Daftar Member Baru'
-    footerLink.href = 'daftar-member-baru.html'
+    footerLink.href = 'register.html'
   }
 
   // Konten kedua state ("tutup" & "dibuka") sudah ada di markup index.html —
@@ -157,7 +157,7 @@ function applyRegistrationOpenState() {
 /* ================================================================
    NOMOR WA ADMIN — dari tab "Config" tersembunyi (CONFIG_SHEET_GID),
    fallback ke ADMIN_WA_NUMBER di config.js. Dipanggil main.js &
-   daftar-member-baru.html (di-expose ke window supaya bisa dipakai
+   register.html (di-expose ke window supaya bisa dipakai
    file lain). Di-cache (variabel module-level) supaya HANYA fetch
    sekali walau dipanggil berkali-kali (mis. saat load halaman DAN
    saat submit form pendaftaran).

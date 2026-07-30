@@ -9,6 +9,18 @@ Website statis (tanpa server/database) membaca tiap Sheet lewat **endpoint gviz*
 
 Pasangan dokumen ini: **[STRUKTUR-GDRIVE.md](STRUKTUR-GDRIVE.md)** (struktur folder galeri Drive).
 
+**Sejak 30 Juli 2026: SATU spreadsheet, EMPAT tab.** Sebelumnya Event, Galeri Per Latihan,
+dan Pengaturan Situs adalah 3 file terpisah — sekarang semua digabung jadi 1 file bernama
+`PBJ - Pengaturan Situs` (ID `1cm0iEcJnBNxUYto7mpyMz05SfDh_NwjW2KTUka6SO_o`), dibedakan
+lewat tab (parameter `&gid=` di endpoint gviz):
+
+| Tab | gid | Konstanta gid di `config.js` | Isi |
+|---|---|---|---|
+| Registration | `0` | `SETTINGS_SHEET_GID` | Toggle pendaftaran + link Form |
+| Config | `845332613` | `CONFIG_SHEET_GID` | Nomor WA admin (bisa disembunyikan) |
+| Event & Race PBJ | `682739686` | `EVENTS_SHEET_GID` | Data event/race |
+| Galeri per Latihan | `1110534419` | `GALLERY_SESSIONS_SHEET_GID` | Link folder foto per sesi |
+
 ---
 
 ## Aturan umum semua Sheet
@@ -17,14 +29,21 @@ Pasangan dokumen ini: **[STRUKTUR-GDRIVE.md](STRUKTUR-GDRIVE.md)** (struktur fol
    bukan posisi.
 2. **Header di-normalisasi**: huruf kecil, tanpa spasi. Jadi `Link Info`, `LinkInfo`, dan
    `linkinfo` dianggap sama. Kolom ekstra yang tidak dikenal diabaikan (aman).
-3. **Wajib share tiap Sheet**: File → Bagikan → **"Anyone with the link: Viewer"**.
+3. **Wajib share Sheet ini SEKALI** (berlaku ke semua tab): File → Bagikan → **"Anyone with
+   the link: Viewer"**.
 4. **Fail-safe**: kalau ID Sheet kosong / sheet kosong / fetch gagal, website pakai tampilan
    **fallback** aman — tidak pernah tampak rusak.
 5. Nilai sel diambil dari **`.f` (terformat, mis. tanggal)**, fallback ke `.v` (mentah).
+6. **`&gid=` WAJIB eksplisit di setiap fetch** (bukan andalkan "tab pertama/default") —
+   endpoint gviz tanpa `&gid=` mengembalikan tab yang PALING KIRI secara posisi, BUKAN
+   selalu gid=0. Insiden nyata 30 Juli 2026: tab "Galeri per Latihan" sempat digeser ke
+   posisi terdepan, dan kode yang belum pakai `&gid=` eksplisit langsung salah baca data.
+   Semua fetch di kodebase ini (`events.js`, `gallery-sessions.js`, `site-settings.js`)
+   sudah diperbaiki memakai gid eksplisit — **jangan hapus parameter ini saat refactor**.
 
 ---
 
-## 1. Sheet EVENT / RACE (`EVENTS_SHEET_ID`)
+## 1. Tab EVENT & RACE PBJ (`EVENTS_SHEET_ID` + `EVENTS_SHEET_GID`)
 
 Kolom (baris pertama = judul kolom):
 
@@ -70,7 +89,7 @@ Nama | Tanggal | Lokasi | Kategori | Deskripsi | LinkInfo | LinkMedia | Status
 
 ---
 
-## 2. Sheet GALERI PER LATIHAN (`GALLERY_SESSIONS_SHEET_ID`)
+## 2. Tab GALERI PER LATIHAN (`GALLERY_SESSIONS_SHEET_ID` + `GALLERY_SESSIONS_SHEET_GID`)
 
 Kolom:
 
@@ -110,11 +129,11 @@ kolom **LinkDrive**. Website hanya **menautkan** ke folder itu (tidak menampilka
 
 ---
 
-## 3. Sheet PENGATURAN SITUS (`SETTINGS_SHEET_ID`) — 2 TAB
+## 3. Tab PENGATURAN SITUS (`SETTINGS_SHEET_ID`) — Registration + Config
 
-Satu spreadsheet, DUA tab berbeda (dibaca lewat parameter `&gid=` di endpoint gviz):
+Dua tab pengaturan di spreadsheet gabungan yang sama dengan Event & Galeri di atas:
 
-### Tab "Registration" (gid=0, default — TERLIHAT, boleh dibagikan ke kolaborator lain)
+### Tab "Registration" (gid=0 — TERLIHAT, boleh dibagikan ke kolaborator lain)
 
 Kolom:
 
@@ -131,7 +150,7 @@ Key | Value
   Member Baru" + blok FAQ berubah ke versi "sedang dibuka". Selain itu (`FALSE`, kosong,
   sheet/ID kosong, atau fetch gagal) → default **TUTUP** (tampilan bawaan di HTML).
 - **`REGISTRATION_FORM_URL`** = link publik Google Form (`viewform`) yang ditampilkan via
-  iframe di `daftar-member-baru.html`. Kosong/fetch gagal → fallback ke konstanta
+  iframe di `register.html`. Kosong/fetch gagal → fallback ke konstanta
   `REGISTRATION_FORM_URL` di `config.js`.
 
 ### Tab "Config" (gid = `CONFIG_SHEET_GID`, opsional — bisa DISEMBUNYIKAN dari kolaborator lain)
@@ -143,7 +162,7 @@ Sembunyikan sheet) dari orang yang cuma perlu akses ke tab Registration:
 |---|---|
 | ADMIN_WA_NUMBER | 6285647357997 |
 
-- **`ADMIN_WA_NUMBER`** = nomor WA admin, disebarkan `main.js`/`daftar-member-baru.html` ke
+- **`ADMIN_WA_NUMBER`** = nomor WA admin, disebarkan `main.js`/`register.html` ke
   semua tombol/teks WA & FAQ. Kosong/`CONFIG_SHEET_GID` belum diisi/fetch gagal → fallback
   ke konstanta `ADMIN_WA_NUMBER` di `config.js`.
 
@@ -162,14 +181,17 @@ Sembunyikan sheet) dari orang yang cuma perlu akses ke tab Registration:
 
 ## 5. Pemetaan konfigurasi (di `js/config.js`)
 
+Semua `*_SHEET_ID` di bawah bernilai SAMA (`1cm0iEcJnBNxUYto7mpyMz05SfDh_NwjW2KTUka6SO_o`)
+— 1 spreadsheet, dibedakan lewat `*_GID` masing-masing.
+
 | Konstanta | Sumber utama | Dibaca oleh |
 |---|---|---|
-| `EVENTS_SHEET_ID` | Google Sheet Event/Race | `js/events.js` |
-| `GALLERY_SESSIONS_SHEET_ID` | Google Sheet Per Latihan | `js/gallery-sessions.js` |
-| `SETTINGS_SHEET_ID` | Google Sheet Pengaturan Situs (tab Registration) | `js/site-settings.js` |
-| `CONFIG_SHEET_GID` | gid tab "Config" tersembunyi (spreadsheet sama dgn `SETTINGS_SHEET_ID`) | `js/site-settings.js` |
-| `DRIVE_GALLERY_FOLDER_ID` + `DRIVE_API_KEY` | Folder Drive Galeri Kategori | `js/gdrive-gallery.js` |
-| `INSTAGRAM_FEED_URL` | JSON behold.so (satu-satunya yg BUKAN fallback — ini sumber utama) | `js/instagram.js` |
+| `EVENTS_SHEET_ID` + `EVENTS_SHEET_GID` | Tab "Event & Race PBJ" (gid `682739686`) | `js/events.js` |
+| `GALLERY_SESSIONS_SHEET_ID` + `GALLERY_SESSIONS_SHEET_GID` | Tab "Galeri per Latihan" (gid `1110534419`) | `js/gallery-sessions.js` |
+| `SETTINGS_SHEET_ID` + `SETTINGS_SHEET_GID` | Tab "Registration" (gid `0`) | `js/site-settings.js` |
+| `CONFIG_SHEET_GID` | Tab "Config" tersembunyi (gid `845332613`) | `js/site-settings.js` |
+| `DRIVE_GALLERY_FOLDER_ID` + `DRIVE_API_KEY` | Folder Drive Galeri Kategori (BUKAN Sheet) | `js/gdrive-gallery.js` |
+| `INSTAGRAM_FEED_URL` | JSON behold.so (satu-satunya yg BUKAN fallback — ini sumber utama, BUKAN Sheet) | `js/instagram.js` |
 | `REGISTRATION_FORM_URL` | FALLBACK darurat (sumber utama: sel Sheet tab Registration) | `js/site-settings.js` |
 | `ADMIN_WA_NUMBER` | FALLBACK darurat (sumber utama: sel Sheet tab Config) | `js/site-settings.js`, `js/main.js` |
 

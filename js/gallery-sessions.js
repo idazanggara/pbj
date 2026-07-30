@@ -71,7 +71,12 @@ function initGallerySessions(container) {
    PENGAMBILAN & PARSING DATA SHEET (endpoint gviz — sama seperti events.js)
    ================================================================ */
 async function fetchGallerySessions() {
-  const url = `https://docs.google.com/spreadsheets/d/${GALLERY_SESSIONS_SHEET_ID}/gviz/tq?tqx=out:json&headers=1`
+  // &gid= eksplisit — GALLERY_SESSIONS_SHEET_ID sekarang 1 spreadsheet gabungan
+  // (4 tab), TANPA gid endpoint gviz bisa salah baca tab lain kalau urutan tab
+  // berubah (insiden nyata 2026-07-30, lihat komentar di config.js).
+  const gidParam = typeof GALLERY_SESSIONS_SHEET_GID !== 'undefined' && GALLERY_SESSIONS_SHEET_GID
+    ? `&gid=${GALLERY_SESSIONS_SHEET_GID}` : ''
+  const url = `https://docs.google.com/spreadsheets/d/${GALLERY_SESSIONS_SHEET_ID}/gviz/tq?tqx=out:json&headers=1${gidParam}`
   const response = await fetchWithTimeout(url)
   if (!response.ok) {
     throw new Error(`Google Sheets merespons status ${response.status}`)

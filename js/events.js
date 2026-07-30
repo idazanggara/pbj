@@ -52,7 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
    PENGAMBILAN & PARSING DATA SHEET (endpoint gviz)
    ================================================================ */
 async function fetchEvents() {
-  const url = `https://docs.google.com/spreadsheets/d/${EVENTS_SHEET_ID}/gviz/tq?tqx=out:json&headers=1`
+  // &gid= eksplisit — EVENTS_SHEET_ID sekarang 1 spreadsheet gabungan (4 tab),
+  // TANPA gid endpoint gviz bisa salah baca tab lain kalau urutan tab berubah
+  // (insiden nyata 2026-07-30, lihat komentar EVENTS_SHEET_GID di config.js).
+  const gidParam = typeof EVENTS_SHEET_GID !== 'undefined' && EVENTS_SHEET_GID ? `&gid=${EVENTS_SHEET_GID}` : ''
+  const url = `https://docs.google.com/spreadsheets/d/${EVENTS_SHEET_ID}/gviz/tq?tqx=out:json&headers=1${gidParam}`
   const response = await fetchWithTimeout(url)
   if (!response.ok) {
     throw new Error(`Google Sheets merespons status ${response.status}`)

@@ -203,6 +203,16 @@
             perubahan tampil otomatis di website (biasanya dalam hitungan detik sampai
             beberapa menit, cukup refresh halaman).
           </p>
+          <p class="admin-note" style="margin-bottom: 20px;">
+            <strong>Catatan:</strong> sejak Juli 2026, kartu <em>"Kelola Event"</em> dan
+            <em>"Kelola Galeri Per Latihan"</em> di atas, PLUS tombol buka/tutup pendaftaran
+            &amp; ganti nomor WA di dalam accordion panduan di bawah, semuanya membuka SATU
+            file Google Sheet yang sama (<em>"PBJ - Pengaturan Situs"</em>) — bedanya cuma
+            TAB yang aktif. Jangan pindahkan urutan tab di spreadsheet itu (klik-tahan lalu
+            geser tab) — website mengandalkan tab tertentu lewat ID internal (gid), bukan
+            urutan/posisi, tapi tetap sebaiknya urutan tab dibiarkan apa adanya supaya tidak
+            membingungkan saat isi data.
+          </p>
 
           <details class="admin-guide__item">
             <summary><i class="fa-solid fa-table-list"></i> Cara isi data Event &amp; Race</summary>
@@ -289,8 +299,8 @@
           <details class="admin-guide__item">
             <summary><i class="fa-solid fa-toggle-on"></i> Cara buka/tutup Pendaftaran Member Baru</summary>
             <div class="admin-guide__body">
+              <div id="registrationCardSlot" style="margin-bottom: 14px;"></div>
               <p>
-                Buka lewat kartu <strong>"Buka/Tutup Pendaftaran Member Baru"</strong> di atas.
                 Sheet ini berisi DUA baris pengaturan (bukan daftar seperti Event/Galeri):
               </p>
               <table>
@@ -317,7 +327,35 @@
               <p>
                 Belum pernah setup sama sekali? Sheet-nya perlu dibuat dulu satu kali (lihat
                 komentar <code>SETTINGS_SHEET_ID</code> di <code>config.js</code>) — hubungi
-                Tech PBJ kalau kartu di atas masih tampak nonaktif/abu-abu.
+                Tech PBJ kalau tombol di atas masih tampak nonaktif/abu-abu.
+              </p>
+            </div>
+          </details>
+
+          <details class="admin-guide__item">
+            <summary><i class="fa-brands fa-whatsapp"></i> Cara ganti nomor WhatsApp Admin</summary>
+            <div class="admin-guide__body">
+              <p>
+                Nomor WA admin disimpan di tab <strong>"Config"</strong> — tab TERSEMBUNYI
+                di spreadsheet yang sama dengan tab Registration/Event/Galeri (sengaja
+                disembunyikan supaya tidak sengaja ke-edit orang lain yang dibagikan akses
+                ke tab lain).
+              </p>
+              <div id="configCardSlot" style="margin-bottom: 14px;"></div>
+              <p>
+                Kalau tombol di atas membuka spreadsheet tapi tab "Config" tidak kelihatan
+                di baris tab paling bawah: klik ikon <strong>☰</strong> di pojok kiri bawah
+                spreadsheet → pilih <strong>Config</strong> untuk memunculkannya sementara.
+              </p>
+              <table>
+                <tr><th>Key (JANGAN diubah)</th><th>Isi Value dengan</th></tr>
+                <tr><td><code>ADMIN_WA_NUMBER</code></td><td>Nomor WA baru. Format: kode negara + nomor TANPA angka 0 di depan (mis. <code>628123456789</code>, BUKAN <code>08123456789</code>).</td></tr>
+              </table>
+              <p>
+                Perubahan tampil di semua tombol/teks WA di website (footer, FAQ, form
+                pendaftaran) dalam beberapa menit, TIDAK perlu redeploy. Kalau tab "Config"
+                belum pernah dibuat sama sekali, tombol di atas akan tampak nonaktif —
+                lihat panduan lengkap di <code>docs/PANDUAN-ADMIN.md</code> Bagian J.
               </p>
             </div>
           </details>
@@ -336,7 +374,7 @@
 
   <!-- Versi ?v= HARUS sama dengan yang di index.html supaya kedua halaman
        membaca config.js dari cache entry yang sama (tidak ada yang stale) -->
-  <script src="js/config.js?v=12"></script>
+  <script src="js/config.js?v=14"></script>
   <script>
     /* ================================================================
        GERBANG LOGIN ADMIN (client-side)
@@ -426,8 +464,19 @@
             ? 'Buka sheet event: tambah / edit / hapus baris event & race.'
             : 'Belum dikonfigurasi: isi EVENTS_SHEET_ID di config.js.',
           Boolean(sheetUrl)
-        ),
-        cardHtml(
+        )
+      ].join('')
+
+      // Kartu "Buka/Tutup Pendaftaran" & "Ganti Nomor WA" ditaruh DI DALAM
+      // accordion panduan (bukan grid kartu utama di atas) — sengaja
+      // low-profile, supaya orang yang login admin.html tapi bukan admin
+      // utama tidak langsung ngeh ada toggle pendaftaran/nomor WA kalau
+      // tidak buka accordion-nya dulu. Pakai cardHtml() yang SAMA PERSIS
+      // dengan kartu di grid atas (ikon, warna, layout) — cuma lokasinya
+      // yang beda, bukan tampilannya.
+      const registrationCardSlot = document.getElementById('registrationCardSlot')
+      if (registrationCardSlot) {
+        registrationCardSlot.innerHTML = cardHtml(
           settingsSheetUrl,
           'fa-solid fa-toggle-on',
           'Buka/Tutup Pendaftaran Member Baru (Google Sheets)',
@@ -436,7 +485,21 @@
             : 'Belum dikonfigurasi: isi SETTINGS_SHEET_ID di config.js.',
           Boolean(settingsSheetUrl)
         )
-      ].join('')
+      }
+
+      const configCardSlot = document.getElementById('configCardSlot')
+      if (configCardSlot) {
+        const configSheetUrl = isConfigLoaded ? adminConfigSheetUrl() : ''
+        configCardSlot.innerHTML = cardHtml(
+          configSheetUrl,
+          'fa-brands fa-whatsapp',
+          'Ganti Nomor WhatsApp Admin (Google Sheets)',
+          configSheetUrl
+            ? 'Buka tab Config: ubah nilai ADMIN_WA_NUMBER.'
+            : 'Belum dikonfigurasi: isi CONFIG_SHEET_GID di config.js.',
+          Boolean(configSheetUrl)
+        )
+      }
     }
 
     function unlockAdminPage() {

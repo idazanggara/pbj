@@ -43,7 +43,7 @@
  */
 
 /* ---------------- WHATSAPP ADMIN ----------------
-   Nomor ini dipakai main.js & daftar-member-baru.html untuk mengisi
+   Nomor ini dipakai main.js & register.html untuk mengisi
    otomatis:
      - Tombol WhatsApp di footer (ikon sosial & baris kontak)
      - Link WhatsApp yang terisi otomatis dari form pendaftaran
@@ -79,8 +79,15 @@ const CONFIG_SHEET_GID = '845332613'
 const DRIVE_API_KEY = 'AIzaSyBtHNF8yJw7cMN6rjKslp6-Wvj_QXJGz5E'
 const DRIVE_GALLERY_FOLDER_ID = '1FRvqquhu045ksHXsN1wFHLrb0R1QU6xR'
 
-/* ---------------- GOOGLE SHEETS (Event & Race) ---------------- */
-const EVENTS_SHEET_ID = '140ah0IgNFHR05216BuHFrVH90OWEX-_mK5S6S9H0ql8'
+/* ---------------- GOOGLE SHEETS (1 spreadsheet, 4 tab) ----------------
+   Sejak 2026-07-30: Event & Race, Galeri per Latihan, Registration, dan
+   Config SEMUA digabung jadi SATU spreadsheet (sebelumnya file terpisah)
+   — dibedakan lewat tab (gid), bukan lagi ID spreadsheet berbeda-beda.
+   File → Share → "Anyone with the link: Viewer" cukup SEKALI di level
+   spreadsheet ini (berlaku ke semua tab yang tidak sengaja di-Protect).
+   Ganti sheet-nya nanti? Cukup ubah SATU ID di bawah, semua tab ikut. */
+const EVENTS_SHEET_ID = '1cm0iEcJnBNxUYto7mpyMz05SfDh_NwjW2KTUka6SO_o'
+const EVENTS_SHEET_GID = '682739686' // tab "Event & Race PBJ"
 
 /* ---------------- GOOGLE SHEETS (Galeri per Latihan) ----------------
    Dibaca oleh gallery-sessions.js untuk mode tampilan "Per Latihan" di
@@ -99,8 +106,10 @@ const EVENTS_SHEET_ID = '140ah0IgNFHR05216BuHFrVH90OWEX-_mK5S6S9H0ql8'
    jadi satu kartu berisi 3 tombol. Kenapa lewat Sheet, bukan Drive API
    seperti galeri Kategori? Karena foto tiap sesi tersebar di folder
    Drive milik fotografer yang berbeda-beda (di luar Drive PBJ), jadi
-   tidak bisa dipindai otomatis lewat query "'{id}' in parents". */
-const GALLERY_SESSIONS_SHEET_ID = '1LOVfycAscUlDoIo9OUABnhhRYBYQr1_M_kjux6oESn8'
+   tidak bisa dipindai otomatis lewat query "'{id}' in parents".
+   Tab yang sama dengan EVENTS_SHEET_ID di atas (1 spreadsheet, 4 tab). */
+const GALLERY_SESSIONS_SHEET_ID = '1cm0iEcJnBNxUYto7mpyMz05SfDh_NwjW2KTUka6SO_o'
+const GALLERY_SESSIONS_SHEET_GID = '1110534419' // tab "Galeri per Latihan"
 
 /* ---------------- GOOGLE SHEETS (Pengaturan Situs: toggle + link Form) ----------------
    Dibaca oleh site-settings.js. Kolom sheet (baris pertama = judul kolom):
@@ -109,20 +118,26 @@ const GALLERY_SESSIONS_SHEET_ID = '1LOVfycAscUlDoIo9OUABnhhRYBYQr1_M_kjux6oESn8'
                                             ubah tombol "Daftar Sekarang" + FAQ
      REGISTRATION_FORM_URL | https://docs.google.com/forms/d/e/xxxxx/viewform
                                           → link publik Form yang di-iframe di
-                                            daftar-member-baru.html. Ganti sel
+                                            register.html. Ganti sel
                                             ini kapan pun form diganti/dibuat
                                             ulang — TIDAK butuh redeploy.
    1. Buat Google Sheet baru, isi 2 kolom + 2 baris di atas.
    2. File → Share → "Anyone with the link: Viewer".
    3. Salin ID sheet dari URL-nya (sama seperti EVENTS_SHEET_ID di atas)
       → tempel ke SETTINGS_SHEET_ID.
-   Selama nilai ini kosong, situs tetap tampil default "tutup" (fallback aman). */
+   Selama nilai ini kosong, situs tetap tampil default "tutup" (fallback aman).
+   SETTINGS_SHEET_GID WAJIB diisi eksplisit (bukan dikosongkan/andalkan
+   "tab pertama") — kalau tab "Registration" digeser posisinya (bukan lagi
+   tab paling kiri di spreadsheet), endpoint gviz tanpa &gid= akan salah
+   baca tab lain. Insiden nyata 2026-07-30: tab Galeri per Latihan sempat
+   dipindah ke posisi terdepan, salah kalau gid tidak eksplisit. */
 const SETTINGS_SHEET_ID = '1cm0iEcJnBNxUYto7mpyMz05SfDh_NwjW2KTUka6SO_o'
+const SETTINGS_SHEET_GID = '0' // tab "Registration"
 
 /* ---------------- GOOGLE FORM (Pendaftaran Member Baru) — FALLBACK ----------------
    Dipakai HANYA kalau baris REGISTRATION_FORM_URL di sheet di atas kosong /
    sheet belum dikonfigurasi / fetch ke sheet gagal (mis. Sheets sedang
-   down) — supaya iframe di daftar-member-baru.html tidak pernah kosong.
+   down) — supaya iframe di register.html tidak pernah kosong.
    Sumber utama tetap sheet Pengaturan Situs (ganti form = edit sel Sheet,
    TANPA redeploy); nilai di sini cukup diselaraskan sesekali sebagai jaring
    pengaman, bukan tempat utama untuk update rutin. */
@@ -253,17 +268,22 @@ function adminDriveUrl() {
 }
 function adminSheetUrl() {
   return EVENTS_SHEET_ID
-    ? `https://docs.google.com/spreadsheets/d/${EVENTS_SHEET_ID}/edit`
+    ? `https://docs.google.com/spreadsheets/d/${EVENTS_SHEET_ID}/edit#gid=${EVENTS_SHEET_GID}`
     : ''
 }
 function adminGallerySessionsSheetUrl() {
   return GALLERY_SESSIONS_SHEET_ID
-    ? `https://docs.google.com/spreadsheets/d/${GALLERY_SESSIONS_SHEET_ID}/edit`
+    ? `https://docs.google.com/spreadsheets/d/${GALLERY_SESSIONS_SHEET_ID}/edit#gid=${GALLERY_SESSIONS_SHEET_GID}`
     : ''
 }
 function adminSettingsSheetUrl() {
   return SETTINGS_SHEET_ID
-    ? `https://docs.google.com/spreadsheets/d/${SETTINGS_SHEET_ID}/edit`
+    ? `https://docs.google.com/spreadsheets/d/${SETTINGS_SHEET_ID}/edit#gid=${SETTINGS_SHEET_GID}`
+    : ''
+}
+function adminConfigSheetUrl() {
+  return SETTINGS_SHEET_ID && CONFIG_SHEET_GID
+    ? `https://docs.google.com/spreadsheets/d/${SETTINGS_SHEET_ID}/edit#gid=${CONFIG_SHEET_GID}`
     : ''
 }
 

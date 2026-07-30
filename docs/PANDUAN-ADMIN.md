@@ -14,6 +14,18 @@
 
 ---
 
+> ### 📌 Update 30 Juli 2026 — Sheet digabung jadi 1 file
+> Bagian B–E di bawah menjelaskan setup ASLI (3 file Google Sheet terpisah).
+> **Sejak 30 Juli 2026, ketiganya (Event & Race, Galeri Per Latihan, Pengaturan
+> Situs) sudah digabung jadi SATU file bernama `PBJ - Pengaturan Situs`**, cuma
+> beda TAB. Struktur & isi kolom di tiap tab **tidak berubah** — Bagian B-E di
+> bawah tetap valid untuk PANDUAN ISI KOLOM, cuma abaikan instruksi "buat sheet
+> baru terpisah". Untuk struktur terkini yang selalu up-to-date, lihat
+> **[STRUKTUR-DATA.md](STRUKTUR-DATA.md)**. Pemakaian sehari-hari (Bagian F)
+> dan toggle pendaftaran (Bagian I/J) sudah disesuaikan mengikuti struktur baru.
+
+---
+
 ## Bagian A. Persiapan (dibaca dulu)
 
 Yang Anda butuhkan:
@@ -266,11 +278,11 @@ gulir paling bawah, klik tulisan kecil **Admin** di baris copyright.
 | Menghapus foto dari website | Hapus filenya dari Drive |
 | Menambah kategori galeri baru | Buat subfolder baru di `Galeri PBJ` |
 | Mengganti caption foto | Ganti nama file, atau isi kolom Deskripsi file di Drive |
-| Menambah event baru | Tambah satu baris baru di sheet `Event PBJ` |
+| Menambah event baru | Tambah satu baris baru di tab `Event & Race PBJ` (file `PBJ - Pengaturan Situs`) |
 | Event sudah lewat | Ubah kolom Status menjadi `selesai` |
 | Menghapus event | Hapus barisnya di sheet |
-| Membuka pendaftaran member baru | Ubah kolom Value di sheet `PBJ - Pengaturan Situs` jadi `TRUE` (lihat Bagian I) |
-| Menutup pendaftaran member baru | Ubah kolom Value di sheet yang sama jadi `FALSE` |
+| Membuka pendaftaran member baru | Ubah kolom Value di tab `Registration` jadi `TRUE` (lihat Bagian I) |
+| Menutup pendaftaran member baru | Ubah kolom Value di tab yang sama jadi `FALSE` |
 
 Perubahan biasanya tampil di website dalam hitungan detik sampai beberapa
 menit (refresh halamannya).
@@ -349,22 +361,27 @@ sama.
 ## Bagian I. Membuat Toggle Buka/Tutup Pendaftaran Member Baru (opsional)
 
 Fitur ini membuat tombol **"Daftar Sekarang"** di website berubah otomatis
-mengarah ke halaman formulir pendaftaran member baru (`daftar-member-baru.html`,
+mengarah ke halaman formulir pendaftaran member baru (`register.html`,
 berisi Google Form resmi), HANYA saat masa pembukaan sedang aktif — tanpa
 perlu tim tech redeploy setiap kali dibuka/ditutup. Setup di bawah cukup
 dilakukan **SEKALI**; pemakaian sehari-hari setelahnya lihat Bagian F.
 
-### I1. Buat sheet toggle
+> ✅ **Status: sudah di-setup** (30 Juli 2026). Bagian ini disimpan sebagai
+> riwayat/referensi kalau perlu setup ulang dari nol suatu saat nanti.
 
-1. Buka [sheets.google.com](https://sheets.google.com), buat spreadsheet
-   baru, beri nama misalnya `PBJ - Pengaturan Situs`.
-2. Di **baris 1**, isi 2 kolom persis:
+### I1. Tab "Registration" di spreadsheet `PBJ - Pengaturan Situs`
+
+Sejak digabung (lihat catatan di awal dokumen), tab ini adalah SALAH SATU
+dari 4 tab di file `PBJ - Pengaturan Situs` yang sama dengan tab Event &
+Race dan Galeri per Latihan — BUKAN spreadsheet terpisah lagi.
+
+1. Di **baris 1**, isi 2 kolom persis:
 
    | A | B |
    |---|---|
    | Key | Value |
 
-3. Di **baris 2 dan 3**, isi:
+2. Di **baris 2 dan 3**, isi:
 
    | Key | Value |
    |---|---|
@@ -378,45 +395,52 @@ dilakukan **SEKALI**; pemakaian sehari-hari setelahnya lihat Bagian F.
      Baris ini yang membuat ganti-Google-Form-di-kemudian-hari jadi gampang:
      cukup edit sel ini, TIDAK perlu redeploy/hubungi tim tech.
 
-### I2. Bagikan sheet
+### I2. Bagikan spreadsheet
 
-Sama seperti Bagian D3: klik **Share / Bagikan** → ubah Akses umum menjadi
-**"Siapa saja yang memiliki link"**, peran **Pelihat / Viewer**.
+Share sekali di level FILE (bukan per-tab) → ubah Akses umum menjadi
+**"Siapa saja yang memiliki link"**, peran **Pelihat / Viewer**. Berlaku
+otomatis untuk semua tab kecuali ada tab yang sengaja di-Protect
+(lihat Bagian J untuk contoh proteksi tab).
 
-### I3. Salin ID sheet
+### I3. Ambil ID spreadsheet + gid tab
 
-Sama seperti Bagian D4: dari alamat browser, ambil bagian antara `/d/` dan
-`/edit`. Kirim ke tim tech dengan label **"ID SHEET PENGATURAN"**.
+- **ID spreadsheet**: dari alamat browser, ambil bagian antara `/d/` dan
+  `/edit` — SAMA untuk semua tab (Event, Galeri, Registration, Config).
+- **gid tab "Registration"**: klik tab ini supaya aktif, ambil angka
+  setelah `#gid=` di URL. Kalau tab ini tab PERTAMA/paling kiri, gid-nya
+  `0` — tapi tetap ambil eksplisit dari URL, jangan asumsi, karena tab
+  bisa saja digeser posisinya kapan saja.
 
 ### I4. Sambungkan ke website (dikerjakan tim tech, sekali saja)
 
-Di `config.js`, isi baris ini:
+Di `config.js`, isi:
 
 ```js
-const SETTINGS_SHEET_ID = ''
+const SETTINGS_SHEET_ID = '<ID spreadsheet>'
+const SETTINGS_SHEET_GID = '<gid tab Registration>'
 ```
 
-menjadi:
-
-```js
-const SETTINGS_SHEET_ID = '1XyZaBcDeFgHiJkLmNo_ID_SHEET_PENGATURAN'
-```
-
-Baris `REGISTRATION_FORM_URL` di `config.js` TIDAK perlu diisi ulang setiap
-ganti form — nilai itu sekarang cuma **cadangan darurat** (dipakai kalau
-sheet gagal dimuat). Sumber utama link Form yang dipakai sehari-hari
-adalah baris `REGISTRATION_FORM_URL` di sheet `PBJ - Pengaturan Situs`
-(lihat I1) — ganti di situ, TIDAK butuh redeploy.
+**Penting:** `SETTINGS_SHEET_GID` HARUS diisi eksplisit, jangan dikosongkan
+— endpoint yang dipakai situs ini TIDAK otomatis membaca tab pertama kalau
+tab digeser posisinya (insiden nyata 30 Juli 2026, lihat catatan di
+STRUKTUR-DATA.md). Baris `REGISTRATION_FORM_URL` di `config.js` TIDAK
+perlu diisi ulang setiap ganti form — nilai itu sekarang cuma **cadangan
+darurat** (dipakai kalau sheet gagal dimuat). Sumber utama link Form yang
+dipakai sehari-hari adalah baris `REGISTRATION_FORM_URL` di tab
+Registration (lihat I1) — ganti di situ, TIDAK butuh redeploy.
 
 ---
 
 ## Bagian J. Tab "Config" Tersembunyi (nomor WA admin) — opsional, teknis
 
-Beda dari Bagian I: bagian ini untuk **tab KEDUA** di spreadsheet yang
+> ✅ **Status: sudah di-setup** (30 Juli 2026, gid `845332613`). Bagian ini
+> disimpan sebagai riwayat/referensi.
+
+Beda dari Bagian I: bagian ini untuk **salah satu tab** di spreadsheet yang
 SAMA dengan `PBJ - Pengaturan Situs` (bukan spreadsheet baru), khusus
 untuk pengaturan yang sengaja **disembunyikan** dari kolaborator lain
-yang cuma perlu buka/tutup pendaftaran (Bagian I). Saat ini cuma
-menampung 1 nilai: nomor WA admin.
+yang cuma perlu buka/tutup pendaftaran (Bagian I) atau isi data Event/
+Galeri. Saat ini cuma menampung 1 nilai: nomor WA admin.
 
 ### J1. Buat tab "Config"
 
@@ -461,6 +485,27 @@ Setelah ini, ganti nomor WA admin cukup edit sel `Value` di tab `Config`
 — TIDAK perlu redeploy. `ADMIN_WA_NUMBER` di `config.js` tetap ada
 sebagai cadangan darurat (dipakai kalau tab Config gagal dimuat), sama
 seperti pola `REGISTRATION_FORM_URL` di Bagian I.
+
+### J4. Proteksi tab dari edit tidak sengaja (disarankan kalau sudah share ke orang lain)
+
+Begitu tab `Event & Race` / `Galeri per Latihan` dibagikan ke coach/
+pengurus lain untuk mereka isi sendiri, ingat: **"Sembunyikan sheet" di
+J2 BUKAN pengaman edit** — siapa pun yang Editor di file ini tetap bisa
+memunculkan & mengubah tab tersembunyi lewat menu ☰. Untuk proteksi
+SUNGGUHAN (walau tab terlihat/tersembunyi):
+
+1. Klik kanan tab `Registration` atau `Config` → **"Protect sheet"**
+   (atau menu **Data → Protected sheets and ranges**).
+2. Pilih **"Sheet"**, pastikan tab yang benar terpilih.
+3. Di bagian **"Set permissions"**, pilih **"Only you"** (atau tambahkan
+   email co-admin tepercaya lain kalau perlu lebih dari satu orang).
+4. Simpan.
+
+Dengan ini, kolaborator yang Editor di tab Event/Galeri **tidak bisa
+mengubah** isi tab Registration/Config walau tab-nya terlihat — cocok
+dipakai terutama untuk tab `Registration`, karena salah pencet
+`REGISTRATION_OPEN` bisa tiba-tiba "membuka" pendaftaran member baru
+tanpa sengaja.
 
 ---
 

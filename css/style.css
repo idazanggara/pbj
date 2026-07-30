@@ -1566,7 +1566,7 @@ body::after {
 }
 
 /* ----------------------------------------------------------------
-   HALAMAN DAFTAR MEMBER BARU (daftar-member-baru.html)
+   HALAMAN DAFTAR MEMBER BARU (register.html)
    Iframe Google Form TIDAK bisa lapor tinggi kontennya ke halaman ini
    (cross-origin) sehingga tidak ada auto-resize sejati — dipakai
    min-height perkiraan (beda mobile/desktop) + overflow:auto di
