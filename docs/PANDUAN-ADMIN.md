@@ -410,6 +410,60 @@ adalah baris `REGISTRATION_FORM_URL` di sheet `PBJ - Pengaturan Situs`
 
 ---
 
+## Bagian J. Tab "Config" Tersembunyi (nomor WA admin) — opsional, teknis
+
+Beda dari Bagian I: bagian ini untuk **tab KEDUA** di spreadsheet yang
+SAMA dengan `PBJ - Pengaturan Situs` (bukan spreadsheet baru), khusus
+untuk pengaturan yang sengaja **disembunyikan** dari kolaborator lain
+yang cuma perlu buka/tutup pendaftaran (Bagian I). Saat ini cuma
+menampung 1 nilai: nomor WA admin.
+
+### J1. Buat tab "Config"
+
+1. Di spreadsheet `PBJ - Pengaturan Situs` (yang sama dengan Bagian I),
+   klik **"+"** di kiri bawah untuk tambah tab baru. Beri nama `Config`.
+2. Isi kolom & baris persis seperti tab "Registration":
+
+   | Key | Value |
+   |---|---|
+   | ADMIN_WA_NUMBER | 6285647357997 |
+
+   (format: kode negara + nomor TANPA angka 0 di depan, sama seperti
+   `ADMIN_WA_NUMBER` di `config.js`)
+
+### J2. Sembunyikan tab (opsional tapi disarankan)
+
+Klik kanan tab `Config` → **"Sembunyikan sheet"**. Tab jadi tidak
+terlihat oleh siapa pun yang dibagikan akses ke spreadsheet ini —
+termasuk yang cuma perlu akses ke tab "Registration". Untuk
+memunculkannya lagi: klik ikon **☰** di pojok kiri bawah spreadsheet →
+pilih `Config`.
+
+### J3. Ambil gid tab & sambungkan ke website (dikerjakan tim tech)
+
+1. Klik tab `Config` supaya aktif (kalau sudah disembunyikan di J2,
+   tampilkan dulu lewat cara di atas).
+2. Lihat alamat browser, ambil angka setelah `#gid=`:
+   ```
+   https://docs.google.com/spreadsheets/d/xxxxx/edit#gid=987654321
+   ```
+   → gid-nya `987654321`.
+3. Di `config.js`, isi:
+   ```js
+   const CONFIG_SHEET_GID = ''
+   ```
+   menjadi:
+   ```js
+   const CONFIG_SHEET_GID = '987654321'
+   ```
+
+Setelah ini, ganti nomor WA admin cukup edit sel `Value` di tab `Config`
+— TIDAK perlu redeploy. `ADMIN_WA_NUMBER` di `config.js` tetap ada
+sebagai cadangan darurat (dipakai kalau tab Config gagal dimuat), sama
+seperti pola `REGISTRATION_FORM_URL` di Bagian I.
+
+---
+
 ## Lampiran: Mengganti Feed Instagram ke Akun PBJ
 
 Saat ini feed Instagram di website masih memakai data percobaan. Untuk

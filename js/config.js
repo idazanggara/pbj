@@ -43,22 +43,37 @@
  */
 
 /* ---------------- WHATSAPP ADMIN ----------------
-   SATU-SATUNYA tempat nomor WA admin/sekretaris PBJ ditulis di seluruh
-   proyek. Format: kode negara + nomor TANPA angka 0 di depan
-   (contoh: 628123456789, bukan 08123456789).
-
-   Nomor ini dipakai main.js untuk mengisi otomatis:
+   Nomor ini dipakai main.js & daftar-member-baru.html untuk mengisi
+   otomatis:
      - Tombol WhatsApp di footer (ikon sosial & baris kontak)
      - Link WhatsApp yang terisi otomatis dari form pendaftaran
      - Setiap teks yang menampilkan nomor ini di FAQ (elemen
        <span data-wa-number> di index.html) dan di dalam JSON-LD FAQPage
        (placeholder teks __ADMIN_WA_NUMBER__ di index.html)
 
-   GANTI NOMOR? Cukup ubah nilai di baris ini SAJA (mis. kalau nomor WA
-   admin berganti tiap tahun) — main.js otomatis menyebarkannya ke semua
-   link & teks di atas saat halaman dimuat. TIDAK PERLU cari-ganti manual
-   di index.html. */
+   SUMBER UTAMA sekarang sel ADMIN_WA_NUMBER di tab "Config" (lihat
+   CONFIG_SHEET_GID di bawah) — admin ganti nomor lewat Sheet, TIDAK perlu
+   redeploy. Nilai di baris ini HANYA fallback kalau tab Config belum
+   diisi / fetch gagal — boleh dibiarkan usang, bukan tempat update rutin.
+   Format: kode negara + nomor TANPA angka 0 di depan (contoh:
+   628123456789, bukan 08123456789). */
 const ADMIN_WA_NUMBER = '6285647357997'
+
+/* ---------------- GOOGLE SHEETS (Config tersembunyi: nomor WA, dll.) ----------------
+   Tab KEDUA di spreadsheet yang SAMA dengan SETTINGS_SHEET_ID (bukan
+   spreadsheet baru) — sengaja dipisah dari tab "Registration" supaya bisa
+   di-hide (klik kanan tab → Sembunyikan sheet) dari kolaborator yang cuma
+   perlu toggle buka/tutup pendaftaran. Kolom sheet sama: Key | Value.
+   Baris yang didukung saat ini: ADMIN_WA_NUMBER | 628xxxxxxxxxx
+   1. Di spreadsheet SETTINGS_SHEET_ID, buat tab baru (klik "+" di kiri
+      bawah), beri nama "Config", isi kolom Key | Value seperti di atas.
+   2. Klik tab "Config" itu supaya aktif → lihat URL browser, ambil angka
+      setelah "#gid=" (mis. .../edit#gid=987654321 → gid-nya 987654321).
+   3. Tempel angka itu ke CONFIG_SHEET_GID.
+   4. (Opsional) klik kanan tab "Config" → "Sembunyikan sheet" supaya
+      tidak tampil ke kolaborator lain yang dibagikan akses edit.
+   Selama nilai ini kosong, ADMIN_WA_NUMBER di atas yang dipakai. */
+const CONFIG_SHEET_GID = '845332613'
 
 /* ---------------- GOOGLE DRIVE (Galeri) ---------------- */
 const DRIVE_API_KEY = 'AIzaSyBtHNF8yJw7cMN6rjKslp6-Wvj_QXJGz5E'

@@ -1,14 +1,16 @@
 /**
- * site-settings.js — Pengaturan Situs dari Google Sheets (toggle + link form)
+ * site-settings.js — Pengaturan Situs dari Google Sheets (toggle + link form + WA)
  *
  * Dipakai di index.html DAN daftar-member-baru.html (keduanya load file ini
- * setelah config.js). Baca satu sheet Key/Value (SETTINGS_SHEET_ID) berisi:
- *   - REGISTRATION_OPEN     : TRUE/FALSE — buka/tutup pendaftaran member baru
- *   - REGISTRATION_FORM_URL : link publik Google Form (viewform) — kalau form
- *                             diganti/dibuat ulang, admin cukup edit sel ini,
- *                             TIDAK perlu redeploy
+ * setelah config.js, SEBELUM main.js). Baca DUA tab berbeda di spreadsheet
+ * yang sama (SETTINGS_SHEET_ID):
+ *   - Tab "Registration" (gid=0, default): Key/Value berisi
+ *       REGISTRATION_OPEN     : TRUE/FALSE — buka/tutup pendaftaran member baru
+ *       REGISTRATION_FORM_URL : link publik Google Form (viewform)
+ *   - Tab "Config" tersembunyi (CONFIG_SHEET_GID): Key/Value berisi
+ *       ADMIN_WA_NUMBER       : nomor WA admin, format 628xxxxxxxxxx
  *
- * TIGA tanggung jawab, masing-masing no-op aman kalau elemen terkait tidak
+ * EMPAT tanggung jawab, masing-masing no-op aman kalau elemen terkait tidak
  * ada di halaman (jadi file yang sama aman dipakai di kedua halaman):
  * 1. SELALU jalan (tidak bergantung sheet): hitung & tampilkan label tanggal
  *    "kapan dibuka lagi" di FAQ dari tanggal SEKARANG (getNextRegistrationOpeningLabel
@@ -19,6 +21,9 @@
  *    belum diisi / fetch gagal.
  * 3. Kalau REGISTRATION_OPEN di sheet bernilai TRUE: ubah tombol CTA
  *    "Daftar Sekarang" + link footer + FAQ jadi versi "sedang dibuka".
+ * 4. Expose resolveAdminWaNumber() ke window — dipanggil (await) oleh
+ *    main.js & daftar-member-baru.html sebelum memakai nomor WA, supaya
+ *    nomor dari tab Config sempat termuat dulu sebelum dipakai.
  *
  * Fail-safe: selama SETTINGS_SHEET_ID kosong / fetch gagal / value bukan TRUE,
  * situs tetap tampil default "tutup" apa adanya di HTML — tidak pernah tampak
@@ -85,10 +90,13 @@ function applyFormEmbed(formUrl) {
 
 /* ================================================================
    PENGAMBILAN PENGATURAN (endpoint gviz, pola sama events.js)
+   gid opsional → baca tab TERTENTU di spreadsheet SETTINGS_SHEET_ID (mis.
+   tab "Config" tersembunyi, beda dari tab "Registration" default/gid=0).
    Return: object { KEY: 'value', ... } — semua baris sheet, key di-uppercase.
    ================================================================ */
-async function fetchSiteSettings() {
-  const url = `https://docs.google.com/spreadsheets/d/${SETTINGS_SHEET_ID}/gviz/tq?tqx=out:json&headers=1`
+async function fetchSiteSettings(gid) {
+  const gidParam = gid ? `&gid=${gid}` : ''
+  const url = `https://docs.google.com/spreadsheets/d/${SETTINGS_SHEET_ID}/gviz/tq?tqx=out:json&headers=1${gidParam}`
   const response = await fetchWithTimeout(url)
   if (!response.ok) {
     throw new Error(`Google Sheets merespons status ${response.status}`)
@@ -145,5 +153,34 @@ function applyRegistrationOpenState() {
   if (closedBlock) closedBlock.hidden = true
   if (openBlock) openBlock.hidden = false
 }
+
+/* ================================================================
+   NOMOR WA ADMIN — dari tab "Config" tersembunyi (CONFIG_SHEET_GID),
+   fallback ke ADMIN_WA_NUMBER di config.js. Dipanggil main.js &
+   daftar-member-baru.html (di-expose ke window supaya bisa dipakai
+   file lain). Di-cache (variabel module-level) supaya HANYA fetch
+   sekali walau dipanggil berkali-kali (mis. saat load halaman DAN
+   saat submit form pendaftaran).
+   ================================================================ */
+let cachedAdminWaNumberPromise = null
+function resolveAdminWaNumber() {
+  if (cachedAdminWaNumberPromise) return cachedAdminWaNumberPromise
+
+  const fallback = typeof ADMIN_WA_NUMBER !== 'undefined' ? ADMIN_WA_NUMBER : ''
+  const isConfigured = typeof SETTINGS_SHEET_ID !== 'undefined' && SETTINGS_SHEET_ID &&
+    typeof CONFIG_SHEET_GID !== 'undefined' && CONFIG_SHEET_GID
+
+  cachedAdminWaNumberPromise = isConfigured
+    ? fetchSiteSettings(CONFIG_SHEET_GID)
+        .then(settings => settings.ADMIN_WA_NUMBER || fallback)
+        .catch(error => {
+          console.warn('Nomor WA admin dari Sheet tidak dapat dimuat:', error)
+          return fallback
+        })
+    : Promise.resolve(fallback)
+
+  return cachedAdminWaNumberPromise
+}
+window.resolveAdminWaNumber = resolveAdminWaNumber
 
 /* fetchWithTimeout dipakai dari config.js (helper bersama) */

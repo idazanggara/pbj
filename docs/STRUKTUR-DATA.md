@@ -110,7 +110,11 @@ kolom **LinkDrive**. Website hanya **menautkan** ke folder itu (tidak menampilka
 
 ---
 
-## 3. Sheet TOGGLE PENDAFTARAN MEMBER (`SETTINGS_SHEET_ID`)
+## 3. Sheet PENGATURAN SITUS (`SETTINGS_SHEET_ID`) — 2 TAB
+
+Satu spreadsheet, DUA tab berbeda (dibaca lewat parameter `&gid=` di endpoint gviz):
+
+### Tab "Registration" (gid=0, default — TERLIHAT, boleh dibagikan ke kolaborator lain)
 
 Kolom:
 
@@ -118,18 +122,32 @@ Kolom:
 Key | Value
 ```
 
-Satu baris data:
-
 | Key | Value |
 |---|---|
 | REGISTRATION_OPEN | TRUE |
+| REGISTRATION_FORM_URL | https://docs.google.com/forms/d/e/xxxxx/viewform |
 
-- **`Value` = `TRUE` atau `1`** → pendaftaran **DIBUKA**: tombol CTA jadi "Daftar Member Baru"
-  + blok FAQ berubah ke versi "sedang dibuka".
-- **Selain itu** (`FALSE`, kosong, sheet/ID kosong, atau fetch gagal) → default **TUTUP**
-  (tampilan bawaan di HTML).
+- **`REGISTRATION_OPEN` = `TRUE`/`1`** → pendaftaran **DIBUKA**: tombol CTA jadi "Daftar
+  Member Baru" + blok FAQ berubah ke versi "sedang dibuka". Selain itu (`FALSE`, kosong,
+  sheet/ID kosong, atau fetch gagal) → default **TUTUP** (tampilan bawaan di HTML).
+- **`REGISTRATION_FORM_URL`** = link publik Google Form (`viewform`) yang ditampilkan via
+  iframe di `daftar-member-baru.html`. Kosong/fetch gagal → fallback ke konstanta
+  `REGISTRATION_FORM_URL` di `config.js`.
 
-> Berguna untuk buka/tutup pendaftaran **tanpa redeploy** — cukup ubah nilai di sheet.
+### Tab "Config" (gid = `CONFIG_SHEET_GID`, opsional — bisa DISEMBUNYIKAN dari kolaborator lain)
+
+Kolom sama (`Key | Value`), sengaja terpisah tab supaya bisa di-hide (klik kanan tab →
+Sembunyikan sheet) dari orang yang cuma perlu akses ke tab Registration:
+
+| Key | Value |
+|---|---|
+| ADMIN_WA_NUMBER | 6285647357997 |
+
+- **`ADMIN_WA_NUMBER`** = nomor WA admin, disebarkan `main.js`/`daftar-member-baru.html` ke
+  semua tombol/teks WA & FAQ. Kosong/`CONFIG_SHEET_GID` belum diisi/fetch gagal → fallback
+  ke konstanta `ADMIN_WA_NUMBER` di `config.js`.
+
+> Kedua tab: berguna untuk ubah pengaturan **tanpa redeploy** — cukup ubah nilai di sheet.
 
 ---
 
@@ -137,23 +155,23 @@ Satu baris data:
 
 | Sumber | Konfigurasi | Keterangan |
 |---|---|---|
-| **Feed Instagram** | `INSTAGRAM_FEED_URL` | URL JSON **live** dari behold.so (auto-update, ber-CORS). Bukan sheet |
-| **Form Pendaftaran** | `REGISTRATION_FORM_URL` | Link Google Form (`viewform`), ditampilkan via iframe di `daftar-member-baru.html` |
+| **Feed Instagram** | `INSTAGRAM_FEED_URL` | URL JSON **live** dari behold.so (auto-update, ber-CORS). SATU-SATUNYA yang murni di `config.js`, sengaja TIDAK dipindah ke Sheet — jaga stabilitas |
 | **Galeri Kategori** | `DRIVE_GALLERY_FOLDER_ID` + `DRIVE_API_KEY` | Folder Google Drive — lihat **[STRUKTUR-GDRIVE.md](STRUKTUR-GDRIVE.md)** |
-| **Nomor WA admin** | `ADMIN_WA_NUMBER` | Disebarkan otomatis ke tombol/teks WA & FAQ |
 
 ---
 
 ## 5. Pemetaan konfigurasi (di `js/config.js`)
 
-| Konstanta | Sumber | Dibaca oleh |
+| Konstanta | Sumber utama | Dibaca oleh |
 |---|---|---|
 | `EVENTS_SHEET_ID` | Google Sheet Event/Race | `js/events.js` |
 | `GALLERY_SESSIONS_SHEET_ID` | Google Sheet Per Latihan | `js/gallery-sessions.js` |
-| `SETTINGS_SHEET_ID` | Google Sheet Toggle Pendaftaran | `js/site-settings.js` |
+| `SETTINGS_SHEET_ID` | Google Sheet Pengaturan Situs (tab Registration) | `js/site-settings.js` |
+| `CONFIG_SHEET_GID` | gid tab "Config" tersembunyi (spreadsheet sama dgn `SETTINGS_SHEET_ID`) | `js/site-settings.js` |
 | `DRIVE_GALLERY_FOLDER_ID` + `DRIVE_API_KEY` | Folder Drive Galeri Kategori | `js/gdrive-gallery.js` |
-| `INSTAGRAM_FEED_URL` | JSON behold.so | `js/instagram.js` |
-| `REGISTRATION_FORM_URL` | Google Form | `daftar-member-baru.html` |
+| `INSTAGRAM_FEED_URL` | JSON behold.so (satu-satunya yg BUKAN fallback — ini sumber utama) | `js/instagram.js` |
+| `REGISTRATION_FORM_URL` | FALLBACK darurat (sumber utama: sel Sheet tab Registration) | `js/site-settings.js` |
+| `ADMIN_WA_NUMBER` | FALLBACK darurat (sumber utama: sel Sheet tab Config) | `js/site-settings.js`, `js/main.js` |
 
 ---
 

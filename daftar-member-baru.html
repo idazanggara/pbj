@@ -204,9 +204,9 @@
 
   <!-- Versi ?v= HARUS sama dengan index.html/admin.html supaya membaca
        config.js dari cache entry yang sama (tidak ada yang stale) -->
-  <script src="js/config.js?v=10"></script>
+  <script src="js/config.js?v=12"></script>
   <!-- site-settings.js = isi iframe Google Form dari Sheet (fallback ke config.js) -->
-  <script src="js/site-settings.js?v=2"></script>
+  <script src="js/site-settings.js?v=3"></script>
   <script>
     /* ================================================================
        Script khusus halaman ini (pola sama seperti admin.html — cuma
@@ -246,20 +246,26 @@
     const footerYear = document.getElementById('footerYear')
     if (footerYear) footerYear.textContent = new Date().getFullYear()
 
-    // Link WhatsApp — ADMIN_WA_NUMBER dari config.js (satu-satunya sumber nomor WA)
-    if (typeof ADMIN_WA_NUMBER !== 'undefined') {
+    // Link WhatsApp — nomor dari tab "Config" tersembunyi di Sheet (site-settings.js),
+    // fallback ke ADMIN_WA_NUMBER di config.js kalau sheet gagal dimuat
+    ;(async () => {
+      const waNumber = typeof resolveAdminWaNumber === 'function'
+        ? await resolveAdminWaNumber()
+        : (typeof ADMIN_WA_NUMBER !== 'undefined' ? ADMIN_WA_NUMBER : '')
+      if (!waNumber) return
+
       const waSocialLink = document.getElementById('waSocialLink')
-      if (waSocialLink) waSocialLink.href = `https://wa.me/${ADMIN_WA_NUMBER}`
+      if (waSocialLink) waSocialLink.href = `https://wa.me/${waNumber}`
 
       const waAdminLink = document.getElementById('waAdminLink')
-      if (waAdminLink) waAdminLink.href = `https://wa.me/${ADMIN_WA_NUMBER}`
+      if (waAdminLink) waAdminLink.href = `https://wa.me/${waNumber}`
 
       const waHelpLink = document.getElementById('waHelpLink')
       if (waHelpLink) {
         const pesan = 'Halo Admin PBJ, saya butuh bantuan mengisi formulir pendaftaran member baru.'
-        waHelpLink.href = `https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(pesan)}`
+        waHelpLink.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(pesan)}`
       }
-    }
+    })()
 
     // Iframe Google Form diisi oleh site-settings.js (baca REGISTRATION_FORM_URL
     // dari Sheet dulu, fallback ke konstanta REGISTRATION_FORM_URL di config.js)
