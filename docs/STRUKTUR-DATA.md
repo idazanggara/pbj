@@ -156,15 +156,24 @@ Key | Value
 ### Tab "Config" (gid = `CONFIG_SHEET_GID`, opsional — bisa DISEMBUNYIKAN dari kolaborator lain)
 
 Kolom sama (`Key | Value`), sengaja terpisah tab supaya bisa di-hide (klik kanan tab →
-Sembunyikan sheet) dari orang yang cuma perlu akses ke tab Registration:
+Sembunyikan sheet) dari orang yang cuma perlu akses ke tab Registration. Sejak 30 Juli
+2026 menampung **DUA** kontak WA admin (sebelumnya cuma 1):
 
 | Key | Value |
 |---|---|
-| ADMIN_WA_NUMBER | 6285647357997 |
+| ADMIN_WA_NAME | Arif |
+| ADMIN_WA_NUMBER | 6285167017848 |
+| ADMIN_WA_NAME_2 | Bastian |
+| ADMIN_WA_NUMBER_2 | 6287895701681 |
 
-- **`ADMIN_WA_NUMBER`** = nomor WA admin, disebarkan `main.js`/`register.html` ke
-  semua tombol/teks WA & FAQ. Kosong/`CONFIG_SHEET_GID` belum diisi/fetch gagal → fallback
-  ke konstanta `ADMIN_WA_NUMBER` di `config.js`.
+- **`ADMIN_WA_NAME`/`ADMIN_WA_NUMBER`** = nama & nomor WA admin 1, disebarkan
+  `main.js`/`register.html` ke tombol/teks WA & FAQ (2 tombol di footer, halaman bantuan
+  pendaftaran). Nomor ini JUGA satu-satunya yang dipakai link WA otomatis setelah submit
+  Form Pendaftaran (proses otomatis, tidak bisa menawarkan 2 pilihan).
+- **`ADMIN_WA_NAME_2`/`ADMIN_WA_NUMBER_2`** = nama & nomor WA admin 2, tombol kedua di
+  tempat yang sama. Baris ini boleh kosong — website otomatis pakai cadangan dari kode.
+- Kosong/`CONFIG_SHEET_GID` belum diisi/fetch gagal → fallback ke konstanta `ADMIN_WA_*`
+  di `config.js`.
 
 > Kedua tab: berguna untuk ubah pengaturan **tanpa redeploy** — cukup ubah nilai di sheet.
 
@@ -193,7 +202,7 @@ Semua `*_SHEET_ID` di bawah bernilai SAMA (`1cm0iEcJnBNxUYto7mpyMz05SfDh_NwjW2KT
 | `DRIVE_GALLERY_FOLDER_ID` + `DRIVE_API_KEY` | Folder Drive Galeri Kategori (BUKAN Sheet) | `js/gdrive-gallery.js` |
 | `INSTAGRAM_FEED_URL` | JSON behold.so (satu-satunya yg BUKAN fallback — ini sumber utama, BUKAN Sheet) | `js/instagram.js` |
 | `REGISTRATION_FORM_URL` | FALLBACK darurat (sumber utama: sel Sheet tab Registration) | `js/site-settings.js` |
-| `ADMIN_WA_NUMBER` | FALLBACK darurat (sumber utama: sel Sheet tab Config) | `js/site-settings.js`, `js/main.js` |
+| `ADMIN_WA_NAME`/`ADMIN_WA_NUMBER`/`ADMIN_WA_NAME_2`/`ADMIN_WA_NUMBER_2` | FALLBACK darurat, 2 kontak (sumber utama: sel Sheet tab Config) | `js/site-settings.js`, `js/main.js` |
 
 ---
 

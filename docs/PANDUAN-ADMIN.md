@@ -440,7 +440,8 @@ Beda dari Bagian I: bagian ini untuk **salah satu tab** di spreadsheet yang
 SAMA dengan `PBJ - Pengaturan Situs` (bukan spreadsheet baru), khusus
 untuk pengaturan yang sengaja **disembunyikan** dari kolaborator lain
 yang cuma perlu buka/tutup pendaftaran (Bagian I) atau isi data Event/
-Galeri. Saat ini cuma menampung 1 nilai: nomor WA admin.
+Galeri. Saat ini menampung 4 nilai: nama & nomor WA **DUA** admin
+(sejak 30 Juli 2026 — sebelumnya cuma 1 admin).
 
 ### J1. Buat tab "Config"
 
@@ -450,10 +451,18 @@ Galeri. Saat ini cuma menampung 1 nilai: nomor WA admin.
 
    | Key | Value |
    |---|---|
-   | ADMIN_WA_NUMBER | 6285647357997 |
+   | ADMIN_WA_NAME | Arif |
+   | ADMIN_WA_NUMBER | 6285167017848 |
+   | ADMIN_WA_NAME_2 | Bastian |
+   | ADMIN_WA_NUMBER_2 | 6287895701681 |
 
-   (format: kode negara + nomor TANPA angka 0 di depan, sama seperti
-   `ADMIN_WA_NUMBER` di `config.js`)
+   (format nomor: kode negara + nomor TANPA angka 0 di depan, sama
+   seperti konstanta `ADMIN_WA_*` di `config.js`. `ADMIN_WA_NAME`/
+   `ADMIN_WA_NUMBER` = admin 1 — nomor ini JUGA yang otomatis dipakai
+   saat calon member submit Form Pendaftaran di beranda, karena proses
+   itu otomatis dan tidak bisa menawarkan 2 pilihan. Baris `_2` boleh
+   dikosongkan/dihapus dulu kalau cuma mau 1 admin — website otomatis
+   pakai cadangan dari kode.)
 
 ### J2. Sembunyikan tab (opsional tapi disarankan)
 
@@ -482,9 +491,11 @@ pilih `Config`.
    ```
 
 Setelah ini, ganti nomor WA admin cukup edit sel `Value` di tab `Config`
-— TIDAK perlu redeploy. `ADMIN_WA_NUMBER` di `config.js` tetap ada
-sebagai cadangan darurat (dipakai kalau tab Config gagal dimuat), sama
-seperti pola `REGISTRATION_FORM_URL` di Bagian I.
+— TIDAK perlu redeploy. Konstanta `ADMIN_WA_NAME`/`ADMIN_WA_NUMBER`/
+`ADMIN_WA_NAME_2`/`ADMIN_WA_NUMBER_2` di `config.js` tetap ada sebagai
+cadangan darurat (dipakai kalau tab Config gagal dimuat, atau kalau
+baris admin 2 belum diisi di Sheet), sama seperti pola
+`REGISTRATION_FORM_URL` di Bagian I.
 
 ### J4. Proteksi tab dari edit tidak sengaja (disarankan kalau sudah share ke orang lain)
 

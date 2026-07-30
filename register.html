@@ -23,7 +23,7 @@
     rel="stylesheet" />
 
   <!-- ?v= = cache-busting, HARUS sama dengan versi terbaru di index.html/admin.html -->
-  <link rel="stylesheet" href="css/style.css?v=20" />
+  <link rel="stylesheet" href="css/style.css?v=21" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 
@@ -122,9 +122,14 @@
     <section class="registration-help">
       <div class="container">
         <p class="registration-help__text">Butuh bantuan mengisi formulir atau ada pertanyaan?</p>
-        <a id="waHelpLink" class="btn btn--ghost" target="_blank" rel="noopener">
-          <i class="fa-brands fa-whatsapp"></i> Chat Admin PBJ
-        </a>
+        <div class="registration-help__buttons">
+          <a id="waHelpLink1" class="btn btn--ghost" target="_blank" rel="noopener">
+            <i class="fa-brands fa-whatsapp"></i> Chat <span id="waHelpName1">Admin</span>
+          </a>
+          <a id="waHelpLink2" class="btn btn--ghost" target="_blank" rel="noopener">
+            <i class="fa-brands fa-whatsapp"></i> Chat <span id="waHelpName2">Admin</span>
+          </a>
+        </div>
       </div>
     </section>
   </main>
@@ -149,7 +154,11 @@
               aria-label="Instagram Pushbike Jakarta" target="_blank" rel="noopener">
               <i class="fa-brands fa-instagram"></i>
             </a>
-            <a id="waSocialLink" class="social-link" aria-label="WhatsApp Admin Pushbike Jakarta" target="_blank"
+            <a id="waSocialLink1" class="social-link" aria-label="WhatsApp Admin Pushbike Jakarta" target="_blank"
+              rel="noopener">
+              <i class="fa-brands fa-whatsapp"></i>
+            </a>
+            <a id="waSocialLink2" class="social-link" aria-label="WhatsApp Admin Pushbike Jakarta" target="_blank"
               rel="noopener">
               <i class="fa-brands fa-whatsapp"></i>
             </a>
@@ -176,7 +185,11 @@
           <ul>
             <li>
               <i class="fa-brands fa-whatsapp"></i>
-              <a id="waAdminLink">WhatsApp Sekretaris</a>
+              <a id="waAdminLink1">WhatsApp Admin</a>
+            </li>
+            <li>
+              <i class="fa-brands fa-whatsapp"></i>
+              <a id="waAdminLink2">WhatsApp Admin</a>
             </li>
             <li>
               <i class="fa-brands fa-instagram"></i>
@@ -204,9 +217,9 @@
 
   <!-- Versi ?v= HARUS sama dengan index.html/admin.html supaya membaca
        config.js dari cache entry yang sama (tidak ada yang stale) -->
-  <script src="js/config.js?v=14"></script>
+  <script src="js/config.js?v=15"></script>
   <!-- site-settings.js = isi iframe Google Form dari Sheet (fallback ke config.js) -->
-  <script src="js/site-settings.js?v=4"></script>
+  <script src="js/site-settings.js?v=5"></script>
   <script>
     /* ================================================================
        Script khusus halaman ini (pola sama seperti admin.html — cuma
@@ -246,25 +259,51 @@
     const footerYear = document.getElementById('footerYear')
     if (footerYear) footerYear.textContent = new Date().getFullYear()
 
-    // Link WhatsApp — nomor dari tab "Config" tersembunyi di Sheet (site-settings.js),
-    // fallback ke ADMIN_WA_NUMBER di config.js kalau sheet gagal dimuat
+    // Link WhatsApp (2 kontak) — dari tab "Config" tersembunyi di Sheet
+    // (site-settings.js), fallback ke ADMIN_WA_NAME/ADMIN_WA_NUMBER/
+    // ADMIN_WA_NAME_2/ADMIN_WA_NUMBER_2 di config.js kalau sheet gagal dimuat
     ;(async () => {
-      const waNumber = typeof resolveAdminWaNumber === 'function'
-        ? await resolveAdminWaNumber()
-        : (typeof ADMIN_WA_NUMBER !== 'undefined' ? ADMIN_WA_NUMBER : '')
-      if (!waNumber) return
+      const contacts = typeof resolveAdminWaContacts === 'function'
+        ? await resolveAdminWaContacts()
+        : []
+      const [primary, secondary] = contacts
+      if (!primary) return
 
-      const waSocialLink = document.getElementById('waSocialLink')
-      if (waSocialLink) waSocialLink.href = `https://wa.me/${waNumber}`
+      const waSocialLink1 = document.getElementById('waSocialLink1')
+      if (waSocialLink1) waSocialLink1.href = `https://wa.me/${primary.number}`
 
-      const waAdminLink = document.getElementById('waAdminLink')
-      if (waAdminLink) waAdminLink.href = `https://wa.me/${waNumber}`
-
-      const waHelpLink = document.getElementById('waHelpLink')
-      if (waHelpLink) {
-        const pesan = 'Halo Admin PBJ, saya butuh bantuan mengisi formulir pendaftaran member baru.'
-        waHelpLink.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(pesan)}`
+      const waAdminLink1 = document.getElementById('waAdminLink1')
+      if (waAdminLink1) {
+        waAdminLink1.href = `https://wa.me/${primary.number}`
+        waAdminLink1.textContent = `WhatsApp ${primary.name}`
       }
+
+      const pesan = 'Halo Admin PBJ, saya butuh bantuan mengisi formulir pendaftaran member baru.'
+      const waHelpLink1 = document.getElementById('waHelpLink1')
+      const waHelpName1 = document.getElementById('waHelpName1')
+      if (waHelpLink1) waHelpLink1.href = `https://wa.me/${primary.number}?text=${encodeURIComponent(pesan)}`
+      if (waHelpName1) waHelpName1.textContent = primary.name
+
+      // Slot kontak ke-2 disembunyikan diam-diam kalau memang cuma ada
+      // 1 kontak terkonfigurasi (bukan tampak rusak/link kosong)
+      const waSocialLink2 = document.getElementById('waSocialLink2')
+      const waAdminLink2 = document.getElementById('waAdminLink2')
+      const waHelpLink2 = document.getElementById('waHelpLink2')
+      if (!secondary) {
+        if (waSocialLink2) waSocialLink2.hidden = true
+        if (waAdminLink2) waAdminLink2.closest('li').hidden = true
+        if (waHelpLink2) waHelpLink2.hidden = true
+        return
+      }
+
+      if (waSocialLink2) waSocialLink2.href = `https://wa.me/${secondary.number}`
+      if (waAdminLink2) {
+        waAdminLink2.href = `https://wa.me/${secondary.number}`
+        waAdminLink2.textContent = `WhatsApp ${secondary.name}`
+      }
+      const waHelpName2 = document.getElementById('waHelpName2')
+      if (waHelpLink2) waHelpLink2.href = `https://wa.me/${secondary.number}?text=${encodeURIComponent(pesan)}`
+      if (waHelpName2) waHelpName2.textContent = secondary.name
     })()
 
     // Iframe Google Form diisi oleh site-settings.js (baca REGISTRATION_FORM_URL

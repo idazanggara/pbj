@@ -42,29 +42,38 @@
  *    (Itulah "CRUD"-nya — lewat Google Sheets, tanpa server.)
  */
 
-/* ---------------- WHATSAPP ADMIN ----------------
-   Nomor ini dipakai main.js & register.html untuk mengisi
-   otomatis:
-     - Tombol WhatsApp di footer (ikon sosial & baris kontak)
-     - Link WhatsApp yang terisi otomatis dari form pendaftaran
-     - Setiap teks yang menampilkan nomor ini di FAQ (elemen
-       <span data-wa-number> di index.html) dan di dalam JSON-LD FAQPage
-       (placeholder teks __ADMIN_WA_NUMBER__ di index.html)
+/* ---------------- WHATSAPP ADMIN (2 kontak) ----------------
+   Sejak 2026-07-30: DUA admin sekaligus (bukan cuma satu). main.js &
+   register.html memakainya untuk mengisi otomatis:
+     - Tombol WhatsApp di footer (ikon sosial & baris kontak) — 2 tombol
+     - Tombol WhatsApp di halaman bantuan pendaftaran (register.html) — 2 tombol
+     - Teks nomor WA di FAQ "Nomor WA admin?" (index.html) — sebut kedua admin
+   PENGECUALIAN: link WhatsApp yang otomatis TERBUKA sendiri setelah submit
+   Form Pendaftaran (section #register di index.html) TETAP cuma pakai SATU
+   nomor admin 1 (ADMIN_WA_NUMBER) — proses itu otomatis tanpa jeda untuk
+   memilih, jadi tidak bisa menawarkan 2 pilihan.
 
-   SUMBER UTAMA sekarang sel ADMIN_WA_NUMBER di tab "Config" (lihat
-   CONFIG_SHEET_GID di bawah) — admin ganti nomor lewat Sheet, TIDAK perlu
-   redeploy. Nilai di baris ini HANYA fallback kalau tab Config belum
-   diisi / fetch gagal — boleh dibiarkan usang, bukan tempat update rutin.
-   Format: kode negara + nomor TANPA angka 0 di depan (contoh:
-   628123456789, bukan 08123456789). */
-const ADMIN_WA_NUMBER = '6285647357997'
+   SUMBER UTAMA sekarang 4 sel di tab "Config" (lihat CONFIG_SHEET_GID di
+   bawah): ADMIN_WA_NAME, ADMIN_WA_NUMBER, ADMIN_WA_NAME_2, ADMIN_WA_NUMBER_2
+   — admin ganti lewat Sheet, TIDAK perlu redeploy. Nilai di bawah ini HANYA
+   fallback kalau tab Config belum diisi / fetch gagal — boleh dibiarkan
+   usang, bukan tempat update rutin. Format nomor: kode negara + nomor
+   TANPA angka 0 di depan (contoh: 628123456789, bukan 08123456789). */
+const ADMIN_WA_NAME = 'Arif'
+const ADMIN_WA_NUMBER = '6285167017848'
+const ADMIN_WA_NAME_2 = 'Bastian'
+const ADMIN_WA_NUMBER_2 = '6287895701681'
 
 /* ---------------- GOOGLE SHEETS (Config tersembunyi: nomor WA, dll.) ----------------
    Tab KEDUA di spreadsheet yang SAMA dengan SETTINGS_SHEET_ID (bukan
    spreadsheet baru) — sengaja dipisah dari tab "Registration" supaya bisa
    di-hide (klik kanan tab → Sembunyikan sheet) dari kolaborator yang cuma
    perlu toggle buka/tutup pendaftaran. Kolom sheet sama: Key | Value.
-   Baris yang didukung saat ini: ADMIN_WA_NUMBER | 628xxxxxxxxxx
+   Baris yang didukung saat ini:
+     ADMIN_WA_NAME     | Arif
+     ADMIN_WA_NUMBER   | 628xxxxxxxxxx
+     ADMIN_WA_NAME_2   | Bastian
+     ADMIN_WA_NUMBER_2 | 628xxxxxxxxxx
    1. Di spreadsheet SETTINGS_SHEET_ID, buat tab baru (klik "+" di kiri
       bawah), beri nama "Config", isi kolom Key | Value seperti di atas.
    2. Klik tab "Config" itu supaya aktif → lihat URL browser, ambil angka
@@ -72,7 +81,8 @@ const ADMIN_WA_NUMBER = '6285647357997'
    3. Tempel angka itu ke CONFIG_SHEET_GID.
    4. (Opsional) klik kanan tab "Config" → "Sembunyikan sheet" supaya
       tidak tampil ke kolaborator lain yang dibagikan akses edit.
-   Selama nilai ini kosong, ADMIN_WA_NUMBER di atas yang dipakai. */
+   Selama nilai/baris ini kosong, konstanta ADMIN_WA_* di atas yang dipakai
+   (boleh isi cuma admin 1 dulu — admin 2 otomatis pakai fallback kode). */
 const CONFIG_SHEET_GID = '845332613'
 
 /* ---------------- GOOGLE DRIVE (Galeri) ---------------- */

@@ -1625,6 +1625,7 @@ body::after {
   padding-bottom: clamp(32px, 6vw, 64px);
 }
 .registration-help__text { color: var(--clr-text-muted); margin-bottom: 14px; }
+.registration-help__buttons { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
 
 /* ----------------------------------------------------------------
    FOOTER

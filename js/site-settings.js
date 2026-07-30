@@ -7,8 +7,9 @@
  *   - Tab "Registration" (gid=0, default): Key/Value berisi
  *       REGISTRATION_OPEN     : TRUE/FALSE — buka/tutup pendaftaran member baru
  *       REGISTRATION_FORM_URL : link publik Google Form (viewform)
- *   - Tab "Config" tersembunyi (CONFIG_SHEET_GID): Key/Value berisi
- *       ADMIN_WA_NUMBER       : nomor WA admin, format 628xxxxxxxxxx
+ *   - Tab "Config" tersembunyi (CONFIG_SHEET_GID): Key/Value berisi 2 kontak WA
+ *       ADMIN_WA_NAME / ADMIN_WA_NUMBER     : nama & nomor WA admin 1
+ *       ADMIN_WA_NAME_2 / ADMIN_WA_NUMBER_2 : nama & nomor WA admin 2
  *
  * EMPAT tanggung jawab, masing-masing no-op aman kalau elemen terkait tidak
  * ada di halaman (jadi file yang sama aman dipakai di kedua halaman):
@@ -21,9 +22,12 @@
  *    belum diisi / fetch gagal.
  * 3. Kalau REGISTRATION_OPEN di sheet bernilai TRUE: ubah tombol CTA
  *    "Daftar Sekarang" + link footer + FAQ jadi versi "sedang dibuka".
- * 4. Expose resolveAdminWaNumber() ke window — dipanggil (await) oleh
- *    main.js & register.html sebelum memakai nomor WA, supaya
- *    nomor dari tab Config sempat termuat dulu sebelum dipakai.
+ * 4. Expose resolveAdminWaContacts() (array 2 kontak, dipakai tombol WA
+ *    di footer/FAQ/halaman bantuan) DAN resolveAdminWaNumber() (cuma
+ *    kontak pertama, dipakai link WA otomatis setelah submit Form
+ *    Pendaftaran) ke window — dipanggil (await) oleh main.js &
+ *    register.html sebelum memakai nomor WA, supaya kontak dari tab
+ *    Config sempat termuat dulu sebelum dipakai.
  *
  * Fail-safe: selama SETTINGS_SHEET_ID kosong / fetch gagal / value bukan TRUE,
  * situs tetap tampil default "tutup" apa adanya di HTML — tidak pernah tampak
@@ -155,31 +159,64 @@ function applyRegistrationOpenState() {
 }
 
 /* ================================================================
-   NOMOR WA ADMIN — dari tab "Config" tersembunyi (CONFIG_SHEET_GID),
-   fallback ke ADMIN_WA_NUMBER di config.js. Dipanggil main.js &
-   register.html (di-expose ke window supaya bisa dipakai
-   file lain). Di-cache (variabel module-level) supaya HANYA fetch
-   sekali walau dipanggil berkali-kali (mis. saat load halaman DAN
-   saat submit form pendaftaran).
+   KONTAK WA ADMIN (2 orang) — dari tab "Config" tersembunyi
+   (CONFIG_SHEET_GID), fallback ke ADMIN_WA_NAME/ADMIN_WA_NUMBER/
+   ADMIN_WA_NAME_2/ADMIN_WA_NUMBER_2 di config.js. Dipanggil main.js &
+   register.html (di-expose ke window). Di-cache (variabel module-level)
+   supaya HANYA fetch sekali walau dipanggil berkali-kali dari banyak
+   tempat (footer, FAQ, submit form).
+   Return: array [{name, number}, ...] — cuma berisi kontak yang punya
+   nomor (kontak ke-2 di-skip diam-diam kalau nomornya benar-benar
+   kosong di Sheet MAUPUN fallback config.js, bukan kasus normal).
    ================================================================ */
-let cachedAdminWaNumberPromise = null
-function resolveAdminWaNumber() {
-  if (cachedAdminWaNumberPromise) return cachedAdminWaNumberPromise
+let cachedAdminWaContactsPromise = null
+function resolveAdminWaContacts() {
+  if (cachedAdminWaContactsPromise) return cachedAdminWaContactsPromise
 
-  const fallback = typeof ADMIN_WA_NUMBER !== 'undefined' ? ADMIN_WA_NUMBER : ''
+  const fallbackContacts = [
+    {
+      name: typeof ADMIN_WA_NAME !== 'undefined' ? ADMIN_WA_NAME : 'Admin',
+      number: typeof ADMIN_WA_NUMBER !== 'undefined' ? ADMIN_WA_NUMBER : ''
+    },
+    {
+      name: typeof ADMIN_WA_NAME_2 !== 'undefined' ? ADMIN_WA_NAME_2 : '',
+      number: typeof ADMIN_WA_NUMBER_2 !== 'undefined' ? ADMIN_WA_NUMBER_2 : ''
+    }
+  ]
   const isConfigured = typeof SETTINGS_SHEET_ID !== 'undefined' && SETTINGS_SHEET_ID &&
     typeof CONFIG_SHEET_GID !== 'undefined' && CONFIG_SHEET_GID
 
-  cachedAdminWaNumberPromise = isConfigured
+  cachedAdminWaContactsPromise = isConfigured
     ? fetchSiteSettings(CONFIG_SHEET_GID)
-        .then(settings => settings.ADMIN_WA_NUMBER || fallback)
-        .catch(error => {
-          console.warn('Nomor WA admin dari Sheet tidak dapat dimuat:', error)
-          return fallback
+        .then(settings => {
+          const contacts = [
+            {
+              name: settings.ADMIN_WA_NAME || fallbackContacts[0].name,
+              number: settings.ADMIN_WA_NUMBER || fallbackContacts[0].number
+            },
+            {
+              name: settings.ADMIN_WA_NAME_2 || fallbackContacts[1].name,
+              number: settings.ADMIN_WA_NUMBER_2 || fallbackContacts[1].number
+            }
+          ]
+          return contacts.filter(contact => contact.number)
         })
-    : Promise.resolve(fallback)
+        .catch(error => {
+          console.warn('Kontak WA admin dari Sheet tidak dapat dimuat:', error)
+          return fallbackContacts.filter(contact => contact.number)
+        })
+    : Promise.resolve(fallbackContacts.filter(contact => contact.number))
 
-  return cachedAdminWaNumberPromise
+  return cachedAdminWaContactsPromise
+}
+window.resolveAdminWaContacts = resolveAdminWaContacts
+
+/* Nomor WA admin UTAMA saja (kontak pertama) — dipakai di TEMPAT yang
+   cuma bisa menampung satu nomor: link WhatsApp yang otomatis terbuka
+   sendiri setelah submit Form Pendaftaran (proses otomatis, tidak ada
+   jeda untuk menawarkan pilihan admin mana yang dihubungi). */
+function resolveAdminWaNumber() {
+  return resolveAdminWaContacts().then(contacts => (contacts[0] && contacts[0].number) || '')
 }
 window.resolveAdminWaNumber = resolveAdminWaNumber
 

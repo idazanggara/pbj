@@ -8,7 +8,7 @@
   <!-- Halaman internal pengurus: JANGAN diindeks mesin pencari -->
   <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" href="assets/favicon_io/favicon.ico" />
-  <link rel="stylesheet" href="css/style.css?v=20" />
+  <link rel="stylesheet" href="css/style.css?v=21" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
     /* Gaya khusus halaman admin (sederhana, satu halaman) */
@@ -181,6 +181,8 @@
           <button class="admin-login__submit" type="submit">Masuk</button>
           <p class="admin-login__error" id="adminLoginError" hidden>Username atau password salah.</p>
         </form>
+
+        <a class="admin-back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Kembali ke website</a>
       </div>
 
       <div id="adminProtected" hidden>
@@ -333,10 +335,11 @@
           </details>
 
           <details class="admin-guide__item">
-            <summary><i class="fa-brands fa-whatsapp"></i> Cara ganti nomor WhatsApp Admin</summary>
+            <summary><i class="fa-brands fa-whatsapp"></i> Cara ganti nomor WhatsApp Admin (2 kontak)</summary>
             <div class="admin-guide__body">
               <p>
-                Nomor WA admin disimpan di tab <strong>"Config"</strong> — tab TERSEMBUNYI
+                Website sekarang menampilkan <strong>DUA</strong> nomor WA admin sekaligus
+                (bukan cuma satu), disimpan di tab <strong>"Config"</strong> — tab TERSEMBUNYI
                 di spreadsheet yang sama dengan tab Registration/Event/Galeri (sengaja
                 disembunyikan supaya tidak sengaja ke-edit orang lain yang dibagikan akses
                 ke tab lain).
@@ -349,13 +352,19 @@
               </p>
               <table>
                 <tr><th>Key (JANGAN diubah)</th><th>Isi Value dengan</th></tr>
-                <tr><td><code>ADMIN_WA_NUMBER</code></td><td>Nomor WA baru. Format: kode negara + nomor TANPA angka 0 di depan (mis. <code>628123456789</code>, BUKAN <code>08123456789</code>).</td></tr>
+                <tr><td><code>ADMIN_WA_NAME</code></td><td>Nama admin 1, mis. <code>Arif</code> — tampil di tombol WA (mis. "WhatsApp Arif").</td></tr>
+                <tr><td><code>ADMIN_WA_NUMBER</code></td><td>Nomor WA admin 1. Format: kode negara + nomor TANPA angka 0 di depan (mis. <code>628123456789</code>, BUKAN <code>08123456789</code>). Nomor ini JUGA yang otomatis dipakai saat calon member submit Form Pendaftaran di beranda (proses otomatis, tidak bisa menawarkan 2 pilihan).</td></tr>
+                <tr><td><code>ADMIN_WA_NAME_2</code></td><td>Nama admin 2, mis. <code>Bastian</code>.</td></tr>
+                <tr><td><code>ADMIN_WA_NUMBER_2</code></td><td>Nomor WA admin 2, format sama seperti admin 1.</td></tr>
               </table>
               <p>
-                Perubahan tampil di semua tombol/teks WA di website (footer, FAQ, form
-                pendaftaran) dalam beberapa menit, TIDAK perlu redeploy. Kalau tab "Config"
-                belum pernah dibuat sama sekali, tombol di atas akan tampak nonaktif —
-                lihat panduan lengkap di <code>docs/PANDUAN-ADMIN.md</code> Bagian J.
+                Perubahan tampil di semua tombol/teks WA di website (footer, FAQ, halaman
+                bantuan pendaftaran) dalam beberapa menit, TIDAK perlu redeploy. Kalau baris
+                <code>ADMIN_WA_NAME_2</code>/<code>ADMIN_WA_NUMBER_2</code> belum diisi di
+                Sheet, website otomatis pakai nomor admin 2 cadangan dari kode (bukan
+                tampak rusak/kosong). Kalau tab "Config" belum pernah dibuat sama sekali,
+                tombol di atas akan tampak nonaktif — lihat panduan lengkap di
+                <code>docs/PANDUAN-ADMIN.md</code> Bagian J.
               </p>
             </div>
           </details>
@@ -374,7 +383,7 @@
 
   <!-- Versi ?v= HARUS sama dengan yang di index.html supaya kedua halaman
        membaca config.js dari cache entry yang sama (tidak ada yang stale) -->
-  <script src="js/config.js?v=14"></script>
+  <script src="js/config.js?v=15"></script>
   <script>
     /* ================================================================
        GERBANG LOGIN ADMIN (client-side)

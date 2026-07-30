@@ -293,50 +293,92 @@ document.addEventListener('DOMContentLoaded', () => {
      STEP 6: Form Pendaftaran — Validasi & Kirim ke WhatsApp Admin
      ================================================================ */
 
-  // Nomor WA admin sekarang bisa diedit live lewat tab "Config" tersembunyi
-  // di Google Sheets (site-settings.js) — ADMIN_WA_NUMBER di config.js
-  // cuma fallback. resolveAdminWaNumber() (di-expose site-settings.js,
-  // dimuat SEBELUM main.js) menunggu fetch itu dulu sebelum blok di bawah
-  // menyebarkan nomor ke SEMUA tempat yang menampilkannya: link WhatsApp
-  // (footer, form) DAN teks (FAQ + JSON-LD). Dibungkus try/catch supaya
-  // kalau ada yang meleset di sini, bagian lain halaman (navbar, peta,
-  // form) tetap jalan normal — async IIFE dipakai supaya STEP-STEP
-  // berikutnya di bawah tidak ikut menunggu (tidak saling bergantung).
+  // Kontak WA admin (2 orang) sekarang bisa diedit live lewat tab "Config"
+  // tersembunyi di Google Sheets (site-settings.js) — konstanta ADMIN_WA_*
+  // di config.js cuma fallback. resolveAdminWaContacts() (di-expose
+  // site-settings.js, dimuat SEBELUM main.js) menunggu fetch itu dulu
+  // sebelum blok di bawah menyebarkan KEDUA kontak ke semua tempat yang
+  // menampilkannya: link WhatsApp (footer) DAN teks (FAQ + JSON-LD).
+  // Dibungkus try/catch supaya kalau ada yang meleset di sini, bagian lain
+  // halaman (navbar, peta, form) tetap jalan normal — async IIFE dipakai
+  // supaya STEP-STEP berikutnya di bawah tidak ikut menunggu (tidak saling
+  // bergantung). Link WA otomatis setelah submit Form Pendaftaran TIDAK
+  // dipengaruhi blok ini — lihat resolveAdminWaNumber() (1 nomor utama)
+  // di bagian bawah file ini.
   ;(async () => {
     try {
-      const waNumber = typeof resolveAdminWaNumber === 'function'
-        ? await resolveAdminWaNumber()
-        : ADMIN_WA_NUMBER
+      const contacts = typeof resolveAdminWaContacts === 'function'
+        ? await resolveAdminWaContacts()
+        : []
+      const [primary, secondary] = contacts
+      if (!primary) return
 
-      // Tombol WhatsApp di baris kontak footer
-      const waAdminLink = document.getElementById('waAdminLink')
-      if (waAdminLink) waAdminLink.href = `https://wa.me/${waNumber}`
+      // Tombol WhatsApp admin 1 di baris kontak footer & ikon sosial footer
+      const waAdminLink1 = document.getElementById('waAdminLink1')
+      if (waAdminLink1) {
+        waAdminLink1.href = `https://wa.me/${primary.number}`
+        waAdminLink1.textContent = `WhatsApp ${primary.name}`
+      }
+      const waSocialLink1 = document.getElementById('waSocialLink1')
+      if (waSocialLink1) waSocialLink1.href = `https://wa.me/${primary.number}`
 
-      // Ikon WhatsApp di grup ikon sosial footer
-      const waSocialLink = document.getElementById('waSocialLink')
-      if (waSocialLink) waSocialLink.href = `https://wa.me/${waNumber}`
+      // Slot kontak admin 2 disembunyikan diam-diam kalau memang cuma ada
+      // 1 kontak terkonfigurasi (bukan tampak rusak/link kosong)
+      const waAdminLink2 = document.getElementById('waAdminLink2')
+      const waSocialLink2 = document.getElementById('waSocialLink2')
+      if (secondary) {
+        if (waAdminLink2) {
+          waAdminLink2.href = `https://wa.me/${secondary.number}`
+          waAdminLink2.textContent = `WhatsApp ${secondary.name}`
+        }
+        if (waSocialLink2) waSocialLink2.href = `https://wa.me/${secondary.number}`
+      } else {
+        if (waAdminLink2) waAdminLink2.closest('li').hidden = true
+        if (waSocialLink2) waSocialLink2.hidden = true
+      }
 
-      // Teks FAQ yang menampilkan nomor WA — HTML menandainya dengan
-      // <span data-wa-number>...</span>, isi aslinya di HTML cuma fallback
-      // (kalau JS gagal jalan, pengunjung masih lihat nomor, bukan kosong).
+      // Teks FAQ singkat ("cara gabung", "biaya") yang cuma menyebut SATU
+      // nomor admin utama — HTML menandainya dengan <span data-wa-number>,
+      // isi aslinya di HTML cuma fallback (kalau JS gagal jalan, pengunjung
+      // masih lihat nomor, bukan kosong).
       document.querySelectorAll('[data-wa-number]').forEach(el => {
-        el.textContent = waNumber
+        el.textContent = primary.number
       })
+
+      // Teks FAQ "Nomor WA admin?" yang menyebut KEDUA kontak — HTML
+      // menandainya dengan <span data-wa-contact-1>/<span data-wa-contact-2>.
+      const waContact1El = document.querySelector('[data-wa-contact-1]')
+      if (waContact1El) waContact1El.textContent = `${primary.name} (${primary.number})`
+      const waContact2El = document.querySelector('[data-wa-contact-2]')
+      if (waContact2El && secondary) waContact2El.textContent = `${secondary.name} (${secondary.number})`
 
       // JSON-LD FAQPage (di <head>) tidak bisa langsung baca variabel JS
       // karena isinya harus tetap JSON murni. Trik: teks jawaban yang
-      // menyebut nomor WA ditulis dengan placeholder literal
-      // "__ADMIN_WA_NUMBER__" (tetap JSON valid, cuma potongan string),
-      // lalu di sini kita ganti jadi nomor sungguhan. Dicek dulu dengan
-      // .includes() supaya blok JSON-LD lain (WebSite, SportsClub) yang
-      // tidak punya placeholder ini tidak ikut ditulis ulang tanpa perlu.
+      // menyebut nomor WA ditulis dengan placeholder literal — satu untuk
+      // FAQ yang cuma sebut admin utama ("__ADMIN_WA_NUMBER__"), dan
+      // sepasang untuk FAQ "Nomor WA admin?" yang sebut KEDUA kontak
+      // ("__ADMIN_WA_CONTACT_1__"/"__ADMIN_WA_CONTACT_2__") — tetap JSON
+      // valid karena cuma potongan string, lalu di sini kita ganti jadi
+      // teks sungguhan. Dicek dulu dengan .includes() supaya blok JSON-LD
+      // lain (WebSite, SportsClub) yang tidak punya placeholder ini tidak
+      // ikut ditulis ulang tanpa perlu.
       document.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
-        if (script.textContent.includes('__ADMIN_WA_NUMBER__')) {
-          script.textContent = script.textContent.replaceAll('__ADMIN_WA_NUMBER__', waNumber)
+        let text = script.textContent
+        let changed = false
+        if (text.includes('__ADMIN_WA_NUMBER__')) {
+          text = text.replaceAll('__ADMIN_WA_NUMBER__', primary.number)
+          changed = true
         }
+        if (text.includes('__ADMIN_WA_CONTACT_1__')) {
+          text = text
+            .replaceAll('__ADMIN_WA_CONTACT_1__', `${primary.name} (${primary.number})`)
+            .replaceAll('__ADMIN_WA_CONTACT_2__', secondary ? `${secondary.name} (${secondary.number})` : '')
+          changed = true
+        }
+        if (changed) script.textContent = text
       })
     } catch (error) {
-      console.warn('Gagal mengisi nomor WA admin di halaman:', error)
+      console.warn('Gagal mengisi kontak WA admin di halaman:', error)
     }
   })()
 
@@ -450,10 +492,12 @@ document.addEventListener('DOMContentLoaded', () => {
     ].join('\n')
     // Array.join('\n') = gabungkan semua baris dengan newline
 
-    // --- BUAT LINK WA DAN BUKA ---
+    // --- BUAT LINK WA DAN BUKA (SATU nomor utama, admin 1 — proses ini
+    //     otomatis tanpa jeda, jadi tidak bisa menawarkan 2 pilihan) ---
     // resolveAdminWaNumber() sudah pasti selesai fetch sejak halaman dimuat
-    // (STEP 6 di atas memanggilnya duluan, hasilnya di-cache) — await di
-    // sini praktis langsung resolve, bukan nunggu fetch baru.
+    // (STEP 6 di atas sudah memanggil resolveAdminWaContacts() duluan,
+    // keduanya berbagi cache yang sama) — await di sini praktis langsung
+    // resolve, bukan nunggu fetch baru.
     const waNumberForSubmit = typeof resolveAdminWaNumber === 'function'
       ? await resolveAdminWaNumber()
       : ADMIN_WA_NUMBER
