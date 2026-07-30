@@ -53,9 +53,11 @@
    nomor admin 1 (ADMIN_WA_NUMBER) — proses itu otomatis tanpa jeda untuk
    memilih, jadi tidak bisa menawarkan 2 pilihan.
 
-   SUMBER UTAMA sekarang 4 sel di tab "Config" (lihat CONFIG_SHEET_GID di
-   bawah): ADMIN_WA_NAME, ADMIN_WA_NUMBER, ADMIN_WA_NAME_2, ADMIN_WA_NUMBER_2
-   — admin ganti lewat Sheet, TIDAK perlu redeploy. Nilai di bawah ini HANYA
+   SUMBER UTAMA sekarang tab "Config" (lihat CONFIG_SHEET_GID di bawah) —
+   BUKAN kolom Key/Value biasa seperti tab Registration, tapi kolom
+   Key | Value 1 | Value 2 (Value 1 = admin 1, Value 2 = admin 2) supaya
+   tidak perlu key berakhiran "_2" yang membingungkan. Admin ganti nama/
+   nomor lewat Sheet, TIDAK perlu redeploy. Nilai di bawah ini HANYA
    fallback kalau tab Config belum diisi / fetch gagal — boleh dibiarkan
    usang, bukan tempat update rutin. Format nomor: kode negara + nomor
    TANPA angka 0 di depan (contoh: 628123456789, bukan 08123456789). */
@@ -68,21 +70,25 @@ const ADMIN_WA_NUMBER_2 = '6287895701681'
    Tab KEDUA di spreadsheet yang SAMA dengan SETTINGS_SHEET_ID (bukan
    spreadsheet baru) — sengaja dipisah dari tab "Registration" supaya bisa
    di-hide (klik kanan tab → Sembunyikan sheet) dari kolaborator yang cuma
-   perlu toggle buka/tutup pendaftaran. Kolom sheet sama: Key | Value.
-   Baris yang didukung saat ini:
-     ADMIN_WA_NAME     | Arif
-     ADMIN_WA_NUMBER   | 628xxxxxxxxxx
-     ADMIN_WA_NAME_2   | Bastian
-     ADMIN_WA_NUMBER_2 | 628xxxxxxxxxx
+   perlu toggle buka/tutup pendaftaran. Kolom sheet: Key | Value 1 | Value 2
+   (BEDA dari tab Registration yang cuma Key | Value — sengaja 2 kolom
+   Value supaya 1 baris menampung admin 1 & admin 2 sekaligus, tidak perlu
+   key berakhiran "_2"). Baris yang didukung saat ini:
+     ADMIN_WA_NAME   | Arif             | Bastian
+     ADMIN_WA_NUMBER | 628xxxxxxxxxx    | 628xxxxxxxxxx
    1. Di spreadsheet SETTINGS_SHEET_ID, buat tab baru (klik "+" di kiri
-      bawah), beri nama "Config", isi kolom Key | Value seperti di atas.
+      bawah), beri nama "Config", isi kolom Key | Value 1 | Value 2
+      seperti di atas.
    2. Klik tab "Config" itu supaya aktif → lihat URL browser, ambil angka
       setelah "#gid=" (mis. .../edit#gid=987654321 → gid-nya 987654321).
    3. Tempel angka itu ke CONFIG_SHEET_GID.
    4. (Opsional) klik kanan tab "Config" → "Sembunyikan sheet" supaya
       tidak tampil ke kolaborator lain yang dibagikan akses edit.
    Selama nilai/baris ini kosong, konstanta ADMIN_WA_* di atas yang dipakai
-   (boleh isi cuma admin 1 dulu — admin 2 otomatis pakai fallback kode). */
+   (boleh isi cuma admin 1 dulu — admin 2 otomatis pakai fallback kode).
+   Dibaca via CSV export (bukan gviz) — lihat komentar
+   fetchAdminWaContactsCsv() di site-settings.js untuk alasannya (gviz
+   salah menebak kolom Value sebagai kolom angka, bikin nama teks hilang). */
 const CONFIG_SHEET_GID = '845332613'
 
 /* ---------------- GOOGLE DRIVE (Galeri) ---------------- */

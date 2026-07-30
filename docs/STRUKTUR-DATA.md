@@ -155,25 +155,29 @@ Key | Value
 
 ### Tab "Config" (gid = `CONFIG_SHEET_GID`, opsional — bisa DISEMBUNYIKAN dari kolaborator lain)
 
-Kolom sama (`Key | Value`), sengaja terpisah tab supaya bisa di-hide (klik kanan tab →
-Sembunyikan sheet) dari orang yang cuma perlu akses ke tab Registration. Sejak 30 Juli
-2026 menampung **DUA** kontak WA admin (sebelumnya cuma 1):
+Kolom BEDA dari tab Registration — `Key | Value 1 | Value 2` (bukan `Key | Value`
+biasa), sengaja terpisah tab supaya bisa di-hide (klik kanan tab → Sembunyikan sheet)
+dari orang yang cuma perlu akses ke tab Registration. Sejak 30 Juli 2026 menampung
+**DUA** kontak WA admin (sebelumnya cuma 1) — Value 1 = admin 1, Value 2 = admin 2,
+supaya tidak perlu key berakhiran `_2`:
 
-| Key | Value |
-|---|---|
-| ADMIN_WA_NAME | Arif |
-| ADMIN_WA_NUMBER | 6285167017848 |
-| ADMIN_WA_NAME_2 | Bastian |
-| ADMIN_WA_NUMBER_2 | 6287895701681 |
+| Key | Value 1 | Value 2 |
+|---|---|---|
+| ADMIN_WA_NAME | Arif | Bastian |
+| ADMIN_WA_NUMBER | 6285167017848 | 6287895701681 |
 
-- **`ADMIN_WA_NAME`/`ADMIN_WA_NUMBER`** = nama & nomor WA admin 1, disebarkan
-  `main.js`/`register.html` ke tombol/teks WA & FAQ (2 tombol di footer, halaman bantuan
-  pendaftaran). Nomor ini JUGA satu-satunya yang dipakai link WA otomatis setelah submit
-  Form Pendaftaran (proses otomatis, tidak bisa menawarkan 2 pilihan).
-- **`ADMIN_WA_NAME_2`/`ADMIN_WA_NUMBER_2`** = nama & nomor WA admin 2, tombol kedua di
-  tempat yang sama. Baris ini boleh kosong — website otomatis pakai cadangan dari kode.
+- **`ADMIN_WA_NAME`/`ADMIN_WA_NUMBER`** = nama & nomor WA (kolom Value 1 = admin 1,
+  Value 2 = admin 2), disebarkan `main.js`/`register.html` ke tombol/teks WA & FAQ
+  (2 tombol di footer, halaman bantuan pendaftaran). Nomor admin 1 (Value 1) JUGA
+  satu-satunya yang dipakai link WA otomatis setelah submit Form Pendaftaran (proses
+  otomatis, tidak bisa menawarkan 2 pilihan).
+- Kolom Value 2 boleh kosong — website otomatis pakai cadangan admin 2 dari kode.
 - Kosong/`CONFIG_SHEET_GID` belum diisi/fetch gagal → fallback ke konstanta `ADMIN_WA_*`
   di `config.js`.
+- Dibaca lewat **CSV export** (`/export?format=csv`), BUKAN endpoint gviz seperti tab
+  Registration — gviz salah menebak kolom Value sebagai kolom angka (isinya campur nama
+  & nomor WA), yang bikin nama admin (teks) diam-diam hilang di respons gviz. Lihat
+  `fetchAdminWaContactsCsv()` di `js/site-settings.js`.
 
 > Kedua tab: berguna untuk ubah pengaturan **tanpa redeploy** — cukup ubah nilai di sheet.
 

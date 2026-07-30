@@ -350,19 +350,27 @@
                 di baris tab paling bawah: klik ikon <strong>☰</strong> di pojok kiri bawah
                 spreadsheet → pilih <strong>Config</strong> untuk memunculkannya sementara.
               </p>
+              <p>
+                Kolom Sheet-nya <strong>Key | Value 1 | Value 2</strong> — Value 1 = admin 1,
+                Value 2 = admin 2. Cukup 2 BARIS saja (bukan 4), supaya tidak bingung dengan
+                key berakhiran "_2":
+              </p>
               <table>
-                <tr><th>Key (JANGAN diubah)</th><th>Isi Value dengan</th></tr>
-                <tr><td><code>ADMIN_WA_NAME</code></td><td>Nama admin 1, mis. <code>Arif</code> — tampil di tombol WA (mis. "WhatsApp Arif").</td></tr>
-                <tr><td><code>ADMIN_WA_NUMBER</code></td><td>Nomor WA admin 1. Format: kode negara + nomor TANPA angka 0 di depan (mis. <code>628123456789</code>, BUKAN <code>08123456789</code>). Nomor ini JUGA yang otomatis dipakai saat calon member submit Form Pendaftaran di beranda (proses otomatis, tidak bisa menawarkan 2 pilihan).</td></tr>
-                <tr><td><code>ADMIN_WA_NAME_2</code></td><td>Nama admin 2, mis. <code>Bastian</code>.</td></tr>
-                <tr><td><code>ADMIN_WA_NUMBER_2</code></td><td>Nomor WA admin 2, format sama seperti admin 1.</td></tr>
+                <tr><th>Key (JANGAN diubah)</th><th>Value 1 (admin 1)</th><th>Value 2 (admin 2)</th></tr>
+                <tr><td><code>ADMIN_WA_NAME</code></td><td>Nama admin 1, mis. <code>Arif</code></td><td>Nama admin 2, mis. <code>Bastian</code></td></tr>
+                <tr><td><code>ADMIN_WA_NUMBER</code></td><td>Nomor WA admin 1. Format: kode negara + nomor TANPA angka 0 di depan (mis. <code>628123456789</code>, BUKAN <code>08123456789</code>)</td><td>Nomor WA admin 2, format sama</td></tr>
               </table>
               <p>
+                Nomor admin 1 (kolom Value 1 di baris <code>ADMIN_WA_NUMBER</code>) JUGA yang
+                otomatis dipakai saat calon member submit Form Pendaftaran di beranda (proses
+                otomatis, tidak bisa menawarkan 2 pilihan).
+              </p>
+              <p>
                 Perubahan tampil di semua tombol/teks WA di website (footer, FAQ, halaman
-                bantuan pendaftaran) dalam beberapa menit, TIDAK perlu redeploy. Kalau baris
-                <code>ADMIN_WA_NAME_2</code>/<code>ADMIN_WA_NUMBER_2</code> belum diisi di
-                Sheet, website otomatis pakai nomor admin 2 cadangan dari kode (bukan
-                tampak rusak/kosong). Kalau tab "Config" belum pernah dibuat sama sekali,
+                bantuan pendaftaran) dalam beberapa menit, TIDAK perlu redeploy. Kalau kolom
+                Value 2 belum diisi di Sheet, website otomatis pakai nomor admin 2 cadangan
+                dari kode (bukan tampak rusak/kosong). Kalau tab "Config" belum pernah dibuat
+                sama sekali,
                 tombol di atas akan tampak nonaktif — lihat panduan lengkap di
                 <code>docs/PANDUAN-ADMIN.md</code> Bagian J.
               </p>

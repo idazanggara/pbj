@@ -98,12 +98,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // Tile layer (gambar peta dasar) dari OpenStreetMap
   // OpenStreetMap = peta open source, gratis tanpa API key
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
     // {s} = subdomain (a/b/c untuk load balancing)
     // {z} = zoom level
     // {x},{y} = koordinat tile
     maxZoom: 19, // Zoom maksimal yang diizinkan
   }).addTo(map) // .addTo(map) = tambahkan layer ke instance peta
+
+  // Link "Leaflet" di pojok peta dirender OTOMATIS oleh library-nya sendiri
+  // (bukan dari markup kita, jadi tidak bisa dikasih target="_blank" langsung
+  // di HTML) — di-patch di sini supaya konsisten buka tab baru juga.
+  document.querySelectorAll('.leaflet-control-attribution a').forEach(link => {
+    link.target = '_blank'
+    link.rel = 'noopener'
+  })
 
   // Custom marker icon (ikon merah PBJ)
   const pbjIcon = L.divIcon({
@@ -313,28 +321,25 @@ document.addEventListener('DOMContentLoaded', () => {
       const [primary, secondary] = contacts
       if (!primary) return
 
-      // Tombol WhatsApp admin 1 di baris kontak footer & ikon sosial footer
+      // Tombol WhatsApp admin 1 di baris kontak footer (list "Kontak",
+      // BUKAN baris ikon sosial — ikon sosial footer sengaja cuma
+      // Instagram & YouTube supaya tidak ada 2 ikon WA identik tanpa label)
       const waAdminLink1 = document.getElementById('waAdminLink1')
       if (waAdminLink1) {
         waAdminLink1.href = `https://wa.me/${primary.number}`
         waAdminLink1.textContent = `WhatsApp ${primary.name}`
       }
-      const waSocialLink1 = document.getElementById('waSocialLink1')
-      if (waSocialLink1) waSocialLink1.href = `https://wa.me/${primary.number}`
 
       // Slot kontak admin 2 disembunyikan diam-diam kalau memang cuma ada
       // 1 kontak terkonfigurasi (bukan tampak rusak/link kosong)
       const waAdminLink2 = document.getElementById('waAdminLink2')
-      const waSocialLink2 = document.getElementById('waSocialLink2')
       if (secondary) {
         if (waAdminLink2) {
           waAdminLink2.href = `https://wa.me/${secondary.number}`
           waAdminLink2.textContent = `WhatsApp ${secondary.name}`
         }
-        if (waSocialLink2) waSocialLink2.href = `https://wa.me/${secondary.number}`
       } else {
         if (waAdminLink2) waAdminLink2.closest('li').hidden = true
-        if (waSocialLink2) waSocialLink2.hidden = true
       }
 
       // Teks FAQ singkat ("cara gabung", "biaya") yang cuma menyebut SATU

@@ -171,14 +171,6 @@
               aria-label="Instagram Pushbike Jakarta" target="_blank" rel="noopener">
               <i class="fa-brands fa-instagram"></i>
             </a>
-            <a id="waSocialLink1" class="social-link" aria-label="WhatsApp Admin Pushbike Jakarta" target="_blank"
-              rel="noopener">
-              <i class="fa-brands fa-whatsapp"></i>
-            </a>
-            <a id="waSocialLink2" class="social-link" aria-label="WhatsApp Admin Pushbike Jakarta" target="_blank"
-              rel="noopener">
-              <i class="fa-brands fa-whatsapp"></i>
-            </a>
             <a href="https://www.youtube.com/@pushbikejakarta6288" class="social-link"
               aria-label="YouTube Pushbike Jakarta" target="_blank" rel="noopener">
               <i class="fa-brands fa-youtube"></i>
@@ -202,15 +194,15 @@
           <ul>
             <li>
               <i class="fa-brands fa-whatsapp"></i>
-              <a id="waAdminLink1">WhatsApp Admin</a>
+              <a id="waAdminLink1" target="_blank" rel="noopener">WhatsApp Admin</a>
             </li>
             <li>
               <i class="fa-brands fa-whatsapp"></i>
-              <a id="waAdminLink2">WhatsApp Admin</a>
+              <a id="waAdminLink2" target="_blank" rel="noopener">WhatsApp Admin</a>
             </li>
             <li>
               <i class="fa-brands fa-instagram"></i>
-              <a href="https://instagram.com/pushbikejakarta">@pushbikejakarta</a>
+              <a href="https://instagram.com/pushbikejakarta" target="_blank" rel="noopener">@pushbikejakarta</a>
             </li>
             <li>
               <i class="fa-solid fa-location-dot"></i>
@@ -236,7 +228,7 @@
        config.js dari cache entry yang sama (tidak ada yang stale) -->
   <script src="js/config.js?v=15"></script>
   <!-- site-settings.js = isi iframe Google Form dari Sheet (fallback ke config.js) -->
-  <script src="js/site-settings.js?v=5"></script>
+  <script src="js/site-settings.js?v=6"></script>
   <script>
     /* ================================================================
        Script khusus halaman ini (pola sama seperti admin.html — cuma
@@ -286,9 +278,6 @@
       const [primary, secondary] = contacts
       if (!primary) return
 
-      const waSocialLink1 = document.getElementById('waSocialLink1')
-      if (waSocialLink1) waSocialLink1.href = `https://wa.me/${primary.number}`
-
       const waAdminLink1 = document.getElementById('waAdminLink1')
       if (waAdminLink1) {
         waAdminLink1.href = `https://wa.me/${primary.number}`
@@ -303,17 +292,14 @@
 
       // Slot kontak ke-2 disembunyikan diam-diam kalau memang cuma ada
       // 1 kontak terkonfigurasi (bukan tampak rusak/link kosong)
-      const waSocialLink2 = document.getElementById('waSocialLink2')
       const waAdminLink2 = document.getElementById('waAdminLink2')
       const waHelpLink2 = document.getElementById('waHelpLink2')
       if (!secondary) {
-        if (waSocialLink2) waSocialLink2.hidden = true
         if (waAdminLink2) waAdminLink2.closest('li').hidden = true
         if (waHelpLink2) waHelpLink2.hidden = true
         return
       }
 
-      if (waSocialLink2) waSocialLink2.href = `https://wa.me/${secondary.number}`
       if (waAdminLink2) {
         waAdminLink2.href = `https://wa.me/${secondary.number}`
         waAdminLink2.textContent = `WhatsApp ${secondary.name}`

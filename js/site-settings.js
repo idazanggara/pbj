@@ -7,9 +7,11 @@
  *   - Tab "Registration" (gid=0, default): Key/Value berisi
  *       REGISTRATION_OPEN     : TRUE/FALSE — buka/tutup pendaftaran member baru
  *       REGISTRATION_FORM_URL : link publik Google Form (viewform)
- *   - Tab "Config" tersembunyi (CONFIG_SHEET_GID): Key/Value berisi 2 kontak WA
- *       ADMIN_WA_NAME / ADMIN_WA_NUMBER     : nama & nomor WA admin 1
- *       ADMIN_WA_NAME_2 / ADMIN_WA_NUMBER_2 : nama & nomor WA admin 2
+ *   - Tab "Config" tersembunyi (CONFIG_SHEET_GID): kolom Key | Value 1 | Value 2
+ *       ADMIN_WA_NAME   : nama admin 1 (Value 1) & admin 2 (Value 2)
+ *       ADMIN_WA_NUMBER : nomor WA admin 1 (Value 1) & admin 2 (Value 2)
+ *     (dibaca via CSV export, BUKAN gviz seperti tab Registration — lihat
+ *     komentar resolveAdminWaContacts() di bawah untuk alasannya)
  *
  * EMPAT tanggung jawab, masing-masing no-op aman kalau elemen terkait tidak
  * ada di halaman (jadi file yang sama aman dipakai di kedua halaman):
@@ -187,17 +189,11 @@ function resolveAdminWaContacts() {
     typeof CONFIG_SHEET_GID !== 'undefined' && CONFIG_SHEET_GID
 
   cachedAdminWaContactsPromise = isConfigured
-    ? fetchSiteSettings(CONFIG_SHEET_GID)
-        .then(settings => {
+    ? fetchAdminWaContactsCsv(CONFIG_SHEET_GID)
+        .then(sheet => {
           const contacts = [
-            {
-              name: settings.ADMIN_WA_NAME || fallbackContacts[0].name,
-              number: settings.ADMIN_WA_NUMBER || fallbackContacts[0].number
-            },
-            {
-              name: settings.ADMIN_WA_NAME_2 || fallbackContacts[1].name,
-              number: settings.ADMIN_WA_NUMBER_2 || fallbackContacts[1].number
-            }
+            { name: sheet.name1 || fallbackContacts[0].name, number: sheet.number1 || fallbackContacts[0].number },
+            { name: sheet.name2 || fallbackContacts[1].name, number: sheet.number2 || fallbackContacts[1].number }
           ]
           return contacts.filter(contact => contact.number)
         })
@@ -210,6 +206,74 @@ function resolveAdminWaContacts() {
   return cachedAdminWaContactsPromise
 }
 window.resolveAdminWaContacts = resolveAdminWaContacts
+
+/* ================================================================
+   BACA TAB CONFIG VIA CSV EXPORT (bukan endpoint gviz seperti
+   fetchSiteSettings) — sengaja beda: gviz menebak tipe TIAP KOLOM dari
+   isinya, dan kolom "Value 1"/"Value 2" di tab Config berisi campuran
+   teks (nama) & angka (nomor WA). Kalau gviz menyimpulkan kolom itu
+   "angka", cell yang isinya TEKS (nama) diam-diam kembali kosong di
+   respons gviz — bug yang sempat bikin nama admin gagal termuat dari
+   Sheet walau sudah diisi benar. CSV export TIDAK menebak tipe kolom,
+   selalu kembalikan teks apa adanya, jadi bug itu tidak akan terjadi.
+   Parser CSV di bawah cukup untuk field berkutip ("...") — tidak perlu
+   library eksternal untuk 2 baris data ini.
+   ================================================================ */
+async function fetchAdminWaContactsCsv(gid) {
+  const url = `https://docs.google.com/spreadsheets/d/${SETTINGS_SHEET_ID}/export?format=csv&gid=${gid}`
+  const response = await fetchWithTimeout(url)
+  if (!response.ok) {
+    throw new Error(`Google Sheets (CSV) merespons status ${response.status}`)
+  }
+
+  const text = await response.text()
+  const rows = text
+    .split(/\r?\n/)
+    .filter(line => line.trim() !== '')
+    .slice(1) // baris pertama = header ("Key,Value 1,Value 2"), dilewati
+    .map(parseCsvLine)
+
+  const findRow = key => rows.find(cells => (cells[0] || '').trim().toUpperCase() === key)
+  const nameRow = findRow('ADMIN_WA_NAME')
+  const numberRow = findRow('ADMIN_WA_NUMBER')
+
+  return {
+    name1: nameRow ? (nameRow[1] || '').trim() : '',
+    name2: nameRow ? (nameRow[2] || '').trim() : '',
+    number1: numberRow ? (numberRow[1] || '').trim() : '',
+    number2: numberRow ? (numberRow[2] || '').trim() : ''
+  }
+}
+
+/* Parser 1 baris CSV, menangani field berkutip ("...") yang boleh
+   berisi koma/kutip-ganda-escaped. */
+function parseCsvLine(line) {
+  const cells = []
+  let current = ''
+  let inQuotes = false
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i]
+    if (inQuotes) {
+      if (char === '"' && line[i + 1] === '"') {
+        current += '"'
+        i++
+      } else if (char === '"') {
+        inQuotes = false
+      } else {
+        current += char
+      }
+    } else if (char === '"') {
+      inQuotes = true
+    } else if (char === ',') {
+      cells.push(current)
+      current = ''
+    } else {
+      current += char
+    }
+  }
+  cells.push(current)
+  return cells
+}
 
 /* Nomor WA admin UTAMA saja (kontak pertama) — dipakai di TEMPAT yang
    cuma bisa menampung satu nomor: link WhatsApp yang otomatis terbuka

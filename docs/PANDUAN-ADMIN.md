@@ -440,29 +440,30 @@ Beda dari Bagian I: bagian ini untuk **salah satu tab** di spreadsheet yang
 SAMA dengan `PBJ - Pengaturan Situs` (bukan spreadsheet baru), khusus
 untuk pengaturan yang sengaja **disembunyikan** dari kolaborator lain
 yang cuma perlu buka/tutup pendaftaran (Bagian I) atau isi data Event/
-Galeri. Saat ini menampung 4 nilai: nama & nomor WA **DUA** admin
-(sejak 30 Juli 2026 — sebelumnya cuma 1 admin).
+Galeri. Saat ini menampung nama & nomor WA **DUA** admin (sejak 30 Juli
+2026 — sebelumnya cuma 1 admin), dengan kolom yang BEDA dari tab
+Registration: **Key | Value 1 | Value 2** (Value 1 = admin 1, Value 2 =
+admin 2) — bukan `Key | Value` biasa, supaya tidak perlu key berakhiran
+`_2` yang membingungkan.
 
 ### J1. Buat tab "Config"
 
 1. Di spreadsheet `PBJ - Pengaturan Situs` (yang sama dengan Bagian I),
    klik **"+"** di kiri bawah untuk tambah tab baru. Beri nama `Config`.
-2. Isi kolom & baris persis seperti tab "Registration":
+2. Isi kolom & baris (BEDA dari tab "Registration" — di sini 3 kolom):
 
-   | Key | Value |
-   |---|---|
-   | ADMIN_WA_NAME | Arif |
-   | ADMIN_WA_NUMBER | 6285167017848 |
-   | ADMIN_WA_NAME_2 | Bastian |
-   | ADMIN_WA_NUMBER_2 | 6287895701681 |
+   | Key | Value 1 | Value 2 |
+   |---|---|---|
+   | ADMIN_WA_NAME | Arif | Bastian |
+   | ADMIN_WA_NUMBER | 6285167017848 | 6287895701681 |
 
    (format nomor: kode negara + nomor TANPA angka 0 di depan, sama
-   seperti konstanta `ADMIN_WA_*` di `config.js`. `ADMIN_WA_NAME`/
-   `ADMIN_WA_NUMBER` = admin 1 — nomor ini JUGA yang otomatis dipakai
-   saat calon member submit Form Pendaftaran di beranda, karena proses
-   itu otomatis dan tidak bisa menawarkan 2 pilihan. Baris `_2` boleh
-   dikosongkan/dihapus dulu kalau cuma mau 1 admin — website otomatis
-   pakai cadangan dari kode.)
+   seperti konstanta `ADMIN_WA_*` di `config.js`. Kolom **Value 1** =
+   admin 1 — nomornya JUGA yang otomatis dipakai saat calon member
+   submit Form Pendaftaran di beranda, karena proses itu otomatis dan
+   tidak bisa menawarkan 2 pilihan. Kolom **Value 2** boleh dikosongkan
+   dulu kalau cuma mau 1 admin — website otomatis pakai cadangan dari
+   kode.)
 
 ### J2. Sembunyikan tab (opsional tapi disarankan)
 
@@ -490,12 +491,16 @@ pilih `Config`.
    const CONFIG_SHEET_GID = '987654321'
    ```
 
-Setelah ini, ganti nomor WA admin cukup edit sel `Value` di tab `Config`
-— TIDAK perlu redeploy. Konstanta `ADMIN_WA_NAME`/`ADMIN_WA_NUMBER`/
-`ADMIN_WA_NAME_2`/`ADMIN_WA_NUMBER_2` di `config.js` tetap ada sebagai
-cadangan darurat (dipakai kalau tab Config gagal dimuat, atau kalau
-baris admin 2 belum diisi di Sheet), sama seperti pola
-`REGISTRATION_FORM_URL` di Bagian I.
+Setelah ini, ganti nama/nomor WA admin cukup edit sel `Value 1`/`Value 2`
+di tab `Config` — TIDAK perlu redeploy. Konstanta `ADMIN_WA_NAME`/
+`ADMIN_WA_NUMBER`/`ADMIN_WA_NAME_2`/`ADMIN_WA_NUMBER_2` di `config.js`
+tetap ada sebagai cadangan darurat (dipakai kalau tab Config gagal
+dimuat, atau kalau kolom Value 2 belum diisi di Sheet), sama seperti
+pola `REGISTRATION_FORM_URL` di Bagian I. Data dibaca lewat CSV export
+(bukan endpoint gviz seperti tab Registration) — sengaja beda supaya
+nama admin (teks) tidak diam-diam hilang gara-gara Google Sheets salah
+menebak kolom Value sebagai kolom angka (isinya campur nama & nomor
+WA); lihat komentar `fetchAdminWaContactsCsv()` di `js/site-settings.js`.
 
 ### J4. Proteksi tab dari edit tidak sengaja (disarankan kalau sudah share ke orang lain)
 
