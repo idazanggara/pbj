@@ -56,6 +56,7 @@
        search.google.com/search-console (metode "HTML tag"), tempel meta
        tag verifikasi yang diberikan Google TEPAT DI BAWAH komentar ini.
        Contoh: <meta name="google-site-verification" content="kode..." /> -->
+  <meta name="google-site-verification" content="rPGEj3nfOau1tUTp14KKoEirAF1gdBpgbnxruugow48" />
 
   <meta name="author" content="Pushbike Jakarta, Tim Tech" />
 
@@ -295,7 +296,7 @@
         "name": "Nomor WA admin?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Nomor WhatsApp admin/sekretaris PBJ adalah __ADMIN_WA_NUMBER__ — bisa dihubungi langsung untuk tanya jadwal, biaya member terbaru, status open member, atau pertanyaan lain seputar latihan dan pendaftaran. Tombol WhatsApp di footer serta form pendaftaran situs ini juga otomatis terhubung ke nomor yang sama. Simpan nomor ini untuk bertanya kapan saja seputar jadwal latihan, biaya, syarat, atau status open member — semua pertanyaan operasional PBJ dikelola lewat WhatsApp yang sama."
+          "text": "Ada dua admin PBJ yang bisa dihubungi lewat WhatsApp: __ADMIN_WA_CONTACT_1__ dan __ADMIN_WA_CONTACT_2__ — bisa dihubungi langsung untuk tanya jadwal, biaya member terbaru, status open member, atau pertanyaan lain seputar latihan dan pendaftaran. Tombol WhatsApp di footer serta halaman bantuan pendaftaran situs ini juga otomatis terhubung ke kedua nomor ini. Simpan nomor ini untuk bertanya kapan saja seputar jadwal latihan, biaya, syarat, atau status open member — semua pertanyaan operasional PBJ dikelola lewat WhatsApp yang sama."
         }
       },
       {
@@ -795,7 +796,7 @@
           Kelas privat masuk dalam <strong>High Performance Class</strong>: pelatihan disiplin
           dan berjenjang untuk membentuk fisik maupun mental rider, dengan durasi &amp;
           intensitas lebih tinggi serta teknik lanjutan — power sprint, cornering, gate start,
-          hingga taktik memotong jalur — plus simulasi tekanan balapan sesungguhnya.
+          hingga racing line saat balapan — plus simulasi tekanan balapan sesungguhnya.
         </p>
       </div>
 
@@ -1444,10 +1445,13 @@
             Nomor WA admin?
           </summary>
           <div class="faq-answer">
-            <p>Nomor WhatsApp admin/sekretaris PBJ adalah <strong><span data-wa-number>6285647357997</span></strong> — bisa
-              dihubungi langsung untuk tanya jadwal, biaya member terbaru, status open member,
-              atau pertanyaan lain seputar latihan dan pendaftaran. Tombol WhatsApp di footer
-              serta form pendaftaran situs ini juga otomatis terhubung ke nomor yang sama.</p>
+            <p>Ada dua admin PBJ yang bisa dihubungi lewat WhatsApp:
+              <strong><span data-wa-contact-1>Arif (6285167017848)</span></strong> dan
+              <strong><span data-wa-contact-2>Bastian (6287895701681)</span></strong>
+              — bisa dihubungi langsung untuk tanya jadwal, biaya member terbaru, status open
+              member, atau pertanyaan lain seputar latihan dan pendaftaran. Tombol WhatsApp di
+              footer serta halaman bantuan pendaftaran situs ini juga otomatis terhubung ke
+              kedua nomor ini.</p>
             <p>Simpan nomor ini untuk bertanya kapan saja seputar jadwal latihan, biaya, syarat,
               atau status open member — semua pertanyaan operasional PBJ dikelola lewat WhatsApp
               yang sama.</p>
@@ -1677,7 +1681,11 @@
               aria-label="Instagram Pushbike Jakarta" target="_blank" rel="noopener">
               <i class="fa-brands fa-instagram"></i>
             </a>
-            <a id="waSocialLink" class="social-link"
+            <a id="waSocialLink1" class="social-link"
+              aria-label="WhatsApp Admin Pushbike Jakarta" target="_blank" rel="noopener">
+              <i class="fa-brands fa-whatsapp"></i>
+            </a>
+            <a id="waSocialLink2" class="social-link"
               aria-label="WhatsApp Admin Pushbike Jakarta" target="_blank" rel="noopener">
               <i class="fa-brands fa-whatsapp"></i>
             </a>
@@ -1706,8 +1714,12 @@
           <ul>
             <li>
               <i class="fa-brands fa-whatsapp"></i>
-              <a id="waAdminLink">WhatsApp Sekretaris</a>
+              <a id="waAdminLink1">WhatsApp Admin</a>
               <!-- wa.me = link langsung buka WhatsApp dengan nomor yang ditentukan -->
+            </li>
+            <li>
+              <i class="fa-brands fa-whatsapp"></i>
+              <a id="waAdminLink2">WhatsApp Admin</a>
             </li>
             <li>
               <i class="fa-brands fa-instagram"></i>
@@ -1779,9 +1791,9 @@
        ============================================================ -->
   <!-- ?v= = cache-busting, naikkan angkanya tiap file JS diubah -->
   <!-- config.js = pusat konfigurasi Google Drive & Sheets (dimuat paling awal) -->
-  <script src="js/config.js?v=14"></script>
+  <script src="js/config.js?v=15"></script>
   <!-- site-settings.js = toggle Pendaftaran Member Baru + tanggal FAQ dinamis -->
-  <script src="js/site-settings.js?v=4"></script>
+  <script src="js/site-settings.js?v=5"></script>
   <script src="js/schedule.js?v=8"></script>
   <!-- gdrive-gallery.js = galeri dari Google Drive (mode Kategori & Per Latihan) -->
   <script src="js/gdrive-gallery.js?v=4"></script>
@@ -1795,7 +1807,7 @@
   <!-- schedule.js = data jadwal, lokasi, pengurus + fungsi render kartu -->
   <!-- Letakkan SEBELUM main.js agar data tersedia saat main.js dijalankan -->
 
-  <script src="js/main.js?v=8"></script>
+  <script src="js/main.js?v=9"></script>
   <!-- main.js = logika utama: navbar, peta Leaflet, filter, form, modal, scroll -->
   <!-- Letakkan di AKHIR body agar semua elemen HTML sudah ada saat script berjalan -->
 
