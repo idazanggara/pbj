@@ -65,7 +65,7 @@ website, biasanya dikerjakan tim tech (cukup copy-paste 3 baris).
 1. Klik dua kali folder `Galeri PBJ` untuk membukanya.
 2. Di dalamnya, buat 3 folder baru dengan cara yang sama:
    - `Latihan`
-   - `Lomba`
+   - `Race`
    - `Prestasi`
 
 > **Penting untuk dipahami:** nama subfolder ini otomatis menjadi tombol
@@ -260,7 +260,7 @@ Kirimkan 3 kode itu ke tim tech, atau kalau Anda punya aksesnya sendiri:
 
 **Selesai!** Buka website-nya dan periksa:
 
-- Section **Galeri**: muncul tombol "Kategori | Folder", dan foto yang tadi
+- Section **Galeri**: muncul tombol "Kategori | Per Latihan", dan foto yang tadi
   di-upload ke subfolder `Latihan` sudah tampil.
 - Section **Event**: event contoh "Fun Race Pulomas Cup" sudah tampil.
 
@@ -294,7 +294,7 @@ menit (refresh halamannya).
 **Foto tidak muncul di website?**
 1. Cek folder `Galeri PBJ`: apakah sudah dibagikan "Siapa saja yang memiliki
    link"? (Bagian B3). Ini penyebab paling sering.
-2. Pastikan foto berada DI DALAM subfolder (Latihan/Lomba/Prestasi),
+2. Pastikan foto berada DI DALAM subfolder (Latihan/Race/Prestasi),
    bukan langsung di folder induk.
 3. Coba buka website dengan mode incognito/private untuk memastikan bukan
    masalah cache browser.
@@ -522,8 +522,8 @@ tanpa sengaja.
 
 ## Lampiran: Mengganti Feed Instagram ke Akun PBJ
 
-Saat ini feed Instagram di website masih memakai data percobaan. Untuk
-menghubungkan ke akun asli @pushbikejakarta:
+Feed Instagram website **sudah terhubung** ke akun asli @pushbikejakarta
+lewat behold.so. Kalau suatu saat perlu dihubungkan ulang atau ganti akun:
 
 1. Buka [behold.so](https://behold.so), klik **Sign up**, daftar memakai
    akun Google PBJ.
@@ -533,7 +533,7 @@ menghubungkan ke akun asli @pushbikejakarta:
 4. Salin alamat feed yang diberikan (bentuknya
    `https://feeds.behold.so/xxxxxxxx`).
 5. Kirim ke tim tech untuk ditempel di file `config.js` pada baris
-   `INSTAGRAM_FEED_URL`, menggantikan `'instagram-feed-sample.json'`
+   `INSTAGRAM_FEED_URL`, menggantikan URL behold yang lama
    (satu file yang sama dengan pengaturan Galeri dan Event di Bagian E).
 
 Setelah itu, setiap posting baru di Instagram otomatis muncul di website.

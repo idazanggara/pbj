@@ -12,7 +12,7 @@
 
 /* ================================================================
    1. DATA LOKASI LATIHAN
-   - id          : Primary key (sesuai model LokasiLatihan di setting.py)
+   - id          : Primary key (dirujuk oleh lokasi_id di jadwalData)
    - nama_tempat : Nama venue
    - alamat      : Alamat lengkap
    - koordinat   : [latitude, longitude] untuk marker Leaflet di peta
@@ -52,7 +52,6 @@ const lokasiData = [
    - jam        : Jam mulai – selesai WIB
    - lokasi_id  : Foreign key → id dari lokasiData
    - keterangan : Info tambahan untuk orang tua
-   - terbuka    : true = dibuka untuk umum / non-member
    ================================================================ */
 const jadwalData = [
   {
@@ -62,7 +61,6 @@ const jadwalData = [
     jam: "20:00 – 22:00 WIB",
     lokasi_id: 1,                           // JIEP Pulomas
     keterangan: "Latber rutin malam | Khusus member",
-    terbuka: false,                           // Boleh diikuti non-member
     icon: "fa-solid fa-moon"                 // Ikon bulan = sesi malam
   },
   {
@@ -72,7 +70,6 @@ const jadwalData = [
     jam: "20:00 – 22:00 WIB",
     lokasi_id: 1,                           // JIEP Pulomas (sama)
     keterangan: "Latber rutin malam | Dibuka untuk umum",
-    terbuka: true,
     icon: "fa-solid fa-star-and-crescent"   // Ikon Jumat/malam
   },
   {
@@ -82,7 +79,6 @@ const jadwalData = [
     jam: "09:00 – 11:00 WIB",
     lokasi_id: 1,                           // JIEP Pulomas (sama)
     keterangan: "Latber rutin pagi | Dibuka untuk umum",
-    terbuka: true,
     icon: "fa-solid fa-sun"                 // Ikon matahari = sesi pagi
   },
   {
@@ -92,7 +88,6 @@ const jadwalData = [
     jam: "Menyesuaikan jadwal event",
     lokasi_id: 2,                           // Jakarta International Stadium (JIS)
     keterangan: "Venue kompetisi & event sesional PBJ, pantau pengumuman grup WA atau bisa chat admin",
-    terbuka: false,                          // Event tertentu membutuhkan pendaftaran
     icon: "fa-solid fa-trophy"
   }
 ]

@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.classList.add('filter-btn--active')
 
       // Ambil nilai filter dari atribut data-filter
-      const filter = btn.dataset.filter // 'all' | 'Sabtu' | 'Minggu' | 'Rutin'
+      const filter = btn.dataset.filter // 'all' | 'Selasa' | 'Jumat' | 'Minggu' | 'Event'
 
       // Panggil fungsi render dari schedule.js dengan filter yang dipilih
       renderScheduleCards(filter)

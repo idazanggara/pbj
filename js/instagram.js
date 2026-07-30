@@ -79,7 +79,7 @@ async function fetchInstagramPosts() {
   const rawPosts = Array.isArray(data) ? data : (data.posts || [])
 
   // Saring dulu yang valid, BARU dipotong: kalau dipotong duluan,
-  // postingan tanpa gambar ikut menghabiskan jatah 8 slot grid
+  // postingan tanpa gambar ikut menghabiskan jatah 6 slot grid
   return rawPosts
     .map(post => normalizeInstagramPost(post))
     .filter(post => post.permalink && post.imageUrl)
