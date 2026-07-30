@@ -14,4 +14,4 @@ User-agent: *
 Allow: /
 
 # Sitemap: lokasi file sitemap untuk mempercepat indexing Google
-Sitemap: https://pushbikejakarta.vercel.app/sitemap.xml
+Sitemap: https://www.pushbikejakarta.com/sitemap.xml

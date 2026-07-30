@@ -140,7 +140,7 @@ membaca folder Drive tadi. Gratis, tidak perlu kartu kredit.
      - **Select API restrictions**: pilih **hanya "Google Drive API"**.
      - **"Authenticate API calls through a service account"**: JANGAN dicentang.
      - **Application restrictions**: pilih **Websites**, klik **Add**,
-       isi persis: `pushbikejakarta.vercel.app/*`
+       isi persis: `www.pushbikejakarta.com/*`
        (kalau mau tes lokal dulu, tambahkan juga `localhost:8000/*`).
    - Klik **Create**. Muncul kode panjang, contohnya
      `AIzaSyB1234567890abcdefghijklmnop`. Salin, simpan di catatan
@@ -158,7 +158,7 @@ membaca folder Drive tadi. Gratis, tidak perlu kartu kredit.
 > atau pengurus berganti.
 
 > **PENTING soal referrer:** alamat di Application restrictions harus
-> PERSIS sama dengan domain website yang aktif (`pushbikejakarta.vercel.app`).
+> PERSIS sama dengan domain website yang aktif (`www.pushbikejakarta.com`).
 > Kalau salah ketik atau domain berubah (mis. pindah ke `pushbikejakarta.org`),
 > galeri Drive akan kosong walau semua yang lain benar — perbarui daftar
 > referrer di Credentials.
@@ -325,7 +325,7 @@ ini, mengetik "pushbike jakarta" di Google tidak akan menampilkan website.
 1. Buka [search.google.com/search-console](https://search.google.com/search-console),
    login dengan akun Google PBJ.
 2. Klik **Add property** (Tambahkan properti), pilih tipe **URL prefix**,
-   isi alamat website lengkap: `https://pushbikejakarta.vercel.app/`
+   isi alamat website lengkap: `https://www.pushbikejakarta.com/`
    lalu klik **Continue**.
 3. Pilih metode verifikasi **HTML tag**. Google memberi satu baris kode
    seperti `<meta name="google-site-verification" content="Abc123..." />`.
@@ -336,7 +336,7 @@ ini, mengetik "pushbike jakarta" di Google tidak akan menampilkan website.
 4. Setelah terverifikasi, di menu kiri pilih **Sitemaps**, ketik
    `sitemap.xml`, klik **Submit**.
 5. Terakhir, di kolom pencarian paling atas Search Console, tempel
-   `https://pushbikejakarta.vercel.app/` lalu tekan Enter, dan klik
+   `https://www.pushbikejakarta.com/` lalu tekan Enter, dan klik
    **Request Indexing** (Minta Pengindeksan).
 
 **Kapan mulai muncul?** Biasanya beberapa hari sampai 2 minggu untuk
