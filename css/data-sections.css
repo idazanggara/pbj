@@ -45,38 +45,6 @@
   border-color: var(--clr-orange);
 }
 
-/* Kartu folder pada mode "Folder" */
-.drive-folder-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 32px 20px;
-  font: inherit;
-  border: 1px solid rgba(255, 107, 0, 0.25);
-  border-radius: var(--radius-md, 14px);
-  background: rgba(255, 107, 0, 0.06);
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.drive-folder-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-glow); }
-.drive-folder-card__icon { font-size: 2.2rem; color: var(--clr-orange); }
-.drive-folder-card__name { font-weight: 700; color: var(--clr-text); }
-.drive-folder-card__count { font-size: 0.8rem; color: var(--clr-text-muted); }
-
-/* Header saat sebuah folder dibuka (tombol kembali + nama folder) */
-.drive-folder-header {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 4px;
-}
-.drive-folder-header__title {
-  font-weight: 700;
-  color: var(--clr-text);
-}
-.drive-folder-header__title i { color: var(--clr-orange); margin-right: 6px; }
 
 /* ----------------------------------------------------------------
    EVENTS SECTION — Kalender event / race (events.js)

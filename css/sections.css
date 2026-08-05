@@ -242,13 +242,6 @@
   letter-spacing: 0.03em;
 }
 
-.pengurus-count {
-  font-size: 0.72rem;
-  color: var(--clr-orange);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-}
 
 .pengurus-members { display: flex; flex-direction: column; gap: 12px; }
 .pengurus-members--grid {
@@ -530,7 +523,6 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-.footer-logo-sub  { font-size: 0.65rem; color: var(--clr-text-muted); display: block; text-transform: uppercase; letter-spacing: 0.08em; }
 
 .footer-tagline { font-size: 0.875rem; color: var(--clr-text-muted); margin-bottom: 24px; line-height: 1.7; max-width: 320px; }
 
@@ -564,19 +556,6 @@
 .footer-contact li { display: flex; align-items: center; gap: 10px; font-size: 0.875rem; color: var(--clr-text-muted); }
 .footer-contact i  { color: var(--clr-orange); width: 16px; }
 
-.footer-tech-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255,107,0,0.08);
-  border: 1px solid rgba(255,107,0,0.2);
-  padding: 8px 14px;
-  border-radius: var(--radius-full);
-  font-size: 0.78rem;
-  color: var(--clr-text-muted);
-  margin-top: 20px;
-}
-.footer-tech-badge strong { color: var(--clr-orange-lt); }
 
 .footer-divider { border: none; border-top: 1px solid var(--clr-border); margin: 40px 0 20px; }
 .footer-copy    { font-size: 0.8rem; color: var(--clr-text-dim); text-align: center; }

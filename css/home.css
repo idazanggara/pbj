@@ -287,14 +287,6 @@
   50%       { transform: translateY(-22px); }
 }
 
-/* ----------------------------------------------------------------
-   SECTION DIVIDER — Racing-inspired separator
-   ---------------------------------------------------------------- */
-.section-divider {
-  height: 2px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,107,0,0.4) 30%, rgba(255,107,0,0.8) 50%, rgba(255,107,0,0.4) 70%, transparent 100%);
-  margin: 0;
-}
 
 /* ----------------------------------------------------------------
    SCHEDULE SECTION

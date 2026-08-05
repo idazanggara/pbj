@@ -346,14 +346,6 @@ section[id] {
   line-height: 1;
 }
 
-.logo-sub {
-  font-size: 0.65rem;
-  color: var(--clr-text-muted);
-  display: block;
-  line-height: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
 
 /* Nav links */
 .navbar__nav {
