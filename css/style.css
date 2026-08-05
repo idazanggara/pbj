@@ -407,7 +407,23 @@ section[id] {
   border-top: 1px solid rgba(255,107,0,0.2);
   transition: max-height 0.35s ease;
 }
-.mobile-menu.open { max-height: 400px; }
+/* Tinggi menu mobile mengikuti sisa layar di bawah navbar, BUKAN angka tetap.
+   Sebelumnya max-height dipatok 400px — pas untuk 8 item, tapi begitu menu
+   berisi 11 item (±50px per item = ±550px) tiga item terakhir terpotong dan,
+   karena overflow: hidden, sama sekali tidak bisa diklik: Galeri, Event, dan
+   CTA "Daftar Sekarang". Sekarang sisanya bisa di-scroll, dan menu apa pun
+   panjangnya tetap terjangkau di layar sependek apa pun.
+   dvh (dynamic viewport height) dipakai setelah vh sebagai penyempurna:
+   di HP, bilah alamat browser menyusut/membesar saat scroll dan vh tidak
+   ikut menyesuaikan, sedangkan dvh iya. Browser lama mengabaikan baris dvh
+   dan tetap memakai vh di atasnya. */
+.mobile-menu.open {
+  max-height: calc(100vh - 75px);
+  max-height: calc(100dvh - 75px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
 .mobile-nav-link {
   padding: 16px 24px;
