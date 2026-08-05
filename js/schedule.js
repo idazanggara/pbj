@@ -160,7 +160,7 @@ function getLokasiById(id) {
  * getBadgeClass(hari)
  * Mengembalikan class CSS yang sesuai dengan hari untuk warna badge
  * @param {string} hari - 'Selasa' | 'Jumat' | 'Minggu' | 'Event'
- * @returns {string} - class CSS badge (didefinisikan di style.css)
+ * @returns {string} - class CSS badge (didefinisikan di css/home.css)
  */
 function getBadgeClass(hari) {
   const map = {

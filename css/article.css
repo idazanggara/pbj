@@ -1,0 +1,292 @@
+/* ================================================================
+   article.css — pecahan dari style.css
+   Halaman konten: page-hero, tipografi artikel, daftar isi, tabel,
+   kartu komunitas, dan ajakan bertindak.
+
+   URUTAN PEMUATAN PENTING. CSS bersifat cascade, dan file-file ini
+   dipotong BERURUTAN dari satu file besar, jadi <link> di HTML harus
+   tetap urut: base -> home -> sections -> responsive ->
+   data-sections -> article. Menukar urutannya akan mengubah tampilan.
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   PAGE HERO — kepala halaman untuk halaman artikel
+
+   KENAPA PERLU? Navbar itu position:fixed dan TRANSPARAN sampai
+   di-scroll (lihat .navbar--scrolled). Di beranda ia menumpang gambar
+   .hero setinggi 100vh sehingga terlihat menyatu. Tanpa band bergambar
+   seperti ini, navbar melayang di atas latar krem polos dan halaman
+   terlihat kosong di bagian paling atas.
+
+   Bedanya dengan .hero beranda: TIDAK setinggi 100vh (pengunjung datang
+   untuk membaca, jadi teks harus langsung terlihat) dan tanpa
+   background-attachment: fixed (di iOS Safari itu sering bikin gambar
+   melompat saat scroll).
+   ---------------------------------------------------------------- */
+.page-hero {
+  position: relative;
+  padding-top: 140px;   /* 75px navbar + jarak nafas */
+  padding-bottom: 56px;
+  overflow: hidden;
+  background-color: var(--clr-bg);
+  background-image: url('../assets/bg/PBJ-bg-1.webp');
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+}
+
+/* Scrim: teks tetap terbaca di atas gambar, dan bagian bawah dilebur
+   ke warna latar section berikutnya supaya sambungannya tidak terlihat. */
+.page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg,
+      rgba(255, 247, 239, 0.94) 0%,
+      rgba(255, 247, 239, 0.82) 45%,
+      rgba(255, 247, 239, 0.5) 75%,
+      rgba(255, 247, 239, 0.3) 100%),
+    linear-gradient(to bottom,
+      rgba(255, 247, 239, 0.2) 0%,
+      rgba(255, 247, 239, 0) 40%,
+      var(--clr-bg) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* .container di dalamnya sudah position:relative + z-index:1, tapi
+   ditegaskan di sini supaya konten tidak pernah tertimbun scrim. */
+.page-hero .container { position: relative; z-index: 1; }
+
+.page-hero .article { margin-bottom: 0; }
+
+/* Section tepat setelah .page-hero: padding atasnya dipangkas. Tanpa ini,
+   padding-bottom .page-hero (56px) BERTUMPUK dengan padding-block .section
+   (sampai 120px) sehingga muncul celah kosong ~176px antara paragraf pembuka
+   dan isi artikel — terlihat seperti halaman yang gagal dimuat. */
+.page-hero + .section { padding-top: 32px; }
+
+/* Judul halaman artikel: rata kiri (bukan tengah seperti .section-title
+   di beranda) karena diikuti paragraf panjang yang juga rata kiri. */
+.page-hero__title {
+  font-family: var(--font-racing);
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: var(--clr-heading);
+  margin: 12px 0 18px;
+}
+
+/* Di HP gambar terpotong terlalu sempit kalau padding atas terlalu besar */
+@media (max-width: 767px) {
+  .page-hero { padding-top: 116px; padding-bottom: 40px; }
+}
+
+/* ----------------------------------------------------------------
+   HALAMAN ARTIKEL (apa-itu-pushbike, komunitas-pushbike-indonesia,
+   race-pushbike)
+
+   Halaman-halaman ini isinya teks panjang, beda dari beranda yang
+   berbasis kartu. Lebar dibatasi ~72ch karena baris teks yang terlalu
+   panjang bikin mata kehilangan jejak saat pindah baris.
+   ---------------------------------------------------------------- */
+.article {
+  max-width: 72ch;
+  margin-inline: auto;
+}
+
+.article > * + * { margin-top: 20px; }
+
+.article h2 {
+  font-family: var(--font-racing);
+  font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-top: 56px;
+  scroll-margin-top: 90px;   /* anchor daftar isi tidak ketutup navbar */
+}
+
+.article h3 {
+  font-size: clamp(1.1rem, 2.2vw, 1.3rem);
+  margin-top: 36px;
+  color: var(--clr-navy);
+}
+
+.article p,
+.article li {
+  color: var(--clr-text);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.article ul, .article ol { padding-left: 22px; }
+.article li + li { margin-top: 8px; }
+.article li::marker { color: var(--clr-orange); }
+.article strong { color: var(--clr-navy); font-weight: 700; }
+
+.article a {
+  color: var(--clr-orange-lt);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.article a:hover { color: var(--clr-orange-dk); }
+
+/* Kalimat pembuka — sedikit lebih besar, memberi "pintu masuk" ke artikel */
+.article__lead {
+  font-size: 1.1rem;
+  color: var(--clr-text-muted);
+  line-height: 1.75;
+}
+
+/* Daftar isi */
+.article-toc {
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-left: 4px solid var(--clr-orange);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+}
+.article-toc__title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--clr-orange-lt);
+  margin-bottom: 10px;
+}
+.article-toc ol { padding-left: 20px; margin: 0; }
+.article-toc li + li { margin-top: 6px; }
+.article-toc a { text-decoration: none; }
+.article-toc a:hover { text-decoration: underline; }
+
+/* Kotak sorot untuk poin penting/peringatan */
+.article-callout {
+  background: rgba(255, 107, 0, 0.07);
+  border: 1px solid var(--clr-border-hot);
+  border-radius: var(--radius-md);
+  padding: 18px 22px;
+}
+.article-callout__title {
+  font-weight: 700;
+  color: var(--clr-navy);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.article-callout__title i { color: var(--clr-orange); }
+.article-callout p { margin: 0; font-size: 0.95rem; }
+
+/* Tabel — dibungkus .article-table-wrap supaya di HP bisa digeser
+   ke samping, BUKAN memaksa seluruh halaman jadi bisa digeser. */
+.article-table-wrap { overflow-x: auto; }
+.article-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  min-width: 460px;
+}
+.article-table th,
+.article-table td {
+  border: 1px solid var(--clr-border);
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+.article-table th {
+  background: var(--clr-bg-2);
+  color: var(--clr-navy);
+  font-weight: 700;
+}
+
+/* Jejak navigasi (breadcrumb) */
+.breadcrumb {
+  font-size: 0.85rem;
+  color: var(--clr-text-muted);
+  margin-bottom: 20px;
+}
+.breadcrumb a { color: var(--clr-text-muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--clr-orange-lt); text-decoration: underline; }
+.breadcrumb li { display: inline; }
+.breadcrumb li + li::before { content: "›"; margin: 0 8px; color: var(--clr-text-dim); }
+.breadcrumb ol { list-style: none; padding: 0; margin: 0; }
+
+/* Kartu komunitas (halaman daftar komunitas se-Indonesia) */
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+  /* start (bukan stretch bawaan grid): tiap kartu setinggi isinya sendiri.
+     Tanpa ini, kartu pendek ikut melar mengikuti kartu tertinggi di barisnya
+     dan menyisakan ruang kosong besar di dalamnya. */
+  align-items: start;
+}
+.community-card {
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.community-card:hover { transform: translateY(-4px); border-color: var(--clr-border-hot); }
+.community-card__city {
+  font-family: var(--font-racing);
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  color: var(--clr-navy);
+  margin-bottom: 2px;
+}
+.community-card__name { font-size: 0.9rem; color: var(--clr-text-muted); margin-bottom: 12px; }
+.community-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--clr-orange-lt);
+  text-decoration: none;
+}
+.community-card__link:hover { text-decoration: underline; }
+/* Kartu PBJ sendiri: satu baris penuh. Isinya paling banyak (ada jadwal &
+   lokasi), jadi kalau disandingkan dengan kartu kota lain yang cuma berisi
+   nama + Instagram, kartu tetangganya terlihat kosong melompong. */
+.community-card--own {
+  grid-column: 1 / -1;
+  border-color: var(--clr-orange);
+  background: rgba(255, 107, 0, 0.06);
+}
+
+.community-card__note {
+  font-size: 0.88rem;
+  color: var(--clr-text-muted);
+  margin-bottom: 12px;
+  max-width: 62ch;
+}
+
+/* Dua link di kartu PBJ berdampingan saat muat, menumpuk saat sempit */
+.community-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+
+/* Ajakan bertindak di akhir artikel */
+.article-cta {
+  margin-top: 56px;
+  text-align: center;
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border-hot);
+  border-radius: var(--radius-lg);
+  padding: 36px 28px;
+}
+.article-cta h2 { margin-top: 0; }
+.article-cta__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 22px;
+}

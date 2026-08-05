@@ -8,7 +8,16 @@
   <!-- Halaman internal pengurus: JANGAN diindeks mesin pencari -->
   <meta name="robots" content="noindex, nofollow" />
   <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon_io/android-chrome-192x192.png" />
-  <link rel="stylesheet" href="css/style.css?v=26" />
+  <!-- style.css dipecah jadi 6 berkas bertema (lihat header masing-masing).
+       URUTAN INI TIDAK BOLEH DITUKAR: CSS bersifat cascade dan berkas-berkas
+       ini dipotong berurutan dari satu file besar, jadi menukar urutannya akan
+       mengubah tampilan. Naikkan ?v= di SEMUA baris tiap kali salah satunya diubah. -->
+  <link rel="stylesheet" href="css/base.css?v=1" />
+  <link rel="stylesheet" href="css/home.css?v=1" />
+  <link rel="stylesheet" href="css/sections.css?v=1" />
+  <link rel="stylesheet" href="css/responsive.css?v=1" />
+  <link rel="stylesheet" href="css/data-sections.css?v=1" />
+  <link rel="stylesheet" href="css/article.css?v=1" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     /* Gaya khusus halaman admin (sederhana, satu halaman) */

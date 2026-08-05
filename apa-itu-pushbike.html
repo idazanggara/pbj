@@ -40,7 +40,16 @@
     rel="stylesheet" />
 
   <!-- ?v= = cache-busting, HARUS sama dengan versi terbaru di index.html -->
-  <link rel="stylesheet" href="css/style.css?v=26" />
+  <!-- style.css dipecah jadi 6 berkas bertema (lihat header masing-masing).
+       URUTAN INI TIDAK BOLEH DITUKAR: CSS bersifat cascade dan berkas-berkas
+       ini dipotong berurutan dari satu file besar, jadi menukar urutannya akan
+       mengubah tampilan. Naikkan ?v= di SEMUA baris tiap kali salah satunya diubah. -->
+  <link rel="stylesheet" href="css/base.css?v=1" />
+  <link rel="stylesheet" href="css/home.css?v=1" />
+  <link rel="stylesheet" href="css/sections.css?v=1" />
+  <link rel="stylesheet" href="css/responsive.css?v=1" />
+  <link rel="stylesheet" href="css/data-sections.css?v=1" />
+  <link rel="stylesheet" href="css/article.css?v=1" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <!-- ===== DATA TERSTRUKTUR =====
@@ -129,7 +138,7 @@
   <main>
     <!-- Kepala halaman bergambar. Navbar itu fixed & transparan sampai di-scroll,
          jadi tanpa band bergambar di sini ia melayang di atas latar krem polos —
-         lihat komentar .page-hero di style.css. -->
+         lihat komentar .page-hero di css/article.css. -->
     <section class="page-hero">
       <div class="container">
         <div class="article">

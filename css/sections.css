@@ -1,0 +1,786 @@
+/* ================================================================
+   sections.css — pecahan dari style.css
+   Beranda bagian akhir + elemen bersama: galeri, watermark logo, pengurus,
+   pendaftaran, halaman register.html, footer, modal, tombol ke atas, FAQ.
+
+   URUTAN PEMUATAN PENTING. CSS bersifat cascade, dan file-file ini
+   dipotong BERURUTAN dari satu file besar, jadi <link> di HTML harus
+   tetap urut: base -> home -> sections -> responsive ->
+   data-sections -> article. Menukar urutannya akan mengubah tampilan.
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   GALERI SECTION — Grid foto/video + lightbox
+   ---------------------------------------------------------------- */
+.gallery-section { padding-block: var(--section-py); background: var(--clr-bg-2); }
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.gallery-item {
+  margin: 0;
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+.gallery-item[role="button"] { cursor: pointer; }
+.gallery-item:hover { transform: translateY(-6px); box-shadow: var(--shadow-glow); }
+.gallery-item[role="button"]:focus-visible { outline: 3px solid var(--clr-orange); outline-offset: 2px; }
+
+.gallery-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+.gallery-media img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.gallery-item:hover .gallery-media img { transform: scale(1.06); }
+
+.gallery-placeholder {
+  width: 100%; height: 100%;
+  display: grid; place-items: center;
+  background: linear-gradient(145deg, rgba(255,107,0,0.14), rgba(255,107,0,0.04));
+  color: var(--clr-orange);
+  font-size: 2.4rem;
+}
+
+.gallery-play {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  background: rgba(28,43,74,0.3);
+}
+.gallery-play i {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--gradient-hot);
+  color: #fff; font-size: 1.1rem;
+  padding-left: 4px;
+  box-shadow: 0 6px 20px rgba(255,107,0,0.5);
+}
+
+.gallery-tag {
+  position: absolute; top: 10px; left: 10px;
+  background: rgba(255,255,255,0.92);
+  color: var(--clr-orange-lt);
+  font-size: 0.68rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(4px);
+}
+
+.gallery-caption {
+  padding: 14px 16px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--clr-text);
+}
+
+/* Lightbox overlay */
+.lightbox {
+  position: fixed; inset: 0;
+  background: rgba(15,20,32,0.92);
+  backdrop-filter: blur(10px);
+  display: grid; place-items: center;
+  z-index: 10000;
+  padding: 24px;
+  animation: fadeIn 0.25s ease;
+}
+.lightbox__body { max-width: 960px; width: 100%; }
+.lightbox__body img {
+  width: 100%; max-height: 82vh;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.lightbox-video { position: relative; width: 100%; aspect-ratio: 16 / 9; }
+.lightbox-video iframe {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  border: none;
+  border-radius: var(--radius-md);
+}
+.lightbox__close {
+  position: absolute; top: 20px; right: 24px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  color: #fff; font-size: 1.2rem;
+  display: grid; place-items: center;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+.lightbox__close:hover { background: var(--gradient-hot); transform: rotate(90deg); }
+
+/* ----------------------------------------------------------------
+   WATERMARK LOGO — Logo PBJ samar di tengah tiap section (selain hero)
+   mix-blend-mode: multiply membuang latar PUTIH pada logo_PBJ.jpg,
+   sehingga hanya bentuk logonya yang tampil sebagai watermark.
+
+   CARA PAKAI: cukup tambahkan class "has-watermark" pada tag <section>
+   di HTML. Tidak perlu mengedit CSS lagi untuk section baru.
+   ---------------------------------------------------------------- */
+.has-watermark {
+  position: relative;
+}
+
+.has-watermark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('../assets/logo_PBJ.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: min(1300px, 105%);
+  mix-blend-mode: multiply;   /* buang latar putih JPG → hanya logo tampil */
+  opacity: 0.13;              /* watermark samar tapi terlihat */
+  pointer-events: none;
+  z-index: 0;                 /* di belakang .container (z-index:1) */
+}
+
+/* Watermark responsif: di layar kecil ukuran relatif dinaikkan supaya logo
+   tetap terlihat jelas (105% dari lebar HP terlalu kecil untuk section
+   yang tinggi). */
+@media (max-width: 1023px) {
+  .has-watermark::after {
+    background-size: min(700px, 165%);
+  }
+}
+
+/* Varian BERULANG — dipakai section artikel panjang (apa-itu-pushbike,
+   komunitas-pushbike-indonesia, race-pushbike).
+
+   KENAPA? .has-watermark biasa menaruh SATU logo di tengah section. Itu pas
+   untuk section beranda yang tingginya sedang, tapi di halaman artikel yang
+   tingginya ribuan piksel, satu logo di tengah berarti sebagian besar halaman
+   jadi polos tanpa identitas. Di sini logo diulang ke bawah dengan jeda pendek
+   supaya latar terasa "berisi" sepanjang halaman.
+
+   Opacity sedikit diturunkan dari 0.13 → 0.09: karena jumlah logonya jauh
+   lebih banyak, kepekatan yang sama akan mengganggu keterbacaan teks. */
+.has-watermark--tiled::after {
+  background-repeat: repeat-y;
+  background-position: center top;
+  background-size: min(1150px, 98%);
+  opacity: 0.09;
+}
+
+@media (max-width: 1023px) {
+  .has-watermark--tiled::after {
+    background-size: min(680px, 160%);
+  }
+}
+
+/* ----------------------------------------------------------------
+   PENGURUS SECTION
+   ---------------------------------------------------------------- */
+.pengurus-section { padding-block: var(--section-py); background: var(--clr-bg); }
+
+.pengurus-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.pengurus-card {
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal);
+}
+.pengurus-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-glow-sm);
+  border-color: rgba(255,107,0,0.2);
+}
+
+.pengurus-card--multi { grid-column: span 2; }
+@media (max-width: 700px) { .pengurus-card--multi { grid-column: span 1; } }
+
+.pengurus-card__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--clr-border);
+}
+
+.pengurus-card__icon {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--gradient-hot);
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(255,107,0,0.4);
+}
+
+.pengurus-card__meta { display: flex; flex-direction: column; gap: 2px; }
+
+.pengurus-jabatan {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--clr-heading);
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.pengurus-count {
+  font-size: 0.72rem;
+  color: var(--clr-orange);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.pengurus-members { display: flex; flex-direction: column; gap: 12px; }
+.pengurus-members--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.pengurus-member { display: flex; align-items: center; gap: 10px; }
+
+.pengurus-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,107,0,0.2), rgba(255,107,0,0.08));
+  border: 1.5px solid rgba(255,107,0,0.3);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--clr-orange-lt);
+  flex-shrink: 0;
+  letter-spacing: -0.02em;
+}
+
+.pengurus-member-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--clr-text);
+  line-height: 1.3;
+}
+
+/* ----------------------------------------------------------------
+   REGISTER SECTION
+   ---------------------------------------------------------------- */
+.register-section {
+  padding-block: var(--section-py);
+  background: var(--clr-bg-2);
+  position: relative;
+  overflow: hidden;
+}
+
+.register-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+}
+.register-orb--1 {
+  width: 500px; height: 500px;
+  background: rgba(255,107,0,0.15);
+  bottom: -150px; left: -150px;
+}
+.register-orb--2 {
+  width: 350px; height: 350px;
+  background: rgba(232,0,45,0.1);
+  top: -80px; right: 5%;
+}
+
+.register-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 56px;
+  position: relative;
+  z-index: 1;
+}
+@media (min-width: 900px) {
+  .register-wrapper { grid-template-columns: 1fr 1fr; align-items: center; }
+}
+
+.register-title {
+  font-family: var(--font-racing);
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  margin: 16px 0;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+.register-desc  { color: var(--clr-text-muted); margin-bottom: 28px; font-size: 0.95rem; line-height: 1.75; }
+
+.register-perks { display: flex; flex-direction: column; gap: 14px; }
+.register-perks li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: var(--clr-text-muted);
+}
+.register-perks li i {
+  width: 22px; height: 22px;
+  background: rgba(255,107,0,0.15);
+  border: 1px solid rgba(255,107,0,0.3);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--clr-orange);
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+/* Form */
+.register-form {
+  background: var(--clr-bg-card);
+  border: 1px solid rgba(255,107,0,0.15);
+  border-radius: var(--radius-xl);
+  padding: clamp(24px, 4vw, 40px);
+  box-shadow: var(--shadow-glow);
+  position: relative;
+  overflow: hidden;
+}
+.register-form::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gradient-fire);
+}
+
+.form-title {
+  font-family: var(--font-racing);
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 28px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+.form-label { font-size: 0.82rem; font-weight: 700; color: var(--clr-text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+.input-wrapper { position: relative; }
+
+.input-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--clr-text-dim);
+  font-size: 0.9rem;
+  pointer-events: none;
+  transition: color var(--transition-fast);
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px 14px 44px;
+  background: var(--clr-surface);
+  border: 1.5px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  color: var(--clr-text);
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.form-input:focus {
+  border-color: var(--clr-orange);
+  background: rgba(255,107,0,0.04);
+  box-shadow: 0 0 0 3px rgba(255,107,0,0.12);
+}
+.form-input:focus + .input-icon,
+.input-wrapper:focus-within .input-icon { color: var(--clr-orange); }
+.form-input::placeholder { color: var(--clr-text-dim); }
+.form-select option { background: var(--clr-bg-card); color: var(--clr-text); }
+
+.form-note {
+  font-size: 0.78rem;
+  color: var(--clr-text-dim);
+  text-align: center;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* ----------------------------------------------------------------
+   HALAMAN DAFTAR MEMBER BARU (register.html)
+   Iframe Google Form TIDAK bisa lapor tinggi kontennya ke halaman ini
+   (cross-origin) sehingga tidak ada auto-resize sejati — dipakai
+   min-height perkiraan (beda mobile/desktop) + overflow:auto di
+   wrapper sebagai jaring pengaman kalau form ternyata lebih panjang.
+   ---------------------------------------------------------------- */
+.registration-embed-section { padding-bottom: var(--section-py); }
+
+.registration-embed-card {
+  max-width: 760px;
+  margin-inline: auto;
+  background: var(--clr-bg-card);
+  border-radius: var(--radius-md);
+  padding: clamp(16px, 3vw, 32px);
+  box-shadow: 0 8px 32px rgba(38,50,74,0.08);
+}
+
+.registration-embed-loading {
+  text-align: center;
+  color: var(--clr-text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+.registration-embed-loading i { color: var(--clr-orange); margin-right: 6px; }
+
+.registration-embed-frame {
+  width: 100%;
+  overflow: auto;
+  border-radius: calc(var(--radius-md) - 4px);
+}
+.registration-embed-frame iframe {
+  width: 100%;
+  /* Google Form tidak bisa lapor tinggi konten asli ke halaman ini
+     (cross-origin) — angka ini perkiraan tampilan AWAL form (judul +
+     deskripsi + tombol "Isi formulir"), bukan seluruh pertanyaan.
+     overflow:auto di .registration-embed-frame jadi jaring pengaman
+     kalau kontennya ternyata lebih panjang (form discroll di dalam kartu).
+     CATATAN: tombol "?" (Help bawaan Google) posisinya fixed ke bawah
+     viewport iframe, sedangkan footer "Google Formulir" ikut alur konten
+     — keduanya sejajar hanya "kebetulan" di tinggi tertentu, bukan hal
+     yang bisa diatur presisi dari sisi kita (isi iframe cross-origin). */
+  height: 391px;
+  border: 0;
+  display: block;
+}
+
+.registration-embed-fallback {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--clr-text-muted);
+  margin-top: 14px;
+}
+.registration-embed-fallback a { color: var(--clr-orange-lt); font-weight: 600; }
+
+.registration-help {
+  text-align: center;
+  padding-bottom: clamp(32px, 6vw, 64px);
+}
+.registration-help__text { color: var(--clr-text-muted); margin-bottom: 14px; }
+.registration-help__buttons { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+/* ----------------------------------------------------------------
+   FOOTER
+   ---------------------------------------------------------------- */
+.footer {
+  background: var(--clr-bg-2);
+  padding-top: var(--section-py);
+  padding-bottom: 32px;
+  border-top: 1px solid rgba(255,107,0,0.12);
+  position: relative;
+}
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: var(--gradient-fire);
+  opacity: 0.5;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+}
+@media (min-width: 768px) {
+  .footer-grid { grid-template-columns: 2fr 1fr 1fr; }
+}
+
+.footer-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+
+.footer-logo-text {
+  font-family: var(--font-racing);
+  font-size: 1.6rem;
+  font-weight: 900;
+  display: block;
+  line-height: 1;
+  background: var(--gradient-orange);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.footer-logo-sub  { font-size: 0.65rem; color: var(--clr-text-muted); display: block; text-transform: uppercase; letter-spacing: 0.08em; }
+
+.footer-tagline { font-size: 0.875rem; color: var(--clr-text-muted); margin-bottom: 24px; line-height: 1.7; max-width: 320px; }
+
+.footer-social { display: flex; gap: 10px; }
+
+.social-link {
+  width: 40px; height: 40px;
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  color: var(--clr-text-muted);
+  font-size: 1rem;
+  transition: all var(--transition-normal);
+}
+.social-link:hover {
+  background: var(--gradient-hot);
+  border-color: transparent;
+  color: white;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(255,107,0,0.4);
+}
+
+.footer-links__title { font-size: 0.78rem; font-weight: 800; color: var(--clr-heading); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.1em; }
+
+.footer-links ul, .footer-contact ul { display: flex; flex-direction: column; gap: 10px; }
+.footer-links a, .footer-contact a { font-size: 0.875rem; color: var(--clr-text-muted); transition: color var(--transition-fast), padding-left var(--transition-fast); }
+.footer-links a:hover, .footer-contact a:hover { color: var(--clr-orange-lt); padding-left: 6px; }
+
+.footer-contact li { display: flex; align-items: center; gap: 10px; font-size: 0.875rem; color: var(--clr-text-muted); }
+.footer-contact i  { color: var(--clr-orange); width: 16px; }
+
+.footer-tech-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,107,0,0.08);
+  border: 1px solid rgba(255,107,0,0.2);
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  color: var(--clr-text-muted);
+  margin-top: 20px;
+}
+.footer-tech-badge strong { color: var(--clr-orange-lt); }
+
+.footer-divider { border: none; border-top: 1px solid var(--clr-border); margin: 40px 0 20px; }
+.footer-copy    { font-size: 0.8rem; color: var(--clr-text-dim); text-align: center; }
+
+/* ----------------------------------------------------------------
+   MODAL
+   ---------------------------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28,43,74,0.55);
+  backdrop-filter: blur(12px);
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+  padding: 24px;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-box {
+  background: var(--clr-bg-card);
+  border: 1px solid rgba(255,107,0,0.2);
+  border-radius: var(--radius-xl);
+  padding: 48px 40px;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  animation: slideUp 0.35s var(--transition-slow);
+  box-shadow: var(--shadow-glow);
+  position: relative;
+  overflow: hidden;
+}
+.modal-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gradient-fire);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(24px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.modal-icon  { font-size: 3.5rem; color: #4ade80; margin-bottom: 20px; }
+.modal-title { font-family: var(--font-racing); font-size: 1.6rem; margin-bottom: 12px; text-transform: uppercase; }
+.modal-text  { color: var(--clr-text-muted); margin-bottom: 28px; font-size: 0.95rem; }
+
+/* ----------------------------------------------------------------
+   SCROLL TO TOP
+   ---------------------------------------------------------------- */
+.scroll-top {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 50px; height: 50px;
+  background: var(--gradient-hot);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 1rem;
+  box-shadow: 0 4px 24px rgba(255,107,0,0.5);
+  z-index: 999;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  animation: slideUp 0.3s ease;
+}
+.scroll-top:hover { transform: translateY(-5px); box-shadow: 0 8px 36px rgba(255,107,0,0.7); }
+
+/* ----------------------------------------------------------------
+   FAQ SECTION — SEO Accordion
+   ---------------------------------------------------------------- */
+/* #faq memakai kerangka .section (padding & scroll-margin) */
+.faq-list {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item {
+  background: var(--clr-bg-card);
+  border: 1px solid rgba(255,107,0,0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color var(--transition-normal);
+}
+
+.faq-item[open] {
+  border-color: rgba(255,107,0,0.5);
+}
+
+.faq-question {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 22px;
+  font-family: var(--font-racing);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--clr-text);
+  cursor: pointer;
+  list-style: none;
+  transition: color var(--transition-normal);
+  user-select: none;
+}
+
+.faq-question::-webkit-details-marker { display: none; }
+
+.faq-question i {
+  color: var(--clr-orange);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.faq-item[open] .faq-question {
+  color: var(--clr-orange);
+}
+
+.faq-question::after {
+  content: '+';
+  margin-left: auto;
+  font-size: 1.3rem;
+  color: var(--clr-orange);
+  transition: transform 0.3s ease;
+  line-height: 1;
+}
+
+.faq-item[open] .faq-question::after {
+  content: '−';
+}
+
+.faq-answer {
+  padding: 0 22px 18px;
+  color: var(--clr-text-dim);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  border-top: 1px solid rgba(255,107,0,0.1);
+  padding-top: 14px;
+}
+
+.faq-answer strong {
+  color: var(--clr-orange);
+  font-weight: 600;
+}
+
+/* Judul pemisah dua kelompok FAQ ("Mau Gabung?" vs "Seputar Balance Bike & Pushbike").
+   Kelompok kedua dan seterusnya diberi garis pemisah tipis + jarak ekstra di atas
+   supaya jelas terlihat sebagai kelompok baru, bukan cuma judul biasa. */
+.faq-group-title {
+  font-family: var(--font-racing);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--clr-orange);
+  margin: 0 0 4px;
+}
+
+.faq-group-title:not(:first-child) {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255,107,0,0.15);
+}
+
+/* Tombol "salin link" — hanya ada di FAQ Kelompok A (operasional), supaya admin
+   bisa membalas DM dengan satu link presisi ke jawaban spesifik. Lihat mekanik
+   hash + clipboard di main.js. */
+.faq-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 6px 12px;
+  background: none;
+  border: 1px solid rgba(255,107,0,0.35);
+  border-radius: 8px;
+  color: var(--clr-orange);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-normal), color var(--transition-normal);
+}
+
+.faq-copy-btn:hover {
+  background: rgba(255,107,0,0.1);
+}
+
+.faq-copy-btn i {
+  font-size: 0.75rem;
+}
+
+/* Pembungkus tombol salin link galeri. Tombolnya sendiri memakai ulang
+   .faq-copy-btn supaya bentuknya persis sama dengan tombol salin di FAQ —
+   satu gaya untuk satu jenis aksi. */
+.gallery-copy-wrap {
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+

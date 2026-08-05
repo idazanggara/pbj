@@ -1,0 +1,104 @@
+/* ================================================================
+   responsive.css — pecahan dari style.css
+   Media query global (tablet & HP) untuk semua bagian di atas.
+
+   URUTAN PEMUATAN PENTING. CSS bersifat cascade, dan file-file ini
+   dipotong BERURUTAN dari satu file besar, jadi <link> di HTML harus
+   tetap urut: base -> home -> sections -> responsive ->
+   data-sections -> article. Menukar urutannya akan mengubah tampilan.
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   MEDIA QUERIES
+   ---------------------------------------------------------------- */
+/* Layar sedang (tablet landscape): rapatkan nav agar semua link muat */
+@media (min-width: 768px) and (max-width: 1120px) {
+  .navbar__nav { gap: 0; }
+  .nav-link { padding: 8px 10px; font-size: 0.8rem; }
+  .nav-link--cta { padding: 8px 14px; }
+}
+
+@media (max-width: 1023px) {
+  .hero__visual { display: none; }
+
+  /* Tablet & HP: pakai gambar background versi portrait (logo di atas, bagian
+     tengah lapang) — lebih pas untuk layar sempit/vertikal dan menghindari
+     tabrakan judul dengan logo yang di versi landscape berada di tengah. */
+  .hero {
+    background-image: url('../assets/bg/PBJ-bg-1-mobile.webp');
+    background-position: center top;
+    /* Konten di-top-align (bukan center) supaya badge & judul menempel dekat
+       header, tak turun ke tengah viewport di layar sempit. */
+    align-items: flex-start;
+    /* FIX BUG "background putih di iPhone Safari": rule dasar .hero (di atas)
+       pakai background-attachment: fixed untuk efek parallax. iOS Safari
+       TIDAK mendukung fixed di elemen yang juga punya overflow: hidden
+       (lihat rule dasar .hero) — gambar gagal dilukis sama sekali, sehingga
+       background-color fallback (putih) yang tampil, bukan gambarnya.
+       'scroll' = perilaku background normal (ikut scroll bareng konten),
+       aman & didukung semua browser; efek parallax memang cuma bonus
+       desktop, jadi tidak masalah dimatikan di mobile. */
+    background-attachment: scroll;
+  }
+  /* Jarak kecil dari header (navbar sudah di-reserve lewat padding-top .hero). */
+  .hero__content { padding-top: 16px; }
+
+  /* Konten hero jadi lebih lebar/terpusat di layar sempit, jadi scrim
+     horizontal (kiri) tidak cukup. Ganti ke scrim vertikal yang merata agar
+     teks tetap terbaca di atas gambar terang, di posisi teks mana pun. */
+  .hero::before {
+    background:
+      linear-gradient(to bottom,
+        rgba(255,247,239,0.6) 0%,
+        rgba(255,247,239,0.42) 28%,
+        rgba(255,247,239,0.3) 55%,
+        rgba(255,247,239,0.5) 78%,
+        var(--clr-bg) 100%);
+  }
+}
+
+@media (max-width: 767px) {
+  .navbar__nav { display: none; }
+  .navbar__hamburger { display: flex; }
+  .mobile-menu { display: flex; }
+
+  .hero__cta-group { flex-direction: column; }
+  .hero__stats {
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 16px 18px;
+    width: 100%;
+  }
+  .hero__content { max-width: 100%; }
+
+  .schedule-grid { grid-template-columns: 1fr; }
+
+  /* Pengurus: 1 kolom di semua HP */
+  .pengurus-grid { grid-template-columns: 1fr; }
+  .pengurus-card--multi { grid-column: span 1; }
+}
+
+@media (max-width: 480px) {
+  .section-header { margin-bottom: 36px; }
+  .filter-bar { gap: 6px; }
+  .filter-btn { padding: 8px 16px; font-size: 0.75rem; }
+
+  /* Pengurus: 1 kolom agar tidak ada yang terpotong */
+  .pengurus-grid { grid-template-columns: 1fr; }
+  .pengurus-card--multi { grid-column: span 1; }
+
+  .register-form { padding: 24px 16px; }
+
+  /* Hero: pastikan konten tidak overflow */
+  .hero__content { max-width: 100%; padding-inline: 20px; }
+
+  /* Badge hero: nowrap agar tidak pecah-pecah */
+  .hero__badge { white-space: nowrap; font-size: 0.7rem; padding: 6px 12px; }
+
+  /* Title hero: ukuran ringkas di HP sempit (4 baris, tidak menutupi logo) */
+  .hero__title { font-size: clamp(1.8rem, 8.5vw, 2.6rem); }
+
+  /* Stats: ukuran angka lebih kecil */
+  .stat-number { font-size: 1.8rem; }
+}
+

@@ -260,7 +260,7 @@ function galleryViewFromHash(rawHash) {
  * scrollToGallerySection()
  * Bawa pengunjung ke section #galeri. Diulang beberapa kali karena galeri &
  * konten lain dimuat asinkron sehingga posisi section bisa bergeser setelah
- * scroll pertama (offset navbar diurus scroll-margin-top di style.css).
+ * scroll pertama (offset navbar diurus section[id] { scroll-margin-top } di css/base.css).
  */
 function scrollToGallerySection() {
   const section = document.getElementById('galeri')

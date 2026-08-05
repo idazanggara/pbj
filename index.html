@@ -20,7 +20,7 @@
     // supaya menang lomba dengan perilaku bawaan browser: kalau halaman
     // dibuka dengan URL berakhiran '#faq-xxx', browser otomatis scroll ke
     // elemen dengan id itu — dan karena situs ini pakai
-    // "scroll-behavior: smooth" (style.css), browser bahkan akan MENGULANG
+    // "scroll-behavior: smooth" (css/base.css), browser bahkan akan MENGULANG
     // scroll itu tiap kali tata letak halaman bergeser (mis. galeri/feed
     // Instagram di atas FAQ baru selesai dimuat), selalu ke posisi RATA ATAS
     // (bukan tengah) — ini membuat elemen FAQ ketutup navbar fixed, dan
@@ -44,7 +44,7 @@
     // hash-nya lenyap sebelum browser sempat scroll, TIDAK ada kode yang
     // menanganinya, jadi pengunjung mendarat di puncak beranda. Hash di luar
     // daftar ini sekarang dibiarkan utuh supaya browser melakukan scroll
-    // bawaannya (offset navbar diurus scroll-margin-top di style.css).
+    // bawaannya (offset navbar diurus section[id] { scroll-margin-top } di css/base.css).
     const MANAGED_HASH = /^#(faq-[a-z0-9-]+|galeri-(kategori|perlatihan))$/
     window.__initialHash = location.hash
     if (MANAGED_HASH.test(location.hash)) {
@@ -128,16 +128,16 @@
   <!-- site.webmanifest = file konfigurasi PWA (nama app, warna, ikon, dll.) -->
 
   <!-- ===== PRELOAD GAMBAR BACKGROUND HERO =====
-       Kenapa perlu? .hero pakai `background-image` di style.css (bukan <img>), dan
+       Kenapa perlu? .hero pakai `background-image` di css/home.css (bukan <img>), dan
        browser TIDAK mendeteksi background-image lewat "preload scanner" (pemindaian
        cepat di awal sebelum CSS selesai di-parse) — jadi normalnya gambar background
-       baru mulai diunduh SETELAH style.css selesai diproses, menunda gambar terbesar
+       baru mulai diunduh SETELAH CSS selesai diproses, menunda gambar terbesar
        yang pertama kali terlihat pengunjung (LCP/Largest Contentful Paint, salah satu
        metrik Core Web Vitals yang dipakai Google untuk performa & SEO).
        `<link rel="preload">` memberi tahu browser untuk mulai unduh gambar ini LEBIH
        AWAL, paralel dengan CSS. Dua baris (desktop & mobile) dengan atribut `media`
        supaya browser hanya mengunduh SATU varian yang relevan dengan ukuran layarnya
-       (sama seperti breakpoint @media (max-width:1023px) di style.css). -->
+       (sama seperti breakpoint @media (max-width:1023px) di css/responsive.css). -->
   <link rel="preload" as="image" href="assets/bg/PBJ-bg-1.webp" media="(min-width: 1024px)" />
   <link rel="preload" as="image" href="assets/bg/PBJ-bg-1-mobile.webp" media="(max-width: 1023px)" />
 
@@ -152,17 +152,26 @@
     href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
     rel="stylesheet" />
   <!-- Mengimpor Inter (teks umum), Space Grotesk (heading/judul), dan Barlow Condensed
-       (font "racing" untuk elemen bergaya balap, dipakai var(--font-racing) di style.css).
+       (font "racing" untuk elemen bergaya balap, dipakai var(--font-racing) di css/base.css).
        wght@300..900 = semua ketebalan dari thin sampai black
        display=swap = gunakan font fallback dulu, ganti setelah font dimuat (menghindari FOBT/flash of invisible text)
-       SATU <link> ini adalah SATU-SATUNYA tempat font di-load — sebelumnya style.css
+       SATU <link> ini adalah SATU-SATUNYA tempat font di-load — dulu CSS-nya
        punya @import terpisah yang memuat font YANG SAMA lagi (dobel request, lebih
        lambat), sudah dihapus supaya font hanya diminta sekali. -->
 
-  <!-- ===== STYLESHEET UTAMA ===== -->
-  <!-- ?v= = cache-busting: naikkan angkanya tiap kali style.css diubah
-       supaya browser pengunjung tidak memakai versi lama dari cache -->
-  <link rel="stylesheet" href="css/style.css?v=26" />
+  <!-- ===== STYLESHEET ===== -->
+  <!-- ?v= = cache-busting: naikkan angkanya tiap kali berkas CSS diubah,
+       supaya browser pengunjung tidak memakai versi lama dari cache.
+       style.css dipecah jadi 6 berkas bertema (lihat header masing-masing).
+       URUTAN INI TIDAK BOLEH DITUKAR: CSS bersifat cascade dan berkas-berkas
+       ini dipotong berurutan dari satu file besar, jadi menukar urutannya akan
+       mengubah tampilan. Naikkan ?v= di SEMUA baris tiap kali salah satunya diubah. -->
+  <link rel="stylesheet" href="css/base.css?v=1" />
+  <link rel="stylesheet" href="css/home.css?v=1" />
+  <link rel="stylesheet" href="css/sections.css?v=1" />
+  <link rel="stylesheet" href="css/responsive.css?v=1" />
+  <link rel="stylesheet" href="css/data-sections.css?v=1" />
+  <link rel="stylesheet" href="css/article.css?v=1" />
   <!-- Menghubungkan file CSS eksternal yang mengatur tampilan/design halaman ini -->
 
   <!-- ===== LEAFLET.JS (Library Peta Interaktif Open Source) ===== -->
