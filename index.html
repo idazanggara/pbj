@@ -152,7 +152,7 @@
   <!-- ===== STYLESHEET UTAMA ===== -->
   <!-- ?v= = cache-busting: naikkan angkanya tiap kali style.css diubah
        supaya browser pengunjung tidak memakai versi lama dari cache -->
-  <link rel="stylesheet" href="css/style.css?v=22" />
+  <link rel="stylesheet" href="css/style.css?v=24" />
   <!-- Menghubungkan file CSS eksternal yang mengatur tampilan/design halaman ini -->
 
   <!-- ===== LEAFLET.JS (Library Peta Interaktif Open Source) ===== -->
@@ -457,10 +457,15 @@
       <nav class="navbar__nav" aria-label="Navigasi utama">
         <!-- <nav> = tag semantik untuk area navigasi
              aria-label = aksesibilitas, dibaca screen reader untuk pengguna difabel -->
+        <!-- "Panduan" = pintu masuk ke tiga halaman konten. Hanya SATU yang
+             ditaruh di navbar desktop karena ruangnya terbatas; halaman
+             Panduan itu sendiri menautkan Race & Komunitas di dalamnya, dan
+             menu mobile di bawah memuat ketiganya (ruang vertikal lega). -->
         <a href="#schedule" class="nav-link">Jadwal</a>
         <!-- Link ke section #schedule (pakai anchor/hash link, smooth scroll diaktifkan via CSS) -->
         <a href="#map" class="nav-link">Lokasi</a>
         <a href="#info" class="nav-link">Info</a>
+        <a href="apa-itu-pushbike.html" class="nav-link">Panduan</a>
         <a href="#manfaat" class="nav-link">Manfaat</a>
         <a href="#pengurus" class="nav-link">Pengurus</a>
         <a href="#galeri" class="nav-link">Galeri</a>
@@ -487,6 +492,9 @@
       <a href="#schedule" class="mobile-nav-link">Jadwal</a>
       <a href="#map" class="mobile-nav-link">Lokasi</a>
       <a href="#info" class="mobile-nav-link">Info</a>
+      <a href="apa-itu-pushbike.html" class="mobile-nav-link">Apa Itu Pushbike?</a>
+      <a href="race-pushbike.html" class="mobile-nav-link">Race Pushbike</a>
+      <a href="komunitas-pushbike-indonesia.html" class="mobile-nav-link">Komunitas Se-Indonesia</a>
       <a href="#manfaat" class="mobile-nav-link">Manfaat</a>
       <a href="#pengurus" class="mobile-nav-link">Pengurus</a>
       <a href="#galeri" class="mobile-nav-link">Galeri</a>

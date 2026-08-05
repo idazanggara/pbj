@@ -40,7 +40,7 @@
     rel="stylesheet" />
 
   <!-- ?v= = cache-busting, HARUS sama dengan versi terbaru di index.html -->
-  <link rel="stylesheet" href="css/style.css?v=22" />
+  <link rel="stylesheet" href="css/style.css?v=24" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <!-- ===== DATA TERSTRUKTUR =====
@@ -127,7 +127,10 @@
   </header>
 
   <main>
-    <section class="section has-watermark">
+    <!-- Kepala halaman bergambar. Navbar itu fixed & transparan sampai di-scroll,
+         jadi tanpa band bergambar di sini ia melayang di atas latar krem polos —
+         lihat komentar .page-hero di style.css. -->
+    <section class="page-hero">
       <div class="container">
         <div class="article">
           <nav class="breadcrumb" aria-label="Jejak navigasi">
@@ -141,7 +144,7 @@
             <i class="fa-solid fa-circle-question"></i> Panduan Orang Tua
           </div>
 
-          <h1 class="section-title" style="text-align:left">Apa Itu Pushbike?</h1>
+          <h1 class="page-hero__title">Apa Itu Pushbike?</h1>
 
           <p class="article__lead">
             Pushbike adalah sepeda anak <strong>tanpa pedal dan tanpa rantai</strong>. Anak
@@ -149,7 +152,13 @@
             kaki untuk meluncur. Tujuannya satu: melatih keseimbangan lebih dulu, sebelum
             anak berurusan dengan mengayuh pedal.
           </p>
+        </div>
+      </div>
+    </section>
 
+    <section class="section has-watermark has-watermark--tiled">
+      <div class="container">
+        <div class="article">
           <p>
             Halaman ini ditulis oleh <a href="index.html">Pushbike Jakarta</a>, komunitas
             balance bike anak yang berlatih rutin sejak 2018 di Jakarta Timur. Semua isinya
@@ -568,13 +577,26 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="index.html" class="navbar__logo">
-            <img src="assets/logo_PBJ.jpg" alt="Logo Pushbike Jakarta" class="logo-img" width="40" height="40" />
-            <span class="logo-text">PUSHBIKE JAKARTA</span>
-          </a>
+          <div class="footer-logo">
+            <img src="assets/logo_PBJ.jpg" alt="Logo PBJ" class="logo-img logo-img--sm" width="36" height="36" />
+            <div>
+              <span class="footer-logo-text">PUSHBIKE JAKARTA</span>
+            </div>
+          </div>
           <p class="footer-tagline">
-            Komunitas balance bike anak Jakarta sejak 2018.
+            Komunitas balance bike non-profit untuk anak-anak Jakarta sejak 2018.
+            Dibuat dengan &#10084;&#65039; oleh tim Tech Pushbike Jakarta.
           </p>
+          <div class="footer-social">
+            <a href="https://instagram.com/pushbikejakarta" class="social-link"
+              aria-label="Instagram Pushbike Jakarta" target="_blank" rel="noopener">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://www.youtube.com/@pushbikejakarta6288" class="social-link"
+              aria-label="YouTube Pushbike Jakarta" target="_blank" rel="noopener">
+              <i class="fa-brands fa-youtube"></i>
+            </a>
+          </div>
         </div>
 
         <div class="footer-links">
@@ -606,7 +628,7 @@
             </li>
             <li>
               <i class="fa-solid fa-location-dot"></i>
-              <span>JIEP Pulomas, Jakarta Timur</span>
+              <span>Jabodetabek, Indonesia</span>
             </li>
           </ul>
         </div>
@@ -618,6 +640,7 @@
           &copy; <span id="footerYear">2026</span> Pushbike Jakarta (PBJ). All rights reserved.
           Dibuat oleh <a href="https://www.instagram.com/idazanggara/" target="_blank"
             rel="noopener"><strong>Idaz Anggara</strong></a>, Tech PBJ.
+          <a href="admin.html" class="footer-admin-link" aria-label="Halaman admin pengurus">Admin</a>
         </p>
       </div>
     </div>

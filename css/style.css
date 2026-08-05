@@ -1322,6 +1322,30 @@ body::after {
   }
 }
 
+/* Varian BERULANG — dipakai section artikel panjang (apa-itu-pushbike,
+   komunitas-pushbike-indonesia, race-pushbike).
+
+   KENAPA? .has-watermark biasa menaruh SATU logo di tengah section. Itu pas
+   untuk section beranda yang tingginya sedang, tapi di halaman artikel yang
+   tingginya ribuan piksel, satu logo di tengah berarti sebagian besar halaman
+   jadi polos tanpa identitas. Di sini logo diulang ke bawah dengan jeda pendek
+   supaya latar terasa "berisi" sepanjang halaman.
+
+   Opacity sedikit diturunkan dari 0.13 → 0.09: karena jumlah logonya jauh
+   lebih banyak, kepekatan yang sama akan mengganggu keterbacaan teks. */
+.has-watermark--tiled::after {
+  background-repeat: repeat-y;
+  background-position: center top;
+  background-size: min(720px, 86%);
+  opacity: 0.09;
+}
+
+@media (max-width: 1023px) {
+  .has-watermark--tiled::after {
+    background-size: min(460px, 128%);
+  }
+}
+
 /* ----------------------------------------------------------------
    PENGURUS SECTION
    ---------------------------------------------------------------- */
@@ -2442,6 +2466,81 @@ body::after {
 }
 
 /* ----------------------------------------------------------------
+   PAGE HERO — kepala halaman untuk halaman artikel
+
+   KENAPA PERLU? Navbar itu position:fixed dan TRANSPARAN sampai
+   di-scroll (lihat .navbar--scrolled). Di beranda ia menumpang gambar
+   .hero setinggi 100vh sehingga terlihat menyatu. Tanpa band bergambar
+   seperti ini, navbar melayang di atas latar krem polos dan halaman
+   terlihat kosong di bagian paling atas.
+
+   Bedanya dengan .hero beranda: TIDAK setinggi 100vh (pengunjung datang
+   untuk membaca, jadi teks harus langsung terlihat) dan tanpa
+   background-attachment: fixed (di iOS Safari itu sering bikin gambar
+   melompat saat scroll).
+   ---------------------------------------------------------------- */
+.page-hero {
+  position: relative;
+  padding-top: 140px;   /* 75px navbar + jarak nafas */
+  padding-bottom: 56px;
+  overflow: hidden;
+  background-color: var(--clr-bg);
+  background-image: url('../assets/bg/PBJ-bg-1.webp');
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+}
+
+/* Scrim: teks tetap terbaca di atas gambar, dan bagian bawah dilebur
+   ke warna latar section berikutnya supaya sambungannya tidak terlihat. */
+.page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg,
+      rgba(255, 247, 239, 0.94) 0%,
+      rgba(255, 247, 239, 0.82) 45%,
+      rgba(255, 247, 239, 0.5) 75%,
+      rgba(255, 247, 239, 0.3) 100%),
+    linear-gradient(to bottom,
+      rgba(255, 247, 239, 0.2) 0%,
+      rgba(255, 247, 239, 0) 40%,
+      var(--clr-bg) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* .container di dalamnya sudah position:relative + z-index:1, tapi
+   ditegaskan di sini supaya konten tidak pernah tertimbun scrim. */
+.page-hero .container { position: relative; z-index: 1; }
+
+.page-hero .article { margin-bottom: 0; }
+
+/* Section tepat setelah .page-hero: padding atasnya dipangkas. Tanpa ini,
+   padding-bottom .page-hero (56px) BERTUMPUK dengan padding-block .section
+   (sampai 120px) sehingga muncul celah kosong ~176px antara paragraf pembuka
+   dan isi artikel — terlihat seperti halaman yang gagal dimuat. */
+.page-hero + .section { padding-top: 32px; }
+
+/* Judul halaman artikel: rata kiri (bukan tengah seperti .section-title
+   di beranda) karena diikuti paragraf panjang yang juga rata kiri. */
+.page-hero__title {
+  font-family: var(--font-racing);
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: var(--clr-heading);
+  margin: 12px 0 18px;
+}
+
+/* Di HP gambar terpotong terlalu sempit kalau padding atas terlalu besar */
+@media (max-width: 767px) {
+  .page-hero { padding-top: 116px; padding-bottom: 40px; }
+}
+
+/* ----------------------------------------------------------------
    HALAMAN ARTIKEL (apa-itu-pushbike, komunitas-pushbike-indonesia,
    race-pushbike)
 
@@ -2576,6 +2675,10 @@ body::after {
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 18px;
   margin-top: 28px;
+  /* start (bukan stretch bawaan grid): tiap kartu setinggi isinya sendiri.
+     Tanpa ini, kartu pendek ikut melar mengikuti kartu tertinggi di barisnya
+     dan menyisakan ruang kosong besar di dalamnya. */
+  align-items: start;
 }
 .community-card {
   background: var(--clr-bg-card);
@@ -2603,7 +2706,28 @@ body::after {
   text-decoration: none;
 }
 .community-card__link:hover { text-decoration: underline; }
-.community-card--own { border-color: var(--clr-orange); background: rgba(255, 107, 0, 0.06); }
+/* Kartu PBJ sendiri: satu baris penuh. Isinya paling banyak (ada jadwal &
+   lokasi), jadi kalau disandingkan dengan kartu kota lain yang cuma berisi
+   nama + Instagram, kartu tetangganya terlihat kosong melompong. */
+.community-card--own {
+  grid-column: 1 / -1;
+  border-color: var(--clr-orange);
+  background: rgba(255, 107, 0, 0.06);
+}
+
+.community-card__note {
+  font-size: 0.88rem;
+  color: var(--clr-text-muted);
+  margin-bottom: 12px;
+  max-width: 62ch;
+}
+
+/* Dua link di kartu PBJ berdampingan saat muat, menumpuk saat sempit */
+.community-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
 
 /* Ajakan bertindak di akhir artikel */
 .article-cta {
