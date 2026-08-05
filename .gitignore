@@ -14,3 +14,9 @@ docs-hidden/
 
 # Data lokal Claude Code (rencana, setting lokal) — bukan untuk repo publik.
 .claude/
+
+# Setelan editor VS Code (mis. port Live Server) — preferensi tiap orang, bukan
+# bagian dari situs. Sempat ikut ter-commit sekali lalu dikeluarkan lagi di sisi
+# remote; pola ini mencegahnya terbawa lagi sekaligus menghentikannya muncul
+# sebagai untracked di `git status`.
+.vscode/
