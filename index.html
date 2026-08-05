@@ -36,8 +36,18 @@
     //   - gdrive-gallery.js → '#galeri-kategori' / '#galeri-perlatihan'
     //                       (buka tab galeri tertentu)
     // Karena itu namanya generik (__initialHash), bukan khusus FAQ.
+    //
+    // PENTING — hash yang dibuang HANYA yang mekanik scroll-nya kita ambil
+    // alih sendiri (daftar di MANAGED_HASH). Sebelumnya SEMUA hash dibuang,
+    // dan itu diam-diam mematikan setiap link antar halaman ke section
+    // beranda: "index.html#galeri", "#schedule", "#map", dan seterusnya —
+    // hash-nya lenyap sebelum browser sempat scroll, TIDAK ada kode yang
+    // menanganinya, jadi pengunjung mendarat di puncak beranda. Hash di luar
+    // daftar ini sekarang dibiarkan utuh supaya browser melakukan scroll
+    // bawaannya (offset navbar diurus scroll-margin-top di style.css).
+    const MANAGED_HASH = /^#(faq-[a-z0-9-]+|galeri-(kategori|perlatihan))$/
     window.__initialHash = location.hash
-    if (location.hash) {
+    if (MANAGED_HASH.test(location.hash)) {
       history.replaceState(null, '', location.pathname + location.search)
     }
   </script>
@@ -152,7 +162,7 @@
   <!-- ===== STYLESHEET UTAMA ===== -->
   <!-- ?v= = cache-busting: naikkan angkanya tiap kali style.css diubah
        supaya browser pengunjung tidak memakai versi lama dari cache -->
-  <link rel="stylesheet" href="css/style.css?v=24" />
+  <link rel="stylesheet" href="css/style.css?v=25" />
   <!-- Menghubungkan file CSS eksternal yang mengatur tampilan/design halaman ini -->
 
   <!-- ===== LEAFLET.JS (Library Peta Interaktif Open Source) ===== -->

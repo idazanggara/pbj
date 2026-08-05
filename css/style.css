@@ -163,6 +163,17 @@ body::after {
    terhadap navbar konsisten tanpa menyalin dua deklarasi ini. */
 .section {
   padding-block: var(--section-py);
+}
+
+/* Offset anchor untuk SEMUA section ber-id (#schedule, #map, #info, #manfaat,
+   #pengurus, #galeri, #events, #register, #faq). Navbar itu position:fixed
+   setinggi ±75px, jadi tanpa ini judul section yang dituju link tertutup
+   navbar. Sebelumnya offset ini cuma menempel di .section, padahal sebagian
+   besar section beranda memakai class-nya sendiri (.schedule, .map-section,
+   .info-section, ...) sehingga tidak kebagian — baru terlihat setelah link
+   antar halaman ke section beranda diperbaiki. Memakai section[id] supaya
+   section ber-id yang dibuat nanti otomatis ikut benar. */
+section[id] {
   scroll-margin-top: 80px;
 }
 
@@ -1174,10 +1185,7 @@ body::after {
 /* ----------------------------------------------------------------
    GALERI SECTION — Grid foto/video + lightbox
    ---------------------------------------------------------------- */
-/* scroll-margin-top menyamai kerangka .section: #galeri adalah target anchor
-   (link navbar "Galeri" dan link share '#galeri-kategori'/'#galeri-perlatihan'),
-   dan tanpa offset ini judul section tertutup navbar fixed setinggi ±75px. */
-.gallery-section { padding-block: var(--section-py); background: var(--clr-bg-2); scroll-margin-top: 80px; }
+.gallery-section { padding-block: var(--section-py); background: var(--clr-bg-2); }
 
 .gallery-grid {
   display: grid;
@@ -1336,13 +1344,13 @@ body::after {
 .has-watermark--tiled::after {
   background-repeat: repeat-y;
   background-position: center top;
-  background-size: min(720px, 86%);
+  background-size: min(1150px, 98%);
   opacity: 0.09;
 }
 
 @media (max-width: 1023px) {
   .has-watermark--tiled::after {
-    background-size: min(460px, 128%);
+    background-size: min(680px, 160%);
   }
 }
 
