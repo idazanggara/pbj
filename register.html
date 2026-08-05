@@ -28,10 +28,11 @@
     content="Formulir resmi pendaftaran member baru Pushbike Jakarta (PBJ) — komunitas balance bike anak Jakarta sejak 2018." />
   <meta name="twitter:image" content="https://www.pushbikejakarta.com/assets/og-image.jpg" />
 
-  <link rel="icon" type="image/x-icon" href="assets/favicon_io/favicon.ico" />
-  <link rel="apple-touch-icon" href="assets/favicon_io/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon_io/android-chrome-192x192.png" />
-  <link rel="manifest" href="assets/favicon_io/site.webmanifest" />
+  <!-- Satu rel="icon" saja + path absolut, sama persis dengan index.html —
+       alasan lengkapnya ada di blok FAVICON index.html. -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon_io/android-chrome-192x192.png" />
+  <link rel="apple-touch-icon" href="/assets/favicon_io/apple-touch-icon.png" />
+  <link rel="manifest" href="/assets/favicon_io/site.webmanifest" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -40,7 +41,7 @@
     rel="stylesheet" />
 
   <!-- ?v= = cache-busting, HARUS sama dengan versi terbaru di index.html/admin.html -->
-  <link rel="stylesheet" href="css/style.css?v=21" />
+  <link rel="stylesheet" href="css/style.css?v=22" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 
@@ -185,6 +186,9 @@
             <li><a href="index.html#map">Peta Lokasi</a></li>
             <li><a href="index.html#info">Tentang Pushbike Jakarta</a></li>
             <li><a href="index.html#pengurus">Pengurus</a></li>
+            <li><a href="apa-itu-pushbike.html">Apa Itu Pushbike?</a></li>
+            <li><a href="race-pushbike.html">Race Pushbike</a></li>
+            <li><a href="komunitas-pushbike-indonesia.html">Komunitas Se-Indonesia</a></li>
             <li><a href="register.html">Daftar Member Baru</a></li>
           </ul>
         </div>
@@ -226,87 +230,51 @@
 
   <!-- Versi ?v= HARUS sama dengan index.html/admin.html supaya membaca
        config.js dari cache entry yang sama (tidak ada yang stale) -->
-  <script src="js/config.js?v=15"></script>
+  <script src="js/config.js?v=16"></script>
   <!-- site-settings.js = isi iframe Google Form dari Sheet (fallback ke config.js) -->
   <script src="js/site-settings.js?v=6"></script>
+  <!-- page-chrome.js = navbar scroll, menu mobile, tahun footer, link WA footer.
+       Dipakai bersama oleh semua halaman selain index.html — sebelumnya potongan
+       kode ini disalin inline di sini. -->
+  <script src="js/page-chrome.js?v=1"></script>
   <script>
     /* ================================================================
-       Script khusus halaman ini (pola sama seperti admin.html — cuma
-       config.js + inline script, TIDAK memuat main.js penuh)
+       Script KHUSUS halaman ini saja: tombol bantuan WhatsApp di bawah
+       formulir (waHelpLink1/2). Beda dari link WA footer yang sudah diurus
+       page-chrome.js — yang ini membawa teks pesan siap kirim tentang
+       kendala mengisi formulir pendaftaran.
        ================================================================ */
-
-    // Navbar glassmorphism saat scroll — replikasi ringkas dari js/main.js:42-53
-    // (navbar transparan di atas, jadi solid begitu di-scroll biar teks
-    // konten di bawahnya tidak "tembus" di balik navbar)
-    const navbar = document.getElementById('navbar')
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 60) {
-        navbar.classList.add('navbar--scrolled')
-      } else {
-        navbar.classList.remove('navbar--scrolled')
-      }
-    })
-
-    // Toggle hamburger mobile menu — replikasi ringkas dari js/main.js:58-79
-    const hamburgerBtn = document.getElementById('hamburgerBtn')
-    const mobileMenu = document.getElementById('mobileMenu')
-    hamburgerBtn.addEventListener('click', () => {
-      const menuOpen = !hamburgerBtn.classList.contains('active')
-      hamburgerBtn.classList.toggle('active')
-      mobileMenu.classList.toggle('open')
-      hamburgerBtn.setAttribute('aria-expanded', menuOpen.toString())
-    })
-    mobileMenu.querySelectorAll('.mobile-nav-link').forEach(link => {
-      link.addEventListener('click', () => {
-        hamburgerBtn.classList.remove('active')
-        mobileMenu.classList.remove('open')
-        hamburgerBtn.setAttribute('aria-expanded', 'false')
-      })
-    })
-
-    // Tahun copyright footer otomatis
-    const footerYear = document.getElementById('footerYear')
-    if (footerYear) footerYear.textContent = new Date().getFullYear()
-
-    // Link WhatsApp (2 kontak) — dari tab "Config" tersembunyi di Sheet
-    // (site-settings.js), fallback ke ADMIN_WA_NAME/ADMIN_WA_NUMBER/
-    // ADMIN_WA_NAME_2/ADMIN_WA_NUMBER_2 di config.js kalau sheet gagal dimuat
     ;(async () => {
-      const contacts = typeof resolveAdminWaContacts === 'function'
-        ? await resolveAdminWaContacts()
-        : []
-      const [primary, secondary] = contacts
-      if (!primary) return
+      if (typeof resolveAdminWaContacts !== 'function') return
 
-      const waAdminLink1 = document.getElementById('waAdminLink1')
-      if (waAdminLink1) {
-        waAdminLink1.href = `https://wa.me/${primary.number}`
-        waAdminLink1.textContent = `WhatsApp ${primary.name}`
+      try {
+        const [primary, secondary] = await resolveAdminWaContacts()
+        const pesan = 'Halo Admin PBJ, saya butuh bantuan mengisi formulir pendaftaran member baru.'
+
+        const waHelpLink1 = document.getElementById('waHelpLink1')
+        const waHelpName1 = document.getElementById('waHelpName1')
+        if (primary && primary.number) {
+          if (waHelpLink1) waHelpLink1.href = `https://wa.me/${primary.number}?text=${encodeURIComponent(pesan)}`
+          if (waHelpName1) waHelpName1.textContent = primary.name
+        }
+
+        // Tombol bantuan ke-2 disembunyikan kalau memang cuma ada 1 kontak
+        // terkonfigurasi (bukan dibiarkan jadi tombol dengan link kosong)
+        const waHelpLink2 = document.getElementById('waHelpLink2')
+        if (!waHelpLink2) return
+
+        if (!secondary || !secondary.number) {
+          waHelpLink2.hidden = true
+          return
+        }
+
+        const waHelpName2 = document.getElementById('waHelpName2')
+        waHelpLink2.href = `https://wa.me/${secondary.number}?text=${encodeURIComponent(pesan)}`
+        if (waHelpName2) waHelpName2.textContent = secondary.name
+      } catch (error) {
+        // Formulir tetap bisa diisi walau tombol bantuan WA gagal dimuat
+        console.warn('Tombol bantuan WhatsApp tidak dapat dimuat:', error)
       }
-
-      const pesan = 'Halo Admin PBJ, saya butuh bantuan mengisi formulir pendaftaran member baru.'
-      const waHelpLink1 = document.getElementById('waHelpLink1')
-      const waHelpName1 = document.getElementById('waHelpName1')
-      if (waHelpLink1) waHelpLink1.href = `https://wa.me/${primary.number}?text=${encodeURIComponent(pesan)}`
-      if (waHelpName1) waHelpName1.textContent = primary.name
-
-      // Slot kontak ke-2 disembunyikan diam-diam kalau memang cuma ada
-      // 1 kontak terkonfigurasi (bukan tampak rusak/link kosong)
-      const waAdminLink2 = document.getElementById('waAdminLink2')
-      const waHelpLink2 = document.getElementById('waHelpLink2')
-      if (!secondary) {
-        if (waAdminLink2) waAdminLink2.closest('li').hidden = true
-        if (waHelpLink2) waHelpLink2.hidden = true
-        return
-      }
-
-      if (waAdminLink2) {
-        waAdminLink2.href = `https://wa.me/${secondary.number}`
-        waAdminLink2.textContent = `WhatsApp ${secondary.name}`
-      }
-      const waHelpName2 = document.getElementById('waHelpName2')
-      if (waHelpLink2) waHelpLink2.href = `https://wa.me/${secondary.number}?text=${encodeURIComponent(pesan)}`
-      if (waHelpName2) waHelpName2.textContent = secondary.name
     })()
 
     // Iframe Google Form diisi oleh site-settings.js (baca REGISTRATION_FORM_URL

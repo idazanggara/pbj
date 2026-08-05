@@ -30,6 +30,26 @@
 /* Jumlah maksimal file yang diambil per folder */
 const DRIVE_PAGE_SIZE = 100
 
+/**
+ * Peta mode tampilan <-> hash URL, dipakai DUA ARAH:
+ *   1. pengunjung klik toggle  → hash ditulis ke address bar, jadi URL-nya
+ *      tinggal disalin & dibagikan ke grup WhatsApp member.
+ *   2. link ber-hash dibuka    → tab yang sesuai otomatis aktif dan halaman
+ *      scroll ke section galeri.
+ * SATU hash saja per URL (aturan baku URL): '#galeri-perlatihan', BUKAN
+ * '#galeri/#perlatihan' — tanda '#' kedua dianggap bagian dari teks hash
+ * pertama, bukan anchor baru, jadi bentuk itu tidak akan pernah cocok.
+ */
+const GALLERY_VIEW_HASH = {
+  kategori: 'galeri-kategori',
+  sesi: 'galeri-perlatihan'
+}
+
+/* Jeda scroll ulang (ms) saat halaman dibuka lewat link ber-hash: isi galeri
+   dimuat asinkron (Drive/Sheet), jadi tinggi halaman masih berubah setelah
+   scroll pertama. Pola & alasan sama dengan mekanik FAQ di main.js. */
+const GALLERY_SCROLL_RETRY_DELAYS = [600, 1800]
+
 /* State galeri Drive (satu objek supaya mudah dilacak) */
 const driveGalleryState = {
   folders: [],          // [{ id, name }]
@@ -53,6 +73,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // "Per Latihan" berdiri sendiri (baca Google Sheet), sama sekali tidak butuh Drive.
   if (isDriveConfigured || isSessionsConfigured) {
     buildDriveViewToggle()
+
+    // Halaman dibuka lewat link share ber-hash → langsung buka tab yang dimaksud.
+    // updateHash true = kembalikan hash ke address bar (script di <head> sengaja
+    // membuangnya lebih dulu agar browser tidak scroll native), supaya URL yang
+    // terlihat pengunjung tetap URL yang bisa dibagikan lagi.
+    restoreGalleryViewFromHash(window.__initialHash, { updateHash: true })
+
+    // Hash berubah TANPA reload — mis. pengunjung menempel link '#galeri-perlatihan'
+    // ke address bar saat sudah membuka halaman ini, atau klik link internal.
+    window.addEventListener('hashchange', () => restoreGalleryViewFromHash(location.hash))
   }
 
   if (!isDriveConfigured) return // Tab Kategori tetap pakai galeri lokal fallback (schedule.js)
@@ -142,16 +172,119 @@ function buildDriveViewToggle() {
   toggle.hidden = false
 
   toggle.querySelectorAll('.view-toggle-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      toggle.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.remove('view-toggle-btn--active'))
-      btn.classList.add('view-toggle-btn--active')
-      driveGalleryState.viewMode = btn.dataset.view
-      // Filter kategori hanya relevan di mode kategori
-      const filterBar = document.querySelector('#galeri .filter-bar')
-      if (filterBar) filterBar.style.display = driveGalleryState.viewMode === 'kategori' ? '' : 'none'
-      renderDriveGallery()
-    })
+    // updateHash: true → address bar ikut berubah begitu tab diklik, jadi URL
+    // yang terlihat pengunjung SELALU URL yang benar untuk di-share.
+    btn.addEventListener('click', () => applyGalleryView(btn.dataset.view, { updateHash: true }))
   })
+
+  initGalleryCopyLinkButton()
+}
+
+/**
+ * initGalleryCopyLinkButton()
+ * Tombol "Salin link tab ini". Di HP, menyalin URL dari address bar merepotkan,
+ * padahal justru dari HP admin membagikan link ke grup WhatsApp member.
+ *
+ * Link dibangun dari galleryShareUrl() saat DIKLIK (bukan saat dipasang) supaya
+ * selalu mengikuti tab yang sedang aktif, termasuk kalau pengunjung berpindah
+ * tab beberapa kali lebih dulu.
+ */
+function initGalleryCopyLinkButton() {
+  const copyButton = document.getElementById('galleryCopyLinkBtn')
+  if (!copyButton) return
+
+  copyButton.hidden = false
+  copyButton.addEventListener('click', () => {
+    copyTextToClipboard(galleryShareUrl()).then(() => showCopyFeedback(copyButton))
+  })
+}
+
+/**
+ * galleryShareUrl()
+ * URL absolut menuju tab galeri yang sedang aktif — inilah yang disalin tombol
+ * di atas. Memakai location.origin + pathname (bukan location.href) supaya hash
+ * lama tidak ikut terbawa dua kali.
+ */
+function galleryShareUrl() {
+  const hash = GALLERY_VIEW_HASH[driveGalleryState.viewMode] || GALLERY_VIEW_HASH.kategori
+  return `${location.origin}${location.pathname}#${hash}`
+}
+
+/**
+ * applyGalleryView(view, options)
+ * Satu-satunya tempat mode tampilan galeri diubah — dipakai bersama oleh klik
+ * toggle DAN oleh pemulihan dari hash URL, supaya kedua jalur tidak pernah
+ * berbeda perilaku.
+ *
+ * @param {'kategori'|'sesi'} view Mode yang ingin diaktifkan.
+ * @param {{ updateHash?: boolean }} [options] updateHash true = tulis hash ke
+ *        address bar. Dipakai replaceState (bukan pushState) supaya tombol
+ *        "back" browser tetap membawa pengunjung ke halaman sebelumnya, bukan
+ *        memutar ulang riwayat klik tab.
+ */
+function applyGalleryView(view, options = {}) {
+  const toggle = document.getElementById('galleryViewToggle')
+  // View tak dikenal (mis. hash iseng / data-view typo) diabaikan diam-diam
+  if (!toggle || !GALLERY_VIEW_HASH[view]) return
+
+  toggle.querySelectorAll('.view-toggle-btn').forEach(btn => {
+    btn.classList.toggle('view-toggle-btn--active', btn.dataset.view === view)
+  })
+
+  driveGalleryState.viewMode = view
+
+  // Filter kategori hanya relevan di mode kategori
+  const filterBar = document.querySelector('#galeri .filter-bar')
+  if (filterBar) filterBar.style.display = view === 'kategori' ? '' : 'none'
+
+  if (options.updateHash) {
+    history.replaceState(null, '', `${location.pathname}${location.search}#${GALLERY_VIEW_HASH[view]}`)
+  }
+
+  renderDriveGallery()
+}
+
+/**
+ * galleryViewFromHash(rawHash)
+ * Terjemahkan hash URL menjadi nama mode tampilan. Mengembalikan '' kalau hash
+ * bukan milik galeri (mis. '#faq-usia' atau hash acak) — pencocokan dilakukan
+ * lewat GALLERY_VIEW_HASH, jadi hanya dua nilai yang mungkin diterima.
+ */
+function galleryViewFromHash(rawHash) {
+  const hashId = decodeURIComponent(String(rawHash || '').replace(/^#/, ''))
+  const match = Object.entries(GALLERY_VIEW_HASH).find(([, hash]) => hash === hashId)
+  return match ? match[0] : ''
+}
+
+/**
+ * scrollToGallerySection()
+ * Bawa pengunjung ke section #galeri. Diulang beberapa kali karena galeri &
+ * konten lain dimuat asinkron sehingga posisi section bisa bergeser setelah
+ * scroll pertama (offset navbar diurus scroll-margin-top di style.css).
+ */
+function scrollToGallerySection() {
+  const section = document.getElementById('galeri')
+  if (!section) return
+
+  const scrollToSection = () => section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+  scrollToSection()
+  GALLERY_SCROLL_RETRY_DELAYS.forEach(delay => setTimeout(scrollToSection, delay))
+}
+
+/**
+ * restoreGalleryViewFromHash(rawHash, options)
+ * Aktifkan tab galeri sesuai hash lalu scroll ke situ. `rawHash` dibaca dari
+ * window.__initialHash saat halaman pertama dimuat (hash aslinya sudah dibuang
+ * dari address bar oleh script di <head> index.html — lihat komentar di sana),
+ * atau dari location.hash saat hash berubah tanpa reload.
+ */
+function restoreGalleryViewFromHash(rawHash, options = {}) {
+  const view = galleryViewFromHash(rawHash)
+  if (!view) return // hash bukan milik galeri → biarkan mekanik lain menanganinya
+
+  applyGalleryView(view, options)
+  scrollToGallerySection()
 }
 
 /**

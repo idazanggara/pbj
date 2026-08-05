@@ -26,12 +26,17 @@
     // (bukan tengah) — ini membuat elemen FAQ ketutup navbar fixed, dan
     // menyaingi mekanik scroll kita sendiri (lihat main.js, openFaqFromHash).
     //
-    // Solusinya: simpan hash aslinya ke window.__initialFaqHash, lalu buang
+    // Solusinya: simpan hash aslinya ke window.__initialHash, lalu buang
     // '#...' dari address bar SEBELUM browser sempat scroll native. Dengan
     // hash sudah kosong di URL, browser tidak akan mencoba scroll otomatis
-    // sama sekali — main.js yang sepenuhnya mengatur buka + scroll ke posisi
-    // tengah (lihat STEP 10 di main.js).
-    window.__initialFaqHash = location.hash
+    // sama sekali — script kita yang sepenuhnya mengatur buka + scroll.
+    //
+    // Dibaca oleh DUA mekanik share-link:
+    //   - main.js         → hash '#faq-xxx'  (buka satu jawaban FAQ)
+    //   - gdrive-gallery.js → '#galeri-kategori' / '#galeri-perlatihan'
+    //                       (buka tab galeri tertentu)
+    // Karena itu namanya generik (__initialHash), bukan khusus FAQ.
+    window.__initialHash = location.hash
     if (location.hash) {
       history.replaceState(null, '', location.pathname + location.search)
     }
@@ -92,17 +97,24 @@
   <meta name="geo.position" content="-6.1783;106.8876" />
   <meta name="ICBM" content="-6.1783, 106.8876" />
 
-  <!-- ===== FAVICON ===== -->
-  <link rel="icon" type="image/x-icon" href="assets/favicon_io/favicon.ico" />
-  <!-- favicon.ico = ikon kecil yang muncul di tab browser (multi-size, kompatibel semua browser) -->
+  <!-- ===== FAVICON =====
+       KENAPA CUMA SATU <link rel="icon">? Google Search hanya memakai SATU
+       favicon per situs; kalau halaman mendeklarasikan beberapa rel="icon",
+       Google menebak sendiri mana yang dipakai. Sebelumnya ada dua (.ico dan
+       .png) — sekarang disisakan PNG 192x192 karena persegi DAN kelipatan 48px,
+       dua syarat wajib favicon Google Search.
+       Berkas /favicon.ico di root tetap ada TANPA tag <link>: browser lama dan
+       crawler Google otomatis memeriksa alamat itu, dan sebelum ini alamat
+       tersebut menjawab 404 sehingga hasil pencarian menampilkan ikon bola
+       dunia bawaan, bukan logo PBJ.
+       Path ditulis absolut ("/assets/...") supaya identik dari halaman mana
+       pun, termasuk register.html. -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon_io/android-chrome-192x192.png" />
 
-  <link rel="apple-touch-icon" href="assets/favicon_io/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" href="/assets/favicon_io/apple-touch-icon.png" />
   <!-- apple-touch-icon = ikon yang muncul saat website di-add ke homescreen iPhone/iPad -->
 
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon_io/android-chrome-192x192.png" />
-  <!-- 192x192 = ikon resolusi tinggi untuk Android/PWA (Progressive Web App) -->
-
-  <link rel="manifest" href="assets/favicon_io/site.webmanifest" />
+  <link rel="manifest" href="/assets/favicon_io/site.webmanifest" />
   <!-- site.webmanifest = file konfigurasi PWA (nama app, warna, ikon, dll.) -->
 
   <!-- ===== PRELOAD GAMBAR BACKGROUND HERO =====
@@ -140,7 +152,7 @@
   <!-- ===== STYLESHEET UTAMA ===== -->
   <!-- ?v= = cache-busting: naikkan angkanya tiap kali style.css diubah
        supaya browser pengunjung tidak memakai versi lama dari cache -->
-  <link rel="stylesheet" href="css/style.css?v=21" />
+  <link rel="stylesheet" href="css/style.css?v=22" />
   <!-- Menghubungkan file CSS eksternal yang mengatur tampilan/design halaman ini -->
 
   <!-- ===== LEAFLET.JS (Library Peta Interaktif Open Source) ===== -->
@@ -589,10 +601,17 @@
         <div class="section-badge">
           <i class="fa-solid fa-calendar-days"></i> Jadwal Rutin
         </div>
-        <h2 class="section-title">Pushbike Training Locations</h2>
-        <!-- <h2> = heading level 2, digunakan untuk judul section (di bawah h1) -->
+        <h2 class="section-title">Jadwal Latihan Pushbike<br />Jakarta Timur</h2>
+        <!-- <h2> = heading level 2, judul section (di bawah h1).
+             SEO: sebelumnya berbunyi "Pushbike Training Locations" — bahasa Inggris,
+             padahal calon orang tua mencari dalam Bahasa Indonesia dan seluruh isi
+             situs ini juga Bahasa Indonesia. Heading yang tidak sebahasa dengan
+             kata yang dicari orang tidak membantu peringkat sama sekali.
+             "Jakarta Timur" disebut eksplisit karena JIEP Pulomas memang berada di
+             Jakarta Timur dan orang mencari dengan nama wilayah itu. -->
         <p class="section-subtitle">
-          Pilih lokasi terdekat dari rumah Anda. Semua jadwal sudah dikonfirmasi tim pengurus Pushbike Jakarta.
+          Latihan rutin tiga kali seminggu di JIEP Pulomas (Pacuan Kuda Pulomas), Jakarta Timur.
+          Semua jadwal sudah dikonfirmasi tim pengurus Pushbike Jakarta.
         </p>
       </div>
 
@@ -1020,6 +1039,17 @@
         </button>
         <button class="view-toggle-btn" data-view="sesi">
           <i class="fa-solid fa-calendar-week"></i> Per Latihan
+        </button>
+      </div>
+
+      <!-- Tombol salin link tab galeri yang sedang aktif. DI LUAR .view-toggle
+           supaya tidak ikut role="group" mode tampilan (tombol ini bukan pilihan
+           mode). Disembunyikan bersama toggle-nya; ditampilkan & diisi listener
+           oleh gdrive-gallery.js. Gunanya: di HP, menyalin URL dari address bar
+           merepotkan — admin tinggal klik lalu tempel ke grup WhatsApp member. -->
+      <div class="gallery-copy-wrap">
+        <button class="faq-copy-btn" id="galleryCopyLinkBtn" type="button" hidden>
+          <i class="fa-solid fa-link"></i> Salin link tab ini
         </button>
       </div>
 
@@ -1490,6 +1520,9 @@
               <strong>sepeda keseimbangan</strong> / <strong>sepeda tanpa pedal</strong>) adalah sepeda anak tanpa pedal
               dan tanpa rantai. Anak menggerakkannya dengan mengayuh kaki langsung ke tanah, sehingga melatih
               keseimbangan dan koordinasi secara alami. Di Jakarta, sering juga disebut <em>sepeda monyet</em>.</p>
+            <p>Ingin penjelasan lebih lengkap? Baca
+              <a href="apa-itu-pushbike.html">panduan "Apa Itu Pushbike"</a> — memuat cara memilih ukuran,
+              harga, perlengkapan wajib, dan cara mengajari anak pertama kali.</p>
           </div>
         </details>
 
@@ -1660,6 +1693,8 @@
               berdasarkan <strong>tahun kelahiran</strong> (dan biasanya dipisah Boys/Girls), dengan format babak
               kualifikasi (heat) menuju final (main event). Di PBJ, anak dibina dari nol saat latihan rutin hingga siap
               ikut fun race dan kompetisi nasional. Tanpa target, yang utama anak senang.</p>
+            <p>Selengkapnya di <a href="race-pushbike.html">panduan race pushbike</a> — pembagian kelas usia,
+              syarat sepeda &amp; perlengkapan, dan persiapan lomba pertama.</p>
           </div>
         </details>
 
@@ -1709,6 +1744,13 @@
             <li><a href="#map">Peta Lokasi</a></li>
             <li><a href="#info">Tentang Pushbike Jakarta</a></li>
             <li><a href="#pengurus">Pengurus</a></li>
+            <!-- Tiga halaman konten SEO. Ditaruh di footer (bukan navbar) karena
+                 navbar sudah berisi 8 item dan akan pecah tata letaknya di
+                 desktop. Link footer tetap dirayapi Google di SETIAP halaman,
+                 jadi cukup untuk penemuan & aliran otoritas antar halaman. -->
+            <li><a href="apa-itu-pushbike.html">Apa Itu Pushbike?</a></li>
+            <li><a href="race-pushbike.html">Race Pushbike</a></li>
+            <li><a href="komunitas-pushbike-indonesia.html">Komunitas Se-Indonesia</a></li>
             <li><a href="#register" id="footerRegisterLink">Daftar Member</a></li>
           </ul>
         </div>
@@ -1796,12 +1838,12 @@
        ============================================================ -->
   <!-- ?v= = cache-busting, naikkan angkanya tiap file JS diubah -->
   <!-- config.js = pusat konfigurasi Google Drive & Sheets (dimuat paling awal) -->
-  <script src="js/config.js?v=15"></script>
+  <script src="js/config.js?v=16"></script>
   <!-- site-settings.js = toggle Pendaftaran Member Baru + tanggal FAQ dinamis -->
   <script src="js/site-settings.js?v=6"></script>
   <script src="js/schedule.js?v=8"></script>
   <!-- gdrive-gallery.js = galeri dari Google Drive (mode Kategori & Per Latihan) -->
-  <script src="js/gdrive-gallery.js?v=4"></script>
+  <script src="js/gdrive-gallery.js?v=5"></script>
   <!-- gallery-sessions.js = galeri "Per Latihan" dari Google Sheets (dipanggil
        gdrive-gallery.js saat pengunjung klik toggle "Per Latihan") -->
   <script src="js/gallery-sessions.js?v=3"></script>
@@ -1812,7 +1854,7 @@
   <!-- schedule.js = data jadwal, lokasi, pengurus + fungsi render kartu -->
   <!-- Letakkan SEBELUM main.js agar data tersedia saat main.js dijalankan -->
 
-  <script src="js/main.js?v=10"></script>
+  <script src="js/main.js?v=11"></script>
   <!-- main.js = logika utama: navbar, peta Leaflet, filter, form, modal, scroll -->
   <!-- Letakkan di AKHIR body agar semua elemen HTML sudah ada saat script berjalan -->
 

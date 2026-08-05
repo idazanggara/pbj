@@ -660,12 +660,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // openFaqFromHash()
     // Baca hash yang berlaku saat ini: utamakan location.hash (kalau user
     // baru saja klik link '#faq-xxx' di dalam halaman → hashchange), kalau
-    // kosong pakai window.__initialFaqHash (hash asli dari URL saat halaman
+    // kosong pakai window.__initialHash (hash asli dari URL saat halaman
     // pertama dibuka, sudah dibuang dari address bar oleh <script> pertama
     // di <head> — lihat komentar di sana untuk alasannya). Kalau cocok
     // salah satu id di whitelist: buka <details>-nya lalu scroll ke situ.
     function openFaqFromHash() {
-      const rawHash = location.hash || window.__initialFaqHash || ''
+      const rawHash = location.hash || window.__initialHash || ''
       const hashId = decodeURIComponent(rawHash.slice(1)) // buang '#' di depan
       if (!FAQ_GROUP_A_IDS.includes(hashId)) return // hash tidak dikenali → diamkan saja
 
@@ -694,58 +694,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // (mis. pengguna klik link '#faq-usia' saat sudah berada di halaman ini)
     window.addEventListener('hashchange', openFaqFromHash)
 
-    // fallbackCopyText(text)
-    // Cara salin teks ke clipboard untuk browser/konteks yang tidak
-    // mendukung navigator.clipboard (mis. dibuka lewat http:// biasa,
-    // atau WebView Instagram versi lama). Trik lama: taruh teks di
-    // <textarea> tersembunyi, seleksi semua isinya, lalu panggil
-    // document.execCommand('copy').
-    function fallbackCopyText(text) {
-      const textarea = document.createElement('textarea')
-      textarea.value = text
-      textarea.style.position = 'fixed' // supaya tidak menggeser scroll halaman
-      textarea.style.opacity = '0'
-      document.body.appendChild(textarea)
-      textarea.focus()
-      textarea.select()
-      try {
-        document.execCommand('copy')
-      } catch (copyError) {
-        console.warn('Gagal menyalin link FAQ:', copyError)
-      }
-      document.body.removeChild(textarea)
-    }
-
-    // showCopyFeedback(button)
-    // Ubah teks tombol sebentar jadi "Tersalin!" sebagai umpan balik visual,
-    // lalu kembalikan ke teks semula setelah 1.5 detik.
-    function showCopyFeedback(button) {
-      const originalHtml = button.innerHTML
-      button.innerHTML = '<i class="fa-solid fa-check"></i> Tersalin!'
-      setTimeout(() => {
-        button.innerHTML = originalHtml
-      }, 1500)
-    }
-
-    // Pasang listener klik ke semua tombol "Salin link jawaban ini"
+    // Pasang listener klik ke semua tombol "Salin link jawaban ini".
+    // copyTextToClipboard() & showCopyFeedback() dipakai dari config.js —
+    // helper yang sama juga dipakai tombol salin link galeri
+    // (gdrive-gallery.js), jadi perilakunya tidak pernah berbeda.
     document.querySelectorAll('.faq-copy-btn').forEach(button => {
       button.addEventListener('click', () => {
         const faqId = button.dataset.faqId
         if (!FAQ_GROUP_A_IDS.includes(faqId)) return // jaga-jaga kalau id tombol typo
 
         const shareUrl = `${location.origin}${location.pathname}#${faqId}`
-
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(shareUrl)
-            .then(() => showCopyFeedback(button))
-            .catch(() => {
-              fallbackCopyText(shareUrl)
-              showCopyFeedback(button)
-            })
-        } else {
-          fallbackCopyText(shareUrl)
-          showCopyFeedback(button)
-        }
+        copyTextToClipboard(shareUrl).then(() => showCopyFeedback(button))
       })
     })
   } catch (error) {

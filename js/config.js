@@ -274,6 +274,65 @@ function normalizeHttpUrl(raw) {
   return ''
 }
 
+/* ================================================================
+   SALIN LINK KE CLIPBOARD
+   Dipakai bersama oleh tombol "Salin link jawaban ini" di FAQ (main.js)
+   dan tombol "Salin link" di galeri (gdrive-gallery.js). Sebelumnya
+   logikanya hidup sebagai fungsi lokal di dalam main.js sehingga tidak
+   bisa dipanggil file lain.
+   ================================================================ */
+
+/* Berapa lama (ms) tombol menampilkan "Tersalin!" sebelum kembali ke teks semula */
+const COPY_FEEDBACK_MS = 1500
+
+/**
+ * copyTextToClipboard(text)
+ * Menyalin teks ke clipboard dan mengembalikan Promise yang SELALU resolve
+ * (tidak pernah reject) — pemanggil cukup menampilkan umpan balik.
+ *
+ * Kenapa ada jalur cadangan? navigator.clipboard hanya tersedia di konteks
+ * aman (https). Situs ini bisa dibuka lewat http:// biasa saat uji coba lokal,
+ * atau lewat WebView Instagram versi lama. Trik lamanya: taruh teks di
+ * <textarea> tersembunyi, seleksi isinya, lalu document.execCommand('copy').
+ */
+function copyTextToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text).catch(() => fallbackCopyText(text))
+  }
+  fallbackCopyText(text)
+  return Promise.resolve()
+}
+
+/** Jalur cadangan copyTextToClipboard() untuk browser tanpa navigator.clipboard. */
+function fallbackCopyText(text) {
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  textarea.style.position = 'fixed' // supaya tidak menggeser scroll halaman
+  textarea.style.opacity = '0'
+  document.body.appendChild(textarea)
+  textarea.focus()
+  textarea.select()
+  try {
+    document.execCommand('copy')
+  } catch (copyError) {
+    console.warn('Gagal menyalin link:', copyError)
+  }
+  document.body.removeChild(textarea)
+}
+
+/**
+ * showCopyFeedback(button)
+ * Ubah isi tombol sebentar jadi "Tersalin!" sebagai umpan balik visual,
+ * lalu kembalikan ke teks semula.
+ */
+function showCopyFeedback(button) {
+  const originalHtml = button.innerHTML
+  button.innerHTML = '<i class="fa-solid fa-check"></i> Tersalin!'
+  setTimeout(() => {
+    button.innerHTML = originalHtml
+  }, COPY_FEEDBACK_MS)
+}
+
 /* ---------------- LINK ADMIN (dipakai admin.html) ----------------
    Link cepat menuju "dashboard" pengelolaan. Terisi otomatis dari ID
    di atas; tidak perlu diubah manual. */
