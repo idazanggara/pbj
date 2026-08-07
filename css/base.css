@@ -76,12 +76,20 @@
   --radius-xl:   28px;
   --radius-full: 9999px;
 
-  /* === SHADOW === */
-  --shadow-card:    0 8px 32px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4);
-  --shadow-glow:    0 0 60px rgba(255,107,0,0.25), 0 8px 40px rgba(0,0,0,0.5);
+  /* === SHADOW ===
+     Nilai di sini pakai navy brand (28,43,74) yang di-alpha rendah, BUKAN
+     hitam pekat. Alasannya: situs ini berlatar krem terang, dan bayangan
+     hitam ber-alpha tinggi (versi lama memakai 0.4-0.7) tidak terbaca
+     sebagai bayangan di latar terang — yang terlihat justru noda abu-abu
+     tebal mengelilingi tiap kartu. Nilai hitam pekat itu wajar hanya di
+     atas latar gelap; yang masih memakainya di file lain sengaja
+     dibiarkan karena memang berada di dalam overlay gelap (lightbox &
+     modal event). */
+  --shadow-card:    0 6px 20px rgba(28,43,74,0.10), 0 1px 3px rgba(28,43,74,0.06);
+  --shadow-glow:    0 0 40px rgba(255,107,0,0.16), 0 8px 24px rgba(28,43,74,0.12);
   --shadow-glow-sm: 0 0 20px rgba(255,107,0,0.3);
   --shadow-orange:  0 4px 24px rgba(255,107,0,0.4);
-  --shadow-navbar:  0 4px 30px rgba(0,0,0,0.7), 0 1px 0 rgba(255,107,0,0.1);
+  --shadow-navbar:  0 2px 14px rgba(28,43,74,0.08), 0 1px 0 rgba(255,107,0,0.1);
 
   /* === TRANSISI === */
   --transition-fast:   0.15s ease;
@@ -373,6 +381,11 @@ section[id] {
   text-transform: uppercase;
   font-size: 0.82rem;
   letter-spacing: 0.04em;
+  /* Label CTA berisi 2-3 kata. Tanpa nowrap ia pecah jadi beberapa baris
+     begitu ruang navbar menyempit, dan pill-nya meninggi 2-3x sehingga
+     navbar ikut melar. Lebih baik teks tetap satu baris; penyempitan
+     padding/font untuk layar sedang ditangani di responsive.css. */
+  white-space: nowrap;
 }
 .nav-link--cta:hover {
   box-shadow: 0 4px 28px rgba(255,107,0,0.65);
@@ -414,7 +427,7 @@ section[id] {
    Sebelumnya max-height dipatok 400px — pas untuk 8 item, tapi begitu menu
    berisi 11 item (±50px per item = ±550px) tiga item terakhir terpotong dan,
    karena overflow: hidden, sama sekali tidak bisa diklik: Galeri, Event, dan
-   CTA "Daftar Sekarang". Sekarang sisanya bisa di-scroll, dan menu apa pun
+   CTA "Daftar Trial Class". Sekarang sisanya bisa di-scroll, dan menu apa pun
    panjangnya tetap terjangkau di layar sependek apa pun.
    dvh (dynamic viewport height) dipakai setelah vh sebagai penyempurna:
    di HP, bilah alamat browser menyusut/membesar saat scroll dan vh tidak

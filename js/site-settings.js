@@ -23,7 +23,7 @@
  *    fallback ke konstanta REGISTRATION_FORM_URL di config.js kalau sheet
  *    belum diisi / fetch gagal.
  * 3. Kalau REGISTRATION_OPEN di sheet bernilai TRUE: ubah tombol CTA
- *    "Daftar Sekarang" + link footer + FAQ jadi versi "sedang dibuka".
+ *    "Daftar Trial Class" + link footer + FAQ jadi versi "sedang dibuka".
  * 4. Expose resolveAdminWaContacts() (array 2 kontak, dipakai tombol WA
  *    di footer/FAQ/halaman bantuan) DAN resolveAdminWaNumber() (cuma
  *    kontak pertama, dipakai link WA otomatis setelah submit Form

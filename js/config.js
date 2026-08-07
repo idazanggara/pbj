@@ -131,7 +131,7 @@ const GALLERY_SESSIONS_SHEET_GID = '1110534419' // tab "Galeri per Latihan"
    Dibaca oleh site-settings.js. Kolom sheet (baris pertama = judul kolom):
    Key | Value — DUA baris data:
      REGISTRATION_OPEN     | TRUE/FALSE  → buka/tutup pendaftaran member baru,
-                                            ubah tombol "Daftar Sekarang" + FAQ
+                                            ubah tombol "Daftar Trial Class" + FAQ
      REGISTRATION_FORM_URL | https://docs.google.com/forms/d/e/xxxxx/viewform
                                           → link publik Form yang di-iframe di
                                             register.html. Ganti sel
