@@ -16,5 +16,11 @@
       "destination": "https://www.pushbikejakarta.com/:path*",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/bayar",
+      "destination": "/bayar.html"
+    }
   ]
 }

@@ -1,0 +1,303 @@
+/* ================================================================
+   payment.css — gaya KHUSUS halaman bayar.html (pembayaran iuran)
+
+   File terpisah (bukan menumpang sections.css) karena hanya satu
+   halaman yang memakainya: halaman lain tidak perlu ikut mengunduh
+   aturan ini. Dimuat PALING AKHIR setelah base/home/sections/
+   responsive/data-sections/article, jadi boleh menimpa nilai default
+   dari file-file itu.
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   PENGUMUMAN "QRIS SUDAH DIPERBARUI"
+   Kotak sorot di bawah judul. Warna amber lembut, bukan merah —
+   ini informasi, bukan peringatan bahaya.
+   ---------------------------------------------------------------- */
+.payment-notice {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: clamp(14px, 2.5vw, 20px);
+  background: linear-gradient(135deg, rgba(255, 179, 71, 0.16) 0%, rgba(255, 107, 0, 0.08) 100%);
+  border: 1px solid var(--clr-border-hot);
+  border-radius: var(--radius-md);
+  color: var(--clr-text);
+  line-height: 1.65;
+}
+
+.payment-notice i {
+  color: var(--clr-orange);
+  font-size: 1.15rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* Varian hijau untuk jalur member (kirim bukti ke grup). Warnanya sengaja
+   dibedakan dari varian oranye di atas supaya dua pesan berbeda tidak terlihat
+   seperti satu blok pengumuman yang sama. text-align kembali ke kiri karena
+   induknya (.payment-confirm) rata tengah — teks paragraf lebih enak dibaca
+   rata kiri. */
+.payment-notice--member {
+  background: linear-gradient(135deg, rgba(23, 168, 102, 0.14) 0%, rgba(26, 169, 201, 0.08) 100%);
+  border-color: rgba(23, 168, 102, 0.35);
+  text-align: left;
+  margin-bottom: 22px;
+}
+
+.payment-notice--member i { color: var(--clr-green); }
+
+/* ----------------------------------------------------------------
+   GRID DUA KARTU: QRIS & TRANSFER BANK
+   Di layar sempit otomatis menumpuk (auto-fit + minmax), tanpa
+   media query terpisah.
+   ---------------------------------------------------------------- */
+
+/* Latar selang-seling supaya blok "cara bayar" terpisah jelas dari
+   judul di atasnya — pola yang sama dipakai section beranda. */
+.payment-methods {
+  background: var(--clr-bg-2);
+}
+
+.payment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: clamp(20px, 3vw, 32px);
+  align-items: stretch; /* dua kartu sama tinggi walau isinya beda panjang */
+  max-width: 980px;
+  margin-inline: auto;
+}
+
+.payment-card {
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  padding: clamp(20px, 3vw, 32px);
+  box-shadow: var(--shadow-card);
+  height: 100%;
+}
+
+.payment-card__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.payment-card__icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--gradient-orange);
+  color: var(--clr-white);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.payment-card__title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.15rem, 2.5vw, 1.4rem);
+  color: var(--clr-heading);
+  line-height: 1.2;
+}
+
+.payment-card__desc {
+  color: var(--clr-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+
+/* Sub-judul di dalam kartu (mis. "Bisa dipakai untuk") */
+.payment-card__subtitle {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  color: var(--clr-heading);
+  margin: 26px 0 12px;
+}
+
+/* ----------------------------------------------------------------
+   GAMBAR QRIS
+   Dibungkus <a> supaya sekali ketuk membuka gambar ukuran penuh di
+   tab baru — di HP itu cara paling andal untuk zoom (pinch bawaan
+   browser), tanpa perlu lightbox buatan sendiri.
+   ---------------------------------------------------------------- */
+.qris-frame {
+  display: block;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--clr-border);
+  background: var(--clr-white);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.qris-frame:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-glow);
+}
+
+.qris-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.payment-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+/* Sengaja MENUMPUK (basis 100%), bukan berdampingan: di lebar kartu ~300px
+   label "Lihat Ukuran Penuh" patah jadi dua baris kalau dua tombol berbagi
+   satu baris. Menumpuk juga bikin target sentuh lebih lebar di HP. */
+.payment-actions .btn {
+  flex: 1 1 100%;
+  justify-content: center;
+  font-size: 0.92rem;
+  padding: 12px 18px;
+}
+
+/* Baris identitas merchant di bawah tombol (NMID dsb.) */
+.qris-meta {
+  margin-top: 16px;
+  font-size: 0.82rem;
+  color: var(--clr-text-dim);
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* Varian rata kiri — dipakai untuk catatan di kartu transfer bank, yang
+   isinya kalimat penuh (bukan identitas merchant yang pendek). */
+.qris-meta--left { text-align: left; }
+
+/* ----------------------------------------------------------------
+   DETAIL REKENING BANK
+   ---------------------------------------------------------------- */
+.bank-detail {
+  display: grid;
+  gap: 14px;
+}
+
+.bank-row__label {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--clr-text-dim);
+  margin-bottom: 4px;
+}
+
+.bank-row__value {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  color: var(--clr-heading);
+  font-weight: 600;
+}
+
+/* Nomor rekening: monospace + tabular supaya angka mudah dicocokkan
+   satu per satu saat diketik ulang di aplikasi m-banking. */
+.bank-number {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.bank-number__value {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(1.15rem, 3.5vw, 1.5rem);
+  font-weight: 700;
+  color: var(--clr-orange-lt);
+  letter-spacing: 0.02em;
+  word-break: break-all;
+}
+
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--clr-heading);
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.copy-btn:hover {
+  background: rgba(255, 107, 0, 0.1);
+  border-color: var(--clr-border-hot);
+}
+
+.copy-btn.is-copied {
+  background: rgba(23, 168, 102, 0.12);
+  border-color: rgba(23, 168, 102, 0.4);
+  color: var(--clr-green);
+}
+
+/* ----------------------------------------------------------------
+   DAFTAR "PEMBAYARAN APA SAJA" & LANGKAH KONFIRMASI
+   ---------------------------------------------------------------- */
+.payment-list {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.payment-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: var(--clr-text);
+  line-height: 1.6;
+}
+
+.payment-list i {
+  color: var(--clr-green);
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.payment-confirm {
+  max-width: 760px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* .section-title default (clamp 2.2-3.5rem) terlalu besar untuk penutup
+   halaman ini — judulnya cuma dua kata dan bukan judul utama halaman. */
+.payment-confirm .section-title {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  margin-bottom: 14px;
+}
+
+.payment-confirm__text {
+  color: var(--clr-text-muted);
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+
+.payment-confirm__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.payment-thanks {
+  margin-top: 28px;
+  text-align: center;
+  color: var(--clr-text-muted);
+  font-size: 0.95rem;
+}

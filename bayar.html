@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Bayar Iuran Latihan — Pushbike Jakarta</title>
+  <meta name="description"
+    content="Cara bayar iuran latihan Pushbike Jakarta secara non tunai: scan QRIS resmi PBJ atau transfer ke rekening Bank Mandiri a.n. Pushbike Jakarta." />
+  <meta name="robots" content="index, follow" />
+  <!-- Canonical memakai URL pendek /bayar (bukan /bayar.html) karena itu yang
+       dibagikan ke grup WA; vercel.json me-rewrite /bayar ke berkas ini. -->
+  <link rel="canonical" href="https://www.pushbikejakarta.com/bayar" />
+
+  <!-- ===== OPEN GRAPH & TWITTER (preview saat link dibagikan di WA/IG/Telegram) ===== -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Pushbike Jakarta" />
+  <meta property="og:title" content="Bayar Iuran Latihan — Pushbike Jakarta" />
+  <meta property="og:description"
+    content="Scan QRIS resmi PBJ atau transfer ke rekening Bank Mandiri a.n. Pushbike Jakarta untuk iuran latihan per kedatangan." />
+  <meta property="og:url" content="https://www.pushbikejakarta.com/bayar" />
+  <meta property="og:image" content="https://www.pushbikejakarta.com/assets/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="id_ID" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Bayar Iuran Latihan — Pushbike Jakarta" />
+  <meta name="twitter:description"
+    content="Scan QRIS resmi PBJ atau transfer ke rekening Bank Mandiri a.n. Pushbike Jakarta." />
+  <meta name="twitter:image" content="https://www.pushbikejakarta.com/assets/og-image.jpg" />
+
+  <!-- Satu rel="icon" saja + path absolut, sama persis dengan index.html —
+       alasan lengkapnya ada di blok FAVICON index.html. -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon_io/android-chrome-192x192.png" />
+  <link rel="apple-touch-icon" href="/assets/favicon_io/apple-touch-icon.png" />
+  <link rel="manifest" href="/assets/favicon_io/site.webmanifest" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+
+  <!-- ?v= = cache-busting, HARUS sama dengan versi terbaru di index.html/admin.html -->
+  <!-- URUTAN INI TIDAK BOLEH DITUKAR (lihat catatan di register.html).
+       payment.css dimuat paling akhir: khusus halaman ini, boleh menimpa. -->
+  <link rel="stylesheet" href="css/base.css?v=2" />
+  <link rel="stylesheet" href="css/home.css?v=2" />
+  <link rel="stylesheet" href="css/sections.css?v=2" />
+  <link rel="stylesheet" href="css/responsive.css?v=2" />
+  <link rel="stylesheet" href="css/data-sections.css?v=2" />
+  <link rel="stylesheet" href="css/article.css?v=2" />
+  <link rel="stylesheet" href="css/payment.css?v=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+  <!-- Header/nav meniru markup index.html persis (kelas & struktur sama) supaya
+       navbar konsisten, tapi TIDAK memuat main.js/schedule.js/dst — pola yang
+       sama seperti register.html & admin.html. -->
+  <header class="navbar" id="navbar">
+    <div class="navbar__container">
+      <a href="index.html" class="navbar__logo">
+        <img src="assets/logo_PBJ.jpg" alt="Logo Pushbike Jakarta" class="logo-img" width="40" height="40" />
+        <span class="logo-text">PUSHBIKE JAKARTA</span>
+      </a>
+
+      <nav class="navbar__nav" aria-label="Navigasi utama">
+        <a href="index.html#schedule" class="nav-link">Jadwal</a>
+        <a href="index.html#map" class="nav-link">Lokasi</a>
+        <a href="index.html#info" class="nav-link">Info</a>
+        <a href="index.html#manfaat" class="nav-link">Manfaat</a>
+        <a href="index.html#pengurus" class="nav-link">Pengurus</a>
+        <a href="index.html#galeri" class="nav-link">Galeri</a>
+        <a href="index.html#events" class="nav-link">Event</a>
+        <a href="index.html" class="nav-link">&larr; Kembali ke Beranda</a>
+      </nav>
+
+      <button class="navbar__hamburger" id="hamburgerBtn" aria-label="Buka menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true">
+      <a href="index.html#schedule" class="mobile-nav-link">Jadwal</a>
+      <a href="index.html#map" class="mobile-nav-link">Lokasi</a>
+      <a href="index.html#info" class="mobile-nav-link">Info</a>
+      <a href="index.html#manfaat" class="mobile-nav-link">Manfaat</a>
+      <a href="index.html#pengurus" class="mobile-nav-link">Pengurus</a>
+      <a href="index.html#galeri" class="mobile-nav-link">Galeri</a>
+      <a href="index.html#events" class="mobile-nav-link">Event</a>
+      <a href="index.html" class="mobile-nav-link">&larr; Kembali ke Beranda</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============================================================
+         JUDUL HALAMAN + PENGUMUMAN QRIS BARU
+         ============================================================ -->
+    <section class="section has-watermark">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge">
+            <i class="fa-solid fa-qrcode"></i> Pembayaran Non Tunai
+          </div>
+          <h1 class="section-title">Bayar Iuran Latihan<br />Pushbike Jakarta</h1>
+          <p class="section-subtitle">
+            Iuran latihan per kedatangan dan pembayaran lainnya kini bisa dilakukan
+            secara non tunai — cukup scan QRIS resmi PBJ atau transfer ke rekening
+            Pushbike Jakarta.
+          </p>
+        </div>
+
+        <p class="payment-notice">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>
+            <strong>QRIS PBJ sudah diperbarui.</strong> Mohon bantuannya agar untuk setiap
+            pembayaran menggunakan QRIS dan nomor rekening terbaru yang ada di halaman ini
+            ya, Om/Tante. 🙏
+          </span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DUA CARA BAYAR: QRIS & TRANSFER BANK
+         ============================================================ -->
+    <section class="section payment-methods">
+      <div class="container">
+        <div class="payment-grid">
+
+          <!-- ---------- Kartu 1: QRIS ----------
+               Gambar QRIS ada di assets/qris/ (folder sendiri) supaya saat
+               QRIS diperbarui cukup menimpa berkas di folder itu, tanpa
+               menyentuh HTML. -->
+          <article class="payment-card">
+            <div class="payment-card__head">
+              <span class="payment-card__icon" aria-hidden="true"><i class="fa-solid fa-qrcode"></i></span>
+              <h2 class="payment-card__title">Scan QRIS</h2>
+            </div>
+            <p class="payment-card__desc">
+              Bisa dibayar dari aplikasi apa pun yang berlogo QRIS — Livin' by Mandiri,
+              BCA mobile, BRImo, GoPay, OVO, DANA, ShopeePay, dan lainnya.
+            </p>
+
+            <!-- Gambar dibungkus <a target="_blank"> supaya sekali ketuk membuka
+                 gambar ukuran penuh (pinch-zoom bawaan browser di HP). -->
+            <a class="qris-frame" href="assets/qris/qris-pbj.jpg" target="_blank" rel="noopener"
+              aria-label="Lihat QRIS Pushbike Jakarta ukuran penuh">
+              <img src="assets/qris/qris-pbj.jpg"
+                alt="QRIS resmi Pushbike Jakarta — merchant PUSH BIKE JAKARTA, NMID ID2026508994509"
+                width="1128" height="1600" loading="eager" />
+            </a>
+
+            <div class="payment-actions">
+              <a class="btn btn--ghost" href="assets/qris/qris-pbj.jpg" target="_blank" rel="noopener">
+                <i class="fa-solid fa-magnifying-glass-plus"></i> Lihat Ukuran Penuh
+              </a>
+              <a class="btn btn--primary" href="assets/qris/qris-pbj.jpg" download="QRIS-Pushbike-Jakarta.jpg">
+                <i class="fa-solid fa-download"></i> Unduh QRIS
+              </a>
+            </div>
+
+            <p class="qris-meta">
+              Merchant: <strong>PUSH BIKE JAKARTA</strong><br />
+              NMID: ID2026508994509 &middot; A01
+            </p>
+          </article>
+
+          <!-- ---------- Kartu 2: Transfer bank ---------- -->
+          <article class="payment-card">
+            <div class="payment-card__head">
+              <span class="payment-card__icon" aria-hidden="true"><i class="fa-solid fa-building-columns"></i></span>
+              <h2 class="payment-card__title">Transfer Bank</h2>
+            </div>
+            <p class="payment-card__desc">
+              Kalau lebih nyaman transfer manual, gunakan rekening resmi Pushbike Jakarta
+              di bawah ini.
+            </p>
+
+            <div class="bank-detail">
+              <div class="bank-row">
+                <span class="bank-row__label">Bank</span>
+                <span class="bank-row__value">Bank Mandiri</span>
+              </div>
+              <div class="bank-row">
+                <span class="bank-row__label">Atas Nama</span>
+                <span class="bank-row__value">Pushbike Jakarta</span>
+              </div>
+              <div class="bank-row">
+                <span class="bank-row__label">Nomor Rekening</span>
+                <div class="bank-number">
+                  <span class="bank-number__value">121-00-2510181-1</span>
+                  <button type="button" class="copy-btn" id="copyAccountBtn" data-account="1210025101811"
+                    aria-label="Salin nomor rekening">
+                    <i class="fa-regular fa-copy" aria-hidden="true"></i>
+                    <span>Salin</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <h3 class="payment-card__subtitle">Bisa dipakai untuk</h3>
+            <ul class="payment-list">
+              <li><i class="fa-solid fa-circle-check"></i> Iuran latihan per kedatangan</li>
+              <li><i class="fa-solid fa-circle-check"></i> Iuran member semesteran</li>
+              <li><i class="fa-solid fa-circle-check"></i> Jersey, merchandise, dan pembayaran event</li>
+            </ul>
+            <p class="qris-meta qris-meta--left">
+              Nominal iuran latihan yang berlaku bisa dilihat di
+              <a href="index.html#faq">FAQ biaya latihan</a> — atau tanyakan langsung ke admin.
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         KONFIRMASI PEMBAYARAN — kirim bukti ke admin lewat WhatsApp
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="payment-confirm">
+          <h2 class="section-title">Sudah Bayar?</h2>
+          <p class="payment-confirm__text">
+            Mohon kirimkan bukti pembayarannya supaya pembayaran Om/Tante langsung
+            tercatat. Ada dua cara, pilih yang paling gampang:
+          </p>
+
+          <!-- Jalur member ditaruh DULUAN karena itu yang paling sering dipakai.
+               Nama grup ditulis sebagai teks biasa, BUKAN link undangan — link
+               undangan grup WhatsApp di halaman publik bisa dipakai siapa saja
+               untuk masuk grup. -->
+          <p class="payment-notice payment-notice--member">
+            <i class="fa-solid fa-users"></i>
+            <span>
+              <strong>Sudah jadi member?</strong> Bukti pembayaran boleh langsung
+              dikirim ke grup WhatsApp <strong>Member PBJ Aktif</strong>.
+            </span>
+          </p>
+
+          <p class="payment-confirm__text">
+            Belum tergabung di grup, atau baru pertama kali ikut latihan? Kirimkan
+            bukti pembayarannya ke admin:
+          </p>
+          <div class="payment-confirm__buttons">
+            <a id="waPayLink1" class="btn btn--primary" target="_blank" rel="noopener">
+              <i class="fa-brands fa-whatsapp"></i> Kirim Bukti ke <span id="waPayName1">Admin</span>
+            </a>
+            <a id="waPayLink2" class="btn btn--ghost" target="_blank" rel="noopener">
+              <i class="fa-brands fa-whatsapp"></i> Kirim Bukti ke <span id="waPayName2">Admin</span>
+            </a>
+          </div>
+          <p class="payment-thanks">
+            Terima kasih banyak atas perhatian dan kerja samanya. 😊
+          </p>
+          <p class="payment-thanks">
+            Halaman ini adalah satu-satunya sumber resmi QRIS &amp; rekening PBJ.
+            Kalau menerima QRIS atau nomor rekening lain yang mengatasnamakan Pushbike
+            Jakarta, mohon konfirmasi dulu ke admin.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer — markup sama persis dengan index.html untuk konsistensi -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="assets/logo_PBJ.jpg" alt="Logo PBJ" class="logo-img logo-img--sm" width="36" height="36" />
+            <div>
+              <span class="footer-logo-text">PUSHBIKE JAKARTA</span>
+            </div>
+          </div>
+          <p class="footer-tagline">
+            Komunitas balance bike non-profit untuk anak-anak Jakarta sejak 2018.
+            Dibuat dengan &#10084;&#65039; oleh tim Tech Pushbike Jakarta.
+          </p>
+          <div class="footer-social">
+            <a href="https://instagram.com/pushbikejakarta" class="social-link"
+              aria-label="Instagram Pushbike Jakarta" target="_blank" rel="noopener">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://www.youtube.com/@pushbikejakarta6288" class="social-link"
+              aria-label="YouTube Pushbike Jakarta" target="_blank" rel="noopener">
+              <i class="fa-brands fa-youtube"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <h4 class="footer-links__title">Navigasi</h4>
+          <ul>
+            <li><a href="index.html#schedule">Jadwal Latihan</a></li>
+            <li><a href="index.html#map">Peta Lokasi</a></li>
+            <li><a href="index.html#info">Tentang Pushbike Jakarta</a></li>
+            <li><a href="index.html#pengurus">Pengurus</a></li>
+            <li><a href="apa-itu-pushbike.html">Apa Itu Pushbike?</a></li>
+            <li><a href="race-pushbike.html">Race Pushbike</a></li>
+            <li><a href="komunitas-pushbike-indonesia.html">Komunitas Se-Indonesia</a></li>
+            <li><a href="register.html">Daftar Member Baru</a></li>
+            <li><a href="bayar.html">Bayar Iuran Latihan</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-contact">
+          <h4 class="footer-links__title">Kontak</h4>
+          <ul>
+            <li>
+              <i class="fa-brands fa-whatsapp"></i>
+              <a id="waAdminLink1" target="_blank" rel="noopener">WhatsApp Admin</a>
+            </li>
+            <li>
+              <i class="fa-brands fa-whatsapp"></i>
+              <a id="waAdminLink2" target="_blank" rel="noopener">WhatsApp Admin</a>
+            </li>
+            <li>
+              <i class="fa-brands fa-instagram"></i>
+              <a href="https://instagram.com/pushbikejakarta" target="_blank" rel="noopener">@pushbikejakarta</a>
+            </li>
+            <li>
+              <i class="fa-solid fa-location-dot"></i>
+              <span>Jabodetabek, Indonesia</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <hr class="footer-divider" />
+        <p class="footer-copy">
+          &copy; <span id="footerYear">2026</span> Pushbike Jakarta (PBJ). All rights reserved.
+          Dibuat oleh <a href="https://www.instagram.com/idazanggara/" target="_blank"
+            rel="noopener"><strong>Idaz Anggara</strong></a>, Tech PBJ.
+          <a href="admin.html" class="footer-admin-link" aria-label="Halaman admin pengurus">Admin</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Versi ?v= HARUS sama dengan index.html/admin.html supaya membaca
+       config.js dari cache entry yang sama (tidak ada yang stale) -->
+  <script src="js/config.js?v=16"></script>
+  <!-- site-settings.js dipakai di sini HANYA untuk resolveAdminWaContacts()
+       (nomor WA admin dari tab Config); bagian form pendaftarannya no-op
+       karena elemen terkait tidak ada di halaman ini. -->
+  <script src="js/site-settings.js?v=6"></script>
+  <script src="js/page-chrome.js?v=1"></script>
+  <script>
+    /* ================================================================
+       Script KHUSUS halaman ini:
+       1. Tombol "Salin" nomor rekening.
+       2. Tombol WhatsApp konfirmasi pembayaran (waPayLink1/2) — beda dari
+          link WA footer yang sudah diurus page-chrome.js, yang ini membawa
+          teks pesan siap kirim tentang bukti pembayaran iuran.
+       ================================================================ */
+
+    initCopyAccountButton()
+    initWhatsappConfirmButtons()
+
+    /**
+     * Menyalin nomor rekening TANPA tanda hubung (dibaca dari data-account),
+     * karena itu format yang diminta aplikasi m-banking saat ditempel.
+     *
+     * Memakai copyTextToClipboard()/showCopyFeedback()/COPY_FEEDBACK_MS dari
+     * config.js — helper yang sama dengan tombol "Salin link" di FAQ & galeri,
+     * lengkap dengan jalur cadangan execCommand untuk browser tanpa
+     * navigator.clipboard (mis. halaman dibuka lewat http:// atau WebView lama).
+     */
+    function initCopyAccountButton() {
+      const copyBtn = document.getElementById('copyAccountBtn')
+      if (!copyBtn || typeof copyTextToClipboard !== 'function') return
+
+      copyBtn.addEventListener('click', () => {
+        const accountNumber = copyBtn.dataset.account
+        if (!accountNumber) return
+
+        copyTextToClipboard(accountNumber).then(() => {
+          showCopyFeedback(copyBtn)
+          copyBtn.classList.add('is-copied')
+          setTimeout(() => copyBtn.classList.remove('is-copied'), COPY_FEEDBACK_MS)
+        })
+      })
+    }
+
+    /**
+     * Mengisi tombol WhatsApp konfirmasi dengan nomor admin dari tab Config
+     * (fallback ke konstanta di config.js). Tombol kedua disembunyikan kalau
+     * memang cuma ada satu kontak terkonfigurasi — bukan dibiarkan jadi
+     * tombol dengan link kosong.
+     */
+    async function initWhatsappConfirmButtons() {
+      if (typeof resolveAdminWaContacts !== 'function') return
+
+      try {
+        const [primary, secondary] = await resolveAdminWaContacts()
+        const pesan = 'Halo Admin PBJ, saya ingin konfirmasi pembayaran iuran latihan. Berikut bukti pembayarannya:'
+
+        applyWaContact('waPayLink1', 'waPayName1', primary, pesan)
+        applyWaContact('waPayLink2', 'waPayName2', secondary, pesan)
+      } catch (error) {
+        // QRIS & nomor rekening tetap terbaca walau tombol WA gagal dimuat
+        console.warn('Tombol konfirmasi WhatsApp tidak dapat dimuat:', error)
+      }
+    }
+
+    function applyWaContact(linkId, nameId, contact, pesan) {
+      const link = document.getElementById(linkId)
+      if (!link) return
+
+      if (!contact || !contact.number) {
+        link.hidden = true
+        return
+      }
+
+      link.href = `https://wa.me/${contact.number}?text=${encodeURIComponent(pesan)}`
+      const name = document.getElementById(nameId)
+      if (name) name.textContent = contact.name
+    }
+  </script>
+</body>
+
+</html>

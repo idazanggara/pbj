@@ -23,6 +23,17 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Halaman pembayaran iuran. URL sengaja pendek tanpa .html (/bayar,
+       di-rewrite ke bayar.html lewat vercel.json) karena link ini dibagikan
+       manual ke grup WhatsApp member — makin pendek makin kecil kemungkinan
+       terpotong/salah ketik. -->
+  <url>
+    <loc>https://www.pushbikejakarta.com/bayar</loc>
+    <lastmod>2026-08-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
   <!-- Halaman konten SEO. Dibuat karena Google meranking HALAMAN, bukan bagian
        dari halaman: selama semua topik menumpuk di beranda, tidak ada satu pun
        URL yang topik utamanya spesifik.
