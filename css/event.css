@@ -1,0 +1,334 @@
+/* ================================================================
+   event.css — gaya KHUSUS halaman event (merdeka.html)
+
+   Sama seperti payment.css: file terpisah karena hanya satu halaman
+   yang memakainya, dan dimuat PALING AKHIR sehingga boleh menimpa
+   nilai default dari base/home/sections/responsive/data-sections/
+   article.
+
+   Prefix kelas sengaja "event-poster/event-meta/lomba-card/step-card"
+   dan BUKAN "event-card" — nama itu sudah dipakai kartu daftar event
+   di beranda (data-sections.css) yang isinya dari Google Sheet.
+
+   Overlay pembesar poster TIDAK didefinisikan di sini — memakai
+   .lightbox yang sudah ada di sections.css (dipakai galeri beranda).
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   POSTER EVENT (paling atas halaman)
+   Lebar dibatasi 520px: poster ini rasio potret, kalau dibiarkan
+   selebar container tingginya melewati satu layar penuh di desktop
+   dan info di bawahnya tidak kelihatan sama sekali.
+   ---------------------------------------------------------------- */
+.event-poster-section {
+  padding-top: clamp(90px, 12vw, 130px); /* ruang untuk navbar fixed */
+  padding-bottom: clamp(32px, 5vw, 56px);
+}
+
+.event-poster {
+  max-width: 520px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* <button> supaya bisa difokus & dijalankan lewat keyboard; tampilannya
+   dinetralkan karena isinya murni gambar. */
+.event-poster__trigger {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.event-poster__trigger:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-glow);
+}
+
+.event-poster__trigger img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.event-poster__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.event-poster__hint {
+  margin-top: 12px;
+  font-size: 0.82rem;
+  color: var(--clr-text-dim);
+}
+
+/* ----------------------------------------------------------------
+   INFO SINGKAT: LOKASI / TANGGAL / JAM
+   ---------------------------------------------------------------- */
+.event-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+.event-meta__item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+
+.event-meta__icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--gradient-orange);
+  color: var(--clr-white);
+  flex-shrink: 0;
+}
+
+.event-meta__label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--clr-text-dim);
+  margin-bottom: 2px;
+}
+
+.event-meta__value {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--clr-heading);
+  line-height: 1.3;
+}
+
+/* ----------------------------------------------------------------
+   KARTU KATEGORI LOMBA
+   ---------------------------------------------------------------- */
+/* Sengaja 2 kolom (jadi 2x2 untuk empat kategori), bukan auto-fit yang di
+   layar lebar menghasilkan 3 kolom + satu kartu sendirian di baris kedua.
+   Susunan 2x2 juga sama dengan penataan di poster. min(100%, 380px) menjaga
+   kartu tetap menumpuk satu kolom di HP. */
+.lomba-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+  gap: clamp(18px, 3vw, 28px);
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+.lomba-card {
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  padding: clamp(20px, 3vw, 28px);
+  box-shadow: var(--shadow-card);
+}
+
+.lomba-card__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+/* Angka besar meniru penomoran di poster, supaya orang yang sudah lihat
+   poster langsung mengenali kategori yang sama di halaman ini. */
+.lomba-card__num {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--gradient-fire);
+  color: var(--clr-white);
+  font-family: var(--font-racing);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.lomba-card__title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  color: var(--clr-heading);
+  line-height: 1.25;
+}
+
+.lomba-card__list {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.lomba-card__list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: var(--clr-text);
+  line-height: 1.6;
+}
+
+.lomba-card__list i {
+  color: var(--clr-orange);
+  margin-top: 5px;
+  font-size: 0.6rem;
+  flex-shrink: 0;
+}
+
+/* ----------------------------------------------------------------
+   CARA IKUTAN — tiga langkah
+   ---------------------------------------------------------------- */
+.event-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(18px, 3vw, 28px);
+  max-width: 980px;
+  margin-inline: auto;
+  align-items: stretch;
+}
+
+.step-card {
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  padding: clamp(20px, 3vw, 28px);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+
+.step-card__num {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 14px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border-hot);
+  color: var(--clr-orange-lt);
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.step-card__title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  color: var(--clr-heading);
+  margin-bottom: 8px;
+}
+
+.step-card__text {
+  color: var(--clr-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.step-card .btn {
+  margin-top: 16px;
+}
+
+/* Biaya pendaftaran ditonjolkan karena ini angka yang paling dicari orang
+   tua saat membaca ulang halaman. */
+.event-price {
+  font-family: var(--font-racing);
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  font-weight: 800;
+  color: var(--clr-orange-lt);
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.event-price__unit {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--clr-text-muted);
+  letter-spacing: 0;
+}
+
+/* ----------------------------------------------------------------
+   KOTAK SOROT & PENUTUP
+   ---------------------------------------------------------------- */
+.event-notice {
+  max-width: 760px;
+  margin: 28px auto 0;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: clamp(14px, 2.5vw, 20px);
+  background: linear-gradient(135deg, rgba(255, 179, 71, 0.16) 0%, rgba(255, 107, 0, 0.08) 100%);
+  border: 1px solid var(--clr-border-hot);
+  border-radius: var(--radius-md);
+  line-height: 1.65;
+  text-align: left;
+}
+
+.event-notice i {
+  color: var(--clr-orange);
+  font-size: 1.15rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.event-contact {
+  max-width: 620px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.event-contact__text {
+  color: var(--clr-text-muted);
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+
+/* Penutup "Merdeka!" — satu-satunya blok merah-putih di halaman, sengaja
+   dibatasi di sini supaya nuansa kemerdekaan tidak menabrak warna brand
+   oranye PBJ di seluruh halaman. */
+.event-closing {
+  margin-top: clamp(40px, 6vw, 64px);
+  text-align: center;
+  padding: clamp(28px, 5vw, 44px) clamp(20px, 4vw, 40px);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(232, 0, 45, 0.10) 0%, rgba(255, 255, 255, 0.6) 100%);
+  border: 1px solid rgba(232, 0, 45, 0.25);
+  max-width: 760px;
+  margin-inline: auto;
+}
+
+.event-closing__text {
+  color: var(--clr-text);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.event-closing__shout {
+  font-family: var(--font-racing);
+  font-size: clamp(1.5rem, 4.5vw, 2.2rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--clr-red);
+}

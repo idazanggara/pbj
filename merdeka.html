@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Hore Rame-Rame — Semarak Kemerdekaan RI ke-81 | Pushbike Jakarta</title>
+  <meta name="description"
+    content="Lomba seru keluarga Pushbike Jakarta merayakan HUT RI ke-81. Minggu, 23 Agustus 2026 di Velodrome, pukul 09.00 WIB. Ada kategori anak dan Lomba Papa & Mama Racing." />
+  <meta name="robots" content="index, follow" />
+  <!-- Canonical memakai URL pendek /merdeka (bukan /merdeka.html) karena itu
+       yang dibagikan ke grup WA; vercel.json me-rewrite /merdeka ke berkas ini. -->
+  <link rel="canonical" href="https://www.pushbikejakarta.com/merdeka" />
+
+  <!-- ===== OPEN GRAPH & TWITTER (preview saat link dibagikan di WA/IG/Telegram) =====
+       og:image memakai POSTER, bukan og-image.jpg bawaan situs — poster inilah
+       yang sudah dikenali orang tua dari sebaran WhatsApp. Ukurannya sengaja
+       tidak dicantumkan karena poster bersifat potret dan angkanya menyesuaikan
+       berkas yang dipasang. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Pushbike Jakarta" />
+  <meta property="og:title" content="Hore Rame-Rame — Semarak Kemerdekaan RI ke-81" />
+  <meta property="og:description"
+    content="Lomba seru keluarga Pushbike Jakarta. Minggu, 23 Agustus 2026 di Velodrome, mulai 09.00 WIB. Papa & Mama juga boleh ikut!" />
+  <meta property="og:url" content="https://www.pushbikejakarta.com/merdeka" />
+  <meta property="og:image" content="https://www.pushbikejakarta.com/assets/event/poster-merdeka-2026.jpg" />
+  <meta property="og:locale" content="id_ID" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Hore Rame-Rame — Semarak Kemerdekaan RI ke-81" />
+  <meta name="twitter:description"
+    content="Lomba seru keluarga Pushbike Jakarta. Minggu, 23 Agustus 2026 di Velodrome, mulai 09.00 WIB." />
+  <meta name="twitter:image" content="https://www.pushbikejakarta.com/assets/event/poster-merdeka-2026.jpg" />
+
+  <!-- Satu rel="icon" saja + path absolut, sama persis dengan index.html —
+       alasan lengkapnya ada di blok FAVICON index.html. -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon_io/android-chrome-192x192.png" />
+  <link rel="apple-touch-icon" href="/assets/favicon_io/apple-touch-icon.png" />
+  <link rel="manifest" href="/assets/favicon_io/site.webmanifest" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+
+  <!-- ?v= = cache-busting, HARUS sama dengan versi terbaru di index.html/admin.html -->
+  <!-- URUTAN INI TIDAK BOLEH DITUKAR (lihat catatan di register.html).
+       event.css dimuat paling akhir: khusus halaman ini, boleh menimpa. -->
+  <link rel="stylesheet" href="css/base.css?v=2" />
+  <link rel="stylesheet" href="css/home.css?v=2" />
+  <link rel="stylesheet" href="css/sections.css?v=2" />
+  <link rel="stylesheet" href="css/responsive.css?v=2" />
+  <link rel="stylesheet" href="css/data-sections.css?v=2" />
+  <link rel="stylesheet" href="css/article.css?v=2" />
+  <link rel="stylesheet" href="css/event.css?v=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+  <!-- Header/nav meniru markup index.html persis (kelas & struktur sama) supaya
+       navbar konsisten, tapi TIDAK memuat main.js/schedule.js/dst — pola yang
+       sama seperti register.html, bayar.html & admin.html.
+
+       CATATAN: halaman ini SENGAJA tidak dipasang di navbar/footer halaman lain
+       maupun di sitemap.xml — aksesnya lewat link yang dibagikan manual. -->
+  <header class="navbar" id="navbar">
+    <div class="navbar__container">
+      <a href="index.html" class="navbar__logo">
+        <img src="assets/logo_PBJ.jpg" alt="Logo Pushbike Jakarta" class="logo-img" width="40" height="40" />
+        <span class="logo-text">PUSHBIKE JAKARTA</span>
+      </a>
+
+      <nav class="navbar__nav" aria-label="Navigasi utama">
+        <a href="index.html#schedule" class="nav-link">Jadwal</a>
+        <a href="index.html#map" class="nav-link">Lokasi</a>
+        <a href="index.html#info" class="nav-link">Info</a>
+        <a href="index.html#manfaat" class="nav-link">Manfaat</a>
+        <a href="index.html#pengurus" class="nav-link">Pengurus</a>
+        <a href="index.html#galeri" class="nav-link">Galeri</a>
+        <a href="index.html#events" class="nav-link">Event</a>
+        <a href="index.html" class="nav-link">&larr; Kembali ke Beranda</a>
+      </nav>
+
+      <button class="navbar__hamburger" id="hamburgerBtn" aria-label="Buka menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true">
+      <a href="index.html#schedule" class="mobile-nav-link">Jadwal</a>
+      <a href="index.html#map" class="mobile-nav-link">Lokasi</a>
+      <a href="index.html#info" class="mobile-nav-link">Info</a>
+      <a href="index.html#manfaat" class="mobile-nav-link">Manfaat</a>
+      <a href="index.html#pengurus" class="mobile-nav-link">Pengurus</a>
+      <a href="index.html#galeri" class="mobile-nav-link">Galeri</a>
+      <a href="index.html#events" class="mobile-nav-link">Event</a>
+      <a href="index.html" class="mobile-nav-link">&larr; Kembali ke Beranda</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============================================================
+         POSTER — paling atas, bisa diperbesar & diunduh
+         ============================================================ -->
+    <section class="event-poster-section">
+      <div class="container">
+        <figure class="event-poster">
+          <button type="button" class="event-poster__trigger" id="posterTrigger"
+            aria-label="Perbesar poster Hore Rame-Rame">
+            <img src="assets/event/poster-merdeka-2026.jpg"
+              alt="Poster Semarak Kemerdekaan Indonesia — Hore Rame-Rame Pushbike Jakarta, Minggu 23 Agustus 2026 di Velodrome pukul 09.00 WIB" />
+          </button>
+          <figcaption class="event-poster__hint">Ketuk poster untuk memperbesar</figcaption>
+          <div class="event-poster__actions">
+            <a class="btn btn--primary" href="assets/event/poster-merdeka-2026.jpg"
+              download="Poster-Hore-Rame-Rame-PBJ-2026.jpg">
+              <i class="fa-solid fa-download"></i> Unduh Poster
+            </a>
+            <a class="btn btn--ghost" href="#daftar">
+              <i class="fa-solid fa-pen-to-square"></i> Daftar Sekarang
+            </a>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         JUDUL, AJAKAN & INFO SINGKAT
+         ============================================================ -->
+    <section class="section has-watermark">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge">
+            <i class="fa-solid fa-flag"></i> Dirgahayu Republik Indonesia ke-81
+          </div>
+          <h1 class="section-title">Hore Rame-Rame<br />Pushbike Jakarta</h1>
+          <p class="section-subtitle">
+            Halo Papa dan Mama Racing Pushbike Jakarta! Dalam rangka memeriahkan
+            HUT Kemerdekaan RI ke-81, kami mengajak seluruh keluarga besar PBJ
+            untuk menikmati keseruan lomba bersama.
+          </p>
+        </div>
+
+        <div class="event-meta">
+          <div class="event-meta__item">
+            <span class="event-meta__icon" aria-hidden="true"><i class="fa-solid fa-location-dot"></i></span>
+            <div>
+              <span class="event-meta__label">Lokasi</span>
+              <span class="event-meta__value">Velodrome</span>
+            </div>
+          </div>
+          <div class="event-meta__item">
+            <span class="event-meta__icon" aria-hidden="true"><i class="fa-solid fa-calendar-days"></i></span>
+            <div>
+              <span class="event-meta__label">Tanggal</span>
+              <span class="event-meta__value">Minggu, 23 Agustus 2026</span>
+            </div>
+          </div>
+          <div class="event-meta__item">
+            <span class="event-meta__icon" aria-hidden="true"><i class="fa-solid fa-clock"></i></span>
+            <div>
+              <span class="event-meta__label">Waktu</span>
+              <span class="event-meta__value">09.00 WIB sampai selesai</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="event-notice">
+          <i class="fa-solid fa-people-group"></i>
+          <span>
+            <strong>Bukan hanya anak-anak.</strong> Papa dan Mama juga bisa ikut
+            berlomba. Yuk, jadikan acara ini momen penuh keceriaan dan kekompakan
+            bersama keluarga Pushbike Jakarta! 🚲🎈
+          </span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         KATEGORI LOMBA — urutan & isi mengikuti poster
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge">
+            <i class="fa-solid fa-trophy"></i> Kategori Lomba
+          </div>
+          <h2 class="section-title">Lomba Apa Saja?</h2>
+          <p class="section-subtitle">
+            Kategori dibagi berdasarkan tahun kelahiran anak, ditambah satu
+            kategori khusus untuk Papa &amp; Mama.
+          </p>
+        </div>
+
+        <div class="lomba-grid">
+          <article class="lomba-card">
+            <div class="lomba-card__head">
+              <span class="lomba-card__num" aria-hidden="true">1</span>
+              <h3 class="lomba-card__title">Kategori Tahun 2023&ndash;2024</h3>
+            </div>
+            <ul class="lomba-card__list">
+              <li><i class="fa-solid fa-circle"></i> Pindah bendera</li>
+              <li><i class="fa-solid fa-circle"></i> Jepit balon di kaki</li>
+              <li><i class="fa-solid fa-circle"></i> Pindahkan bola menggunakan tiang balon</li>
+            </ul>
+          </article>
+
+          <article class="lomba-card">
+            <div class="lomba-card__head">
+              <span class="lomba-card__num" aria-hidden="true">2</span>
+              <h3 class="lomba-card__title">Kategori Tahun 2021&ndash;2022</h3>
+            </div>
+            <ul class="lomba-card__list">
+              <li><i class="fa-solid fa-circle"></i> Paku dalam botol</li>
+              <li><i class="fa-solid fa-circle"></i> Estafet kelereng</li>
+              <li><i class="fa-solid fa-circle"></i> Tiup bola di gelas berisi air</li>
+            </ul>
+          </article>
+
+          <article class="lomba-card">
+            <div class="lomba-card__head">
+              <span class="lomba-card__num" aria-hidden="true">3</span>
+              <h3 class="lomba-card__title">Kategori Tahun 2018&ndash;2020</h3>
+            </div>
+            <ul class="lomba-card__list">
+              <li><i class="fa-solid fa-circle"></i> Paku dalam botol</li>
+              <li><i class="fa-solid fa-circle"></i> Estafet kelereng</li>
+              <li><i class="fa-solid fa-circle"></i> Keluarkan bola dari dalam kardus</li>
+            </ul>
+          </article>
+
+          <article class="lomba-card">
+            <div class="lomba-card__head">
+              <span class="lomba-card__num" aria-hidden="true">4</span>
+              <h3 class="lomba-card__title">Lomba Papa &amp; Mama Racing</h3>
+            </div>
+            <ul class="lomba-card__list">
+              <li><i class="fa-solid fa-circle"></i> Estafet pindah gelas menggunakan balon</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CARA IKUTAN — 3 langkah. Detail pembayaran TIDAK diulang di
+         sini; diarahkan ke halaman bayar.html supaya QRIS & nomor
+         rekening cuma punya SATU sumber yang perlu diperbarui.
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge">
+            <i class="fa-solid fa-list-check"></i> Cara Ikutan
+          </div>
+          <h2 class="section-title">Dua Langkah Saja</h2>
+        </div>
+
+        <!-- Bayar ditaruh SEBELUM isi formulir karena bukti pembayaran diunggah
+             langsung di dalam formulirnya — kalau formulir diisi duluan, orang
+             tua harus berhenti di tengah jalan untuk bayar dulu. -->
+        <div class="event-steps">
+          <article class="step-card">
+            <span class="step-card__num" aria-hidden="true">1</span>
+            <h3 class="step-card__title">Bayar Pendaftaran</h3>
+            <p class="event-price">
+              Rp50.000
+              <span class="event-price__unit">per anak</span>
+            </p>
+            <p class="step-card__text">
+              Bisa lewat QRIS atau transfer ke rekening PBJ. Simpan bukti
+              pembayarannya, ya.
+            </p>
+            <a class="btn btn--primary" href="bayar.html">
+              <i class="fa-solid fa-qrcode"></i> Lihat Cara Bayar
+            </a>
+          </article>
+
+          <article class="step-card">
+            <span class="step-card__num" aria-hidden="true">2</span>
+            <h3 class="step-card__title">Isi Formulir &amp; Unggah Bukti</h3>
+            <p class="step-card__text">
+              Formulirnya ada langsung di halaman ini. Bukti pembayaran tinggal
+              diunggah di formulir tersebut, tidak perlu dikirim terpisah.
+            </p>
+            <a class="btn btn--ghost" href="#daftar">
+              <i class="fa-solid fa-arrow-down"></i> Ke Formulir
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         EMBED GOOGLE FORM
+         Pola sama dengan register.html: iframe + wrapper custom, bukan
+         membangun ulang form — tidak bergantung struktur field yang bisa
+         berubah sewaktu-waktu. Bedanya, URL form di sini ditulis langsung
+         (tetap, khusus event ini) dan tidak diambil dari Google Sheet.
+         ============================================================ -->
+    <section class="registration-embed-section" id="daftar">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge">
+            <i class="fa-solid fa-pen-to-square"></i> Pendaftaran
+          </div>
+          <h2 class="section-title">Formulir Pendaftaran</h2>
+          <p class="section-subtitle">
+            Isi formulir di bawah ini untuk mendaftarkan si kecil (dan Papa/Mama!)
+            ikut Hore Rame-Rame.
+          </p>
+        </div>
+
+        <div class="registration-embed-card">
+          <p class="registration-embed-loading" id="eventFormLoading">
+            <i class="fa-solid fa-spinner fa-spin"></i> Memuat formulir&hellip;
+          </p>
+          <div class="registration-embed-frame">
+            <iframe id="eventFormIframe"
+              src="https://docs.google.com/forms/d/e/1FAIpQLSdNBT2hHFoBFUW-pxnlIqT-ZjCFPjI9SmNMXvxVUadU3v5mTw/viewform?embedded=true"
+              title="Formulir Pendaftaran Hore Rame-Rame Pushbike Jakarta" loading="lazy"></iframe>
+          </div>
+          <p class="registration-embed-fallback">
+            Form tidak muncul?
+            <a href="https://bit.ly/PBJ-merdeka-rame-rame" target="_blank" rel="noopener">Buka di tab baru</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         KONTAK & PENUTUP
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="event-contact">
+          <h2 class="section-title">Ada Pertanyaan?</h2>
+          <p class="event-contact__text">
+            Silakan hubungi <strong>Om Dani (Papa Abdul)</strong> untuk informasi
+            lebih lanjut soal lomba maupun pendaftaran.
+          </p>
+          <a class="btn btn--primary"
+            href="https://wa.me/6289529547002?text=Halo%20Om%20Dani%2C%20saya%20mau%20bertanya%20soal%20Hore%20Rame-Rame%20PBJ."
+            target="_blank" rel="noopener">
+            <i class="fa-brands fa-whatsapp"></i> WhatsApp 0895-2954-7002
+          </a>
+        </div>
+
+        <div class="event-closing">
+          <p class="event-closing__text">
+            Ayo segera daftar! Jangan sampai melewatkan keseruan, tawa, dan
+            kebersamaan dalam perayaan kemerdekaan bersama keluarga besar
+            Pushbike Jakarta. 🥳🏁
+          </p>
+          <p class="event-closing__shout">Merdeka! Merdeka! Merdeka!</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer — markup sama persis dengan halaman lain untuk konsistensi.
+       Daftar Navigasi SENGAJA tidak memuat halaman event ini sendiri. -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="assets/logo_PBJ.jpg" alt="Logo PBJ" class="logo-img logo-img--sm" width="36" height="36" />
+            <div>
+              <span class="footer-logo-text">PUSHBIKE JAKARTA</span>
+            </div>
+          </div>
+          <p class="footer-tagline">
+            Komunitas balance bike non-profit untuk anak-anak Jakarta sejak 2018.
+            Dibuat dengan &#10084;&#65039; oleh tim Tech Pushbike Jakarta.
+          </p>
+          <div class="footer-social">
+            <a href="https://instagram.com/pushbikejakarta" class="social-link"
+              aria-label="Instagram Pushbike Jakarta" target="_blank" rel="noopener">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://www.youtube.com/@pushbikejakarta6288" class="social-link"
+              aria-label="YouTube Pushbike Jakarta" target="_blank" rel="noopener">
+              <i class="fa-brands fa-youtube"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <h4 class="footer-links__title">Navigasi</h4>
+          <ul>
+            <li><a href="index.html#schedule">Jadwal Latihan</a></li>
+            <li><a href="index.html#map">Peta Lokasi</a></li>
+            <li><a href="index.html#info">Tentang Pushbike Jakarta</a></li>
+            <li><a href="index.html#pengurus">Pengurus</a></li>
+            <li><a href="apa-itu-pushbike.html">Apa Itu Pushbike?</a></li>
+            <li><a href="race-pushbike.html">Race Pushbike</a></li>
+            <li><a href="komunitas-pushbike-indonesia.html">Komunitas Se-Indonesia</a></li>
+            <li><a href="register.html">Daftar Member Baru</a></li>
+            <li><a href="bayar.html">Bayar Iuran Latihan</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-contact">
+          <h4 class="footer-links__title">Kontak</h4>
+          <ul>
+            <li>
+              <i class="fa-brands fa-whatsapp"></i>
+              <a id="waAdminLink1" target="_blank" rel="noopener">WhatsApp Admin</a>
+            </li>
+            <li>
+              <i class="fa-brands fa-whatsapp"></i>
+              <a id="waAdminLink2" target="_blank" rel="noopener">WhatsApp Admin</a>
+            </li>
+            <li>
+              <i class="fa-brands fa-instagram"></i>
+              <a href="https://instagram.com/pushbikejakarta" target="_blank" rel="noopener">@pushbikejakarta</a>
+            </li>
+            <li>
+              <i class="fa-solid fa-location-dot"></i>
+              <span>Jabodetabek, Indonesia</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <hr class="footer-divider" />
+        <p class="footer-copy">
+          &copy; <span id="footerYear">2026</span> Pushbike Jakarta (PBJ). All rights reserved.
+          Dibuat oleh <a href="https://www.instagram.com/idazanggara/" target="_blank"
+            rel="noopener"><strong>Idaz Anggara</strong></a>, Tech PBJ.
+          <a href="admin.html" class="footer-admin-link" aria-label="Halaman admin pengurus">Admin</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Overlay pembesar poster. Memakai markup & gaya .lightbox yang sama
+       dengan galeri beranda (sections.css) — tapi isinya statis di HTML,
+       bukan disuntik JS, karena di halaman ini cuma ada SATU gambar. -->
+  <div class="lightbox" id="posterLightbox" role="dialog" aria-modal="true" aria-label="Poster ukuran penuh" hidden>
+    <button class="lightbox__close" id="posterLightboxClose" aria-label="Tutup poster">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <div class="lightbox__body">
+      <img src="assets/event/poster-merdeka-2026.jpg"
+        alt="Poster Hore Rame-Rame Pushbike Jakarta ukuran penuh" />
+    </div>
+  </div>
+
+  <!-- Versi ?v= HARUS sama dengan index.html/admin.html supaya membaca
+       config.js dari cache entry yang sama (tidak ada yang stale) -->
+  <script src="js/config.js?v=16"></script>
+  <!-- site-settings.js dipakai di sini HANYA untuk resolveAdminWaContacts()
+       (nomor WA admin di footer); bagian form pendaftarannya no-op karena
+       elemen #regEmbedIframe tidak ada di halaman ini. -->
+  <script src="js/site-settings.js?v=6"></script>
+  <script src="js/page-chrome.js?v=1"></script>
+  <script>
+    /* ================================================================
+       Script KHUSUS halaman ini:
+       1. Pembesar poster (buka/tutup overlay .lightbox).
+       2. Sembunyikan teks "Memuat formulir…" begitu iframe Google Form
+          selesai dimuat.
+       ================================================================ */
+
+    initPosterLightbox()
+    initFormLoadingState()
+
+    /**
+     * Overlay poster. Sengaja TIDAK memakai openLightbox() di main.js —
+     * main.js khusus beranda dan membawa peta, galeri, serta form yang
+     * tidak dibutuhkan di sini. Yang dipakai ulang cuma gaya .lightbox
+     * dari sections.css.
+     */
+    function initPosterLightbox() {
+      const trigger = document.getElementById('posterTrigger')
+      const lightbox = document.getElementById('posterLightbox')
+      const closeBtn = document.getElementById('posterLightboxClose')
+      if (!trigger || !lightbox || !closeBtn) return
+
+      function openPoster() {
+        lightbox.removeAttribute('hidden')
+        // Kunci scroll halaman di belakang overlay, sama seperti main.js
+        document.body.style.overflow = 'hidden'
+        closeBtn.focus()
+      }
+
+      function closePoster() {
+        lightbox.setAttribute('hidden', '')
+        document.body.style.overflow = ''
+        trigger.focus()
+      }
+
+      trigger.addEventListener('click', openPoster)
+      closeBtn.addEventListener('click', closePoster)
+
+      // Klik area gelap di luar gambar = tutup
+      lightbox.addEventListener('click', (event) => {
+        if (event.target === lightbox) closePoster()
+      })
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !lightbox.hasAttribute('hidden')) closePoster()
+      })
+    }
+
+    /**
+     * Google Form tidak bisa memberi tahu status muatnya ke halaman ini
+     * (cross-origin), jadi patokannya cuma event 'load' pada iframe —
+     * cukup untuk menghilangkan teks "Memuat formulir…".
+     */
+    function initFormLoadingState() {
+      const iframe = document.getElementById('eventFormIframe')
+      const loading = document.getElementById('eventFormLoading')
+      if (!iframe || !loading) return
+
+      iframe.addEventListener('load', () => {
+        loading.hidden = true
+      })
+    }
+  </script>
+</body>
+
+</html>

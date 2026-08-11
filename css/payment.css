@@ -48,6 +48,34 @@
 
 .payment-notice--member i { color: var(--clr-green); }
 
+/* SEMENTARA — varian merah untuk banner event Hore Rame-Rame (23 Agustus
+   2026). Hapus blok ini bersama markup-nya di bayar.html setelah event
+   selesai. Nuansa merah dipakai supaya jelas ini pesan musiman, bukan
+   bagian tetap dari halaman pembayaran. */
+.payment-notice--event {
+  margin-top: 16px;
+  background: linear-gradient(135deg, rgba(232, 0, 45, 0.12) 0%, rgba(255, 255, 255, 0.5) 100%);
+  border-color: rgba(232, 0, 45, 0.3);
+}
+
+.payment-notice--event i { color: var(--clr-red); }
+
+/* display:flex + width:fit-content = link turun ke baris sendiri (bukan
+   menempel di ujung kalimat) tapi area klik & garis bawahnya tetap selebar
+   teksnya saja. */
+.payment-notice__link {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-weight: 700;
+  color: var(--clr-red);
+  text-decoration: none;
+}
+
+.payment-notice__link:hover { text-decoration: underline; }
+
 /* ----------------------------------------------------------------
    GRID DUA KARTU: QRIS & TRANSFER BANK
    Di layar sempit otomatis menumpuk (auto-fit + minmax), tanpa

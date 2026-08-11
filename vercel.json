@@ -21,6 +21,10 @@
     {
       "source": "/bayar",
       "destination": "/bayar.html"
+    },
+    {
+      "source": "/merdeka",
+      "destination": "/merdeka.html"
     }
   ]
 }
