@@ -467,13 +467,26 @@
   display: block;
 }
 
+/* Jalan keluar kalau iframe Google Form gagal tampil. Dulu ini cuma kalimat
+   dengan tautan kecil di tengahnya; diganti jadi TOMBOL karena kegagalan yang
+   paling sering terjadi (browser HP tertentu) menampilkan kotak putih kosong
+   tanpa pesan apa pun — pengguna tidak sadar ada jalan keluar, dan tautan
+   sekecil itu tidak terbaca sebagai tindakan yang bisa diambil.
+
+   CATATAN: JANGAN tambahkan lagi aturan `.registration-embed-fallback a { ... }`.
+   Selector keturunan seperti itu (spesifisitas 0,1,1) mengalahkan .btn--primary
+   (0,1,0), sehingga warna teks tombol ikut tertimpa. */
 .registration-embed-fallback {
   text-align: center;
+  margin-top: 18px;
+}
+
+.registration-embed-fallback__text {
   font-size: 0.85rem;
   color: var(--clr-text-muted);
-  margin-top: 14px;
+  line-height: 1.6;
+  margin-bottom: 12px;
 }
-.registration-embed-fallback a { color: var(--clr-orange-lt); font-weight: 600; }
 
 .registration-help {
   text-align: center;

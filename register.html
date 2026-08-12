@@ -135,10 +135,17 @@
           <div class="registration-embed-frame">
             <iframe id="regEmbedIframe" title="Formulir Pendaftaran Member Baru Pushbike Jakarta"></iframe>
           </div>
-          <p class="registration-embed-fallback">
-            Form tidak muncul? <a id="regEmbedFallbackLink" href="#" target="_blank" rel="noopener">Buka di tab
-              baru</a>.
-          </p>
+          <!-- href tombol diisi js/site-settings.js dari REGISTRATION_FORM_URL —
+               id="regEmbedFallbackLink" jangan diubah. -->
+          <div class="registration-embed-fallback">
+            <p class="registration-embed-fallback__text">
+              Formulir di atas tidak muncul atau hanya tampil kosong?
+              Di sebagian browser HP memang begitu.
+            </p>
+            <a id="regEmbedFallbackLink" class="btn btn--primary" href="#" target="_blank" rel="noopener">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Formulir di Tab Baru
+            </a>
+          </div>
         </div>
       </div>
     </section>

@@ -25,6 +25,10 @@
     {
       "source": "/merdeka",
       "destination": "/merdeka.html"
+    },
+    {
+      "source": "/register",
+      "destination": "/register.html"
     }
   ]
 }
